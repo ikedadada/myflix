@@ -26,6 +26,7 @@ resource "cloudflare_access_policy" "allow_emails" {
   account_id     = var.account_id
   name           = "allow-devs"
   decision       = "allow"
+  precedence     = 1
   include {
     email = var.allowed_emails
   }
