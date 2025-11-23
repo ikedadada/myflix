@@ -23,7 +23,12 @@ jobs:
           terraform_version: 1.13.3
 
       - name: Terraform Init
-        run: terraform -chdir=envs/dev init
+        env:
+          R2_ENDPOINT: https://${{ secrets.TF_DEV_ACCOUNT_ID }}.r2.cloudflarestorage.com
+        run: >
+          terraform -chdir=envs/dev init \
+            -backend-config=backend.hcl \
+            -backend-config="endpoint=$R2_ENDPOINT"
 
       - name: Terraform Plan
         run: |
