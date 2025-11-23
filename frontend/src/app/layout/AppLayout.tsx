@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Link, Outlet } from '@tanstack/router';
+import { Link, Outlet } from '@tanstack/react-router';
 import { APP_NAME } from '../config/constants';
 import { useTheme } from '../providers/ThemeProvider';
 import { Button } from '@/shared/ui/Button';

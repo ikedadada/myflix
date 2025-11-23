@@ -1,4 +1,4 @@
-import { Outlet, RootRoute, Route, Router } from '@tanstack/router';
+import { Outlet, createRootRoute, createRoute, createRouter } from '@tanstack/react-router';
 import { AppLayout } from '../layout/AppLayout';
 import { HomePage } from '@/pages/home/HomePage';
 import { LibraryPage } from '@/pages/library/LibraryPage';
@@ -7,7 +7,7 @@ import { SettingsPage } from '@/pages/settings/SettingsPage';
 import { ErrorPage } from '@/pages/error/ErrorPage';
 import { NotFoundPage } from '@/pages/error/NotFoundPage';
 
-const rootRoute = new RootRoute({
+const rootRoute = createRootRoute({
   component: () => (
     <AppLayout>
       <Outlet />
@@ -15,31 +15,31 @@ const rootRoute = new RootRoute({
   )
 });
 
-const homeRoute = new Route({
+const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
   component: HomePage
 });
 
-const libraryRoute = new Route({
+const libraryRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'library',
   component: LibraryPage
 });
 
-const uploadRoute = new Route({
+const uploadRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'upload',
   component: UploadPage
 });
 
-const settingsRoute = new Route({
+const settingsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'settings',
   component: SettingsPage
 });
 
-const errorRoute = new Route({
+const errorRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'error',
   component: ErrorPage
@@ -47,14 +47,14 @@ const errorRoute = new Route({
 
 const routeTree = rootRoute.addChildren([homeRoute, libraryRoute, uploadRoute, settingsRoute, errorRoute]);
 
-export const router = new Router({
+export const router = createRouter({
   routeTree,
   defaultPreload: 'intent',
   defaultPendingMs: 250,
   defaultNotFoundComponent: () => <NotFoundPage />
 });
 
-declare module '@tanstack/router' {
+declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router;
   }

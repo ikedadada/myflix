@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { RouterProvider } from '@tanstack/router';
+import { RouterProvider } from '@tanstack/react-router';
 import { AppProviders } from './app/providers/AppProviders';
 import { router } from './app/router/routes';
 import './assets/styles/globals.css';

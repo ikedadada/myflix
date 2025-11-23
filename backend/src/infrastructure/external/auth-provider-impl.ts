@@ -5,7 +5,7 @@ import { UserId } from '@/domain/model/value_object/user-id';
 export class AccessAuthProvider {
   private readonly jwks: ReturnType<typeof createRemoteJWKSet>;
 
-  constructor(private readonly jwksUrl: string, private readonly audience: string) {
+  constructor(jwksUrl: string, private readonly audience: string) {
     this.jwks = createRemoteJWKSet(new URL(jwksUrl));
   }
 

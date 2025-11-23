@@ -3,7 +3,6 @@ import type { HonoEnv } from '../hono-env';
 import { SettingsService } from '@/application_service/settings-service';
 import { Settings } from '@/domain/model/entity/settings';
 import { SettingsId } from '@/domain/model/value_object/settings-id';
-import { UserId } from '@/domain/model/value_object/user-id';
 
 export class SettingsHandler {
   constructor(private readonly settingsService: SettingsService) {}

@@ -3,7 +3,6 @@ import type { HonoEnv } from '../hono-env';
 import { VideoService } from '@/application_service/video-service';
 import { MetadataService } from '@/application_service/metadata-service';
 import { VideoId } from '@/domain/model/value_object/video-id';
-import { UserId } from '@/domain/model/value_object/user-id';
 
 export class VideoHandler {
   constructor(

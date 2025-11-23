@@ -3,7 +3,6 @@ import type { HonoEnv } from '../hono-env';
 import { UploadService } from '@/application_service/upload-service';
 import { UploadSession } from '@/domain/model/entity/upload-session';
 import { UploadSessionId } from '@/domain/model/value_object/upload-session-id';
-import { UserId } from '@/domain/model/value_object/user-id';
 
 export class UploadHandler {
   constructor(private readonly uploadService: UploadService) {}

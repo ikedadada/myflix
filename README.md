@@ -14,8 +14,8 @@ This repository contains the MYFLIX backend (Cloudflare Workers + Hono), fronten
 1. Install toolchains via [mise](https://mise.jdx.dev/): `mise use -C backend`, `mise use -C frontend`.
 2. Install package dependencies with `npm install` inside `backend/` and `frontend/`.
 3. Run local services:
-   - Backend: `npm run dev` (wrangler) exposing Cloudflare bindings defined in `backend/wrangler.toml`.
-   - Frontend: `npm run dev` (Vite) and configure `VITE_API_BASE_URL` to point at the dev Worker route.
+   - Backend: `npm run dev` (wrangler) exposing Cloudflare bindings defined in `backend/wrangler.toml`. Run `npx wrangler d1 migrations apply myflix-dev-db --local` before starting to create the schema.
+   - Frontend: `npm run dev` (Vite) and configure `VITE_API_BASE_URL` to point at the dev Worker route (e.g., `http://127.0.0.1:8787`). The SPA now reads `/videos`, `/uploads`, and `/settings` endpoints during development.
 4. Execute automated checks before committing:
    - Backend: `npm run lint`, `npm run test`, `npm run build`.
    - Frontend: `npm run lint`, `npm run test`, `npm run build`.
