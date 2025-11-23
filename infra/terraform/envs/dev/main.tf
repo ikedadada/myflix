@@ -2,9 +2,19 @@ terraform {
   required_version = ">= 1.6.0"
   required_providers {
     cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "~> 4.40"
+      source = "cloudflare/cloudflare"
+      version = "5.13.0"
     }
+  }
+  backend "s3" {
+    bucket                      = "myflix-dev-state"
+    key                         = "terraform/dev/terraform.tfstate"
+    region                      = "auto"
+    endpoint                    = "https://<your-account-id>.r2.cloudflarestorage.com"
+    skip_credentials_validation = true
+    skip_region_validation      = true
+    skip_metadata_api_check     = true
+    force_path_style            = true
   }
 }
 
