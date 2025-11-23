@@ -22,6 +22,12 @@ jobs:
         with:
           terraform_version: 1.13.3
 
+      - name: Verify R2 backend connectivity
+        env:
+          R2_ENDPOINT: https://${{ secrets.TF_DEV_ACCOUNT_ID }}.r2.cloudflarestorage.com
+        run: |
+          aws s3 ls s3://myflix-state --endpoint-url=$R2_ENDPOINT --region auto
+
       - name: Prepare backend config
         run: |
           sed "s#<your-account-id>#${{ secrets.TF_DEV_ACCOUNT_ID }}#g" \
