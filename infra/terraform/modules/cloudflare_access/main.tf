@@ -34,3 +34,10 @@ resource "cloudflare_access_policy" "allow_emails" {
 output "application_id" {
   value = cloudflare_access_application.this.id
 }
+terraform {
+  required_providers {
+    cloudflare = {
+      source = "cloudflare/cloudflare"
+    }
+  }
+}

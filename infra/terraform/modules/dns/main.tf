@@ -21,3 +21,10 @@ resource "cloudflare_record" "cname" {
 output "hostname" {
   value = cloudflare_record.cname.hostname
 }
+terraform {
+  required_providers {
+    cloudflare = {
+      source = "cloudflare/cloudflare"
+    }
+  }
+}

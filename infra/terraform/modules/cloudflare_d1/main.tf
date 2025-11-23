@@ -14,3 +14,10 @@ resource "cloudflare_d1_database" "this" {
 output "database_id" {
   value = cloudflare_d1_database.this.id
 }
+terraform {
+  required_providers {
+    cloudflare = {
+      source = "cloudflare/cloudflare"
+    }
+  }
+}
