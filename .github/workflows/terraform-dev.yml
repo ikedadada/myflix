@@ -30,7 +30,7 @@ jobs:
       - name: Terraform Init
         run: >
           terraform -chdir=envs/dev init \
-            -backend-config=envs/dev/backend.auto.tfbackend
+            -backend-config=backend.auto.tfbackend
 
       - name: Terraform Plan
         run: |
