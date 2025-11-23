@@ -85,9 +85,8 @@ Cloudflare Workers サービス（API 用）
 Cloudflare R2 バケット（動画オブジェクト保管用）  
 Cloudflare D1 データベース（メタデータ用）  
 Cloudflare Access アプリケーションとポリシー  
-DNS レコード（A / CNAME / TXT 等）
 
-dev 環境は開発および検証用途であり、ローカル開発からも常に dev 環境に対して接続する。local 専用の DB やストレージは作らない。
+dev 環境は開発および検証用途であり、ローカル開発からも常に dev 環境に対して接続する。local 専用の DB やストレージは作らない。初期段階では Cloudflare が付与する workers.dev / pages.dev ドメインを利用し、独自ドメイン（DNS）の設定は後回しにできる。
 
 ## 5. Cloudflare Pages
 

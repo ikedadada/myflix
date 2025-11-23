@@ -28,7 +28,7 @@ module "workers" {
   source             = "../../modules/cloudflare_workers"
   account_id         = var.cloudflare_account_id
   script_name        = "${var.project_slug}-${local.environment}"
-  routes             = var.worker_routes
+  routes             = []
   d1_binding_name    = "DB"
   r2_binding_name    = "MEDIA_BUCKET"
 }
@@ -51,11 +51,4 @@ module "access" {
   app_name      = "${var.project_slug}-${local.environment}"
   domain        = var.access_domain
   allowed_emails = var.allowed_emails
-}
-
-module "dns" {
-  source       = "../../modules/dns"
-  zone_id      = var.cloudflare_zone_id
-  hostname     = var.hostname
-  target_value = module.pages.production_domain
 }

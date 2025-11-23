@@ -1,9 +1,6 @@
 cloudflare_account_id = "cf-account-id"
-cloudflare_zone_id    = "cf-zone-id"
 project_slug          = "myflix"
-hostname              = "myflix-dev.example.com"
 pages_production_branch = "main"
 pages_preview_branch_pattern = "dev/*"
-worker_routes         = ["myflix-dev.example.com/api/*"]
 access_domain         = "myteam.cloudflareaccess.com"
 allowed_emails        = ["dev@example.com"]
