@@ -27,6 +27,7 @@ jobs:
         run: |
           terraform -chdir=envs/dev plan \
             -var "cloudflare_account_id=${{ secrets.TF_DEV_ACCOUNT_ID }}" \
+            -var "cloudflare_api_token=${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             -var "project_slug=myflix" \
             -var "access_domain=${{ secrets.TF_DEV_ACCESS_DOMAIN }}" \
             -var 'allowed_emails=["${{ secrets.TF_DEV_ALLOWED_EMAIL }}"]'
@@ -36,6 +37,7 @@ jobs:
         run: |
           terraform -chdir=envs/dev apply -auto-approve \
             -var "cloudflare_account_id=${{ secrets.TF_DEV_ACCOUNT_ID }}" \
+            -var "cloudflare_api_token=${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             -var "project_slug=myflix" \
             -var "access_domain=${{ secrets.TF_DEV_ACCESS_DOMAIN }}" \
             -var 'allowed_emails=["${{ secrets.TF_DEV_ALLOWED_EMAIL }}"]'
