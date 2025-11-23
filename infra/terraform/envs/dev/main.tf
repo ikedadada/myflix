@@ -46,12 +46,6 @@ module "d1" {
   database_name = "${var.project_slug}-${local.environment}-db"
 }
 
-module "kv" {
-  source        = "../../modules/cloudflare_kv"
-  account_id    = var.cloudflare_account_id
-  namespace_key = "${var.project_slug}-${local.environment}-session"
-}
-
 module "access" {
   source        = "../../modules/cloudflare_access"
   account_id    = var.cloudflare_account_id

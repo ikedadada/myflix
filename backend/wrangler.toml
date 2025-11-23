@@ -14,10 +14,6 @@ database_id = "00000000-0000-0000-0000-000000000000"
 binding = "MEDIA_BUCKET"
 bucket_name = "myflix-dev-media"
 
-[[env.dev.kv_namespaces]]
-binding = "SESSION_KV"
-id = "00000000000000000000000000000000"
-
 [env.prod]
 vars = { ACCESS_JWKS_URL = "https://example.cloudflareaccess.com/cdn-cgi/access/certs", ACCESS_JWT_AUD = "myflix-prod" }
 
@@ -29,7 +25,3 @@ database_id = "11111111-1111-1111-1111-111111111111"
 [[env.prod.r2_buckets]]
 binding = "MEDIA_BUCKET"
 bucket_name = "myflix-prod-media"
-
-[[env.prod.kv_namespaces]]
-binding = "SESSION_KV"
-id = "11111111111111111111111111111111"
