@@ -22,11 +22,9 @@ resource "cloudflare_workers_script" "this" {
   account_id  = var.account_id
   script_name = var.script_name
   content = <<EOT
-export default {
-  async fetch(request, env, ctx) {
-    return new Response('deploy backend artifact via wrangler');
-  }
-};
+addEventListener('fetch', (event) => {
+  event.respondWith(new Response('deploy backend artifact via wrangler'));
+});
 EOT
 }
 
