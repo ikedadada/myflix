@@ -18,10 +18,6 @@ variable "r2_binding_name" {
   type = string
 }
 
-variable "kv_binding_name" {
-  type = string
-}
-
 resource "cloudflare_workers_script" "this" {
   name    = var.script_name
   content = <<EOT

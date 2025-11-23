@@ -59,10 +59,6 @@ infra/
         main.tf
         variables.tf
         outputs.tf
-      cloudflare_kv/
-        main.tf
-        variables.tf
-        outputs.tf
       cloudflare_access/
         main.tf
         variables.tf
@@ -88,7 +84,6 @@ Cloudflare Pages プロジェクト
 Cloudflare Workers サービス（API 用）  
 Cloudflare R2 バケット（動画オブジェクト保管用）  
 Cloudflare D1 データベース（メタデータ用）  
-Cloudflare KV 名前空間（軽量データ用）  
 Cloudflare Access アプリケーションとポリシー  
 DNS レコード（A / CNAME / TXT 等）
 
@@ -118,7 +113,6 @@ Workers には次のような設定を行う。
 Bindings  
 R2 バケットバインディング（動画オブジェクト用）  
 D1 データベースバインディング（メタデータ用）  
-KV 名前空間バインディング（軽量データ用）  
 環境変数（LLM API キーなど）
 
 Routing  
@@ -150,17 +144,7 @@ Terraform 側では D1 データベースリソースと接続用バインディ
 
 dev 環境の D1 は破壊的変更が入りうるため、再作成しやすいように設計する。例えば、Terraform から D1 を削除して再作成し、マイグレーションを打ち直す手順を整備する。
 
-## 9. Cloudflare KV
-
-Cloudflare KV はセッションに類する軽量情報やキャッシュ情報などの保存に利用する。ただし、認証セッション自体は Cloudflare Access が管理するため、アプリケーション側でセッション管理を行う必要はない。
-
-利用例としては、再生位置の一時的なキャッシュ、UI 上のちょっとした設定情報、LLM 応答のキャッシュなどがあり得る。
-
-dev 及び prod 環境でそれぞれ独立した KV 名前空間を用意する。名前空間名には環境識別子を含める。
-
-Terraform では KV 名前空間の作成と Workers へのバインディングを管理する。
-
-## 10. Cloudflare Access（Zero Trust）
+## 9. Cloudflare Access（Zero Trust）
 
 認証は Cloudflare Zero Trust Access を利用する。  
 アプリケーションにアクセスする前段で Cloudflare Access が外部 IdP と連携してユーザーを認証し、認証済みユーザーに対して署名付き JWT を発行する。
@@ -176,7 +160,7 @@ Access ポリシー（許可するメールドメイン、グループなど）
 
 dev 環境では開発者のアカウントを許可するポリシーを設定し、prod 環境では利用者向けのポリシーを設定する。dev 環境を緩めにしすぎると意図しないアクセスが発生しうるため、最低限のアクセス制御は維持する。
 
-## 11. DNS 設定
+## 10. DNS 設定
 
 DNS については、任意のカスタムドメインを利用する前提で設計する。例として myflix.example.com を prod 用、myflix-dev.example.com を dev 用といった構成を取る。
 
@@ -188,7 +172,7 @@ dev / prod のサブドメインを分離し、誤って prod に対して開発
 
 DNS 管理も Cloudflare 上で完結させ、外部 DNS プロバイダを利用しない構成を基本とする。
 
-## 12. CI / CD とデプロイフロー
+## 11. CI / CD とデプロイフロー
 
 CI / CD の詳細はプロジェクト全体の計画で扱うが、インフラ視点では次のようなフローを想定する。
 
@@ -200,19 +184,19 @@ CI / CD の詳細はプロジェクト全体の計画で扱うが、インフラ
 
 個人開発であれば手動で Terraform コマンドと wrangler コマンドを実行してもよいが、将来的な自動化を見据えて構成を分離しておく。
 
-## 13. ローカル開発との関係
+## 12. ローカル開発との関係
 
-本計画では local 専用インフラリソースを持たない。開発者はローカルマシンから wrangler dev と Vite 開発サーバを利用して開発を行うが、その際に利用される R2, D1, KV, Access, DNS などのインフラリソースはすべて dev 環境のものとなる。
+本計画では local 専用インフラリソースを持たない。開発者はローカルマシンから wrangler dev と Vite 開発サーバを利用して開発を行うが、その際に利用される R2, D1, Access, DNS などのインフラリソースはすべて dev 環境のものとなる。
 
 local で minio やローカル DB を立てて Cloudflare サービスを模倣する構成は、現時点では採用しない。必要になった場合は、別の計画として追加検討する。
 
-## 14. 監視とログ
+## 13. 監視とログ
 
 初期段階では、Cloudflare が提供するログおよびアナリティクス機能を利用してアクセス状況やエラー状況を確認する。Workers ログや R2 アクセスログなどが対象となる。
 
 本格的な監視やアラート機能が必要になった場合は、外部監視サービスとの連携や Cloudflare のログ転送機能の利用を検討する。その場合も、Terraform から可能な範囲で設定を管理する。
 
-## 15. セキュリティと運用
+## 14. セキュリティと運用
 
 インフラセキュリティの観点から、次の方針を採用する。
 

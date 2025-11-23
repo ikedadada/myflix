@@ -31,7 +31,6 @@ module "workers" {
   routes             = var.worker_routes
   d1_binding_name    = "DB"
   r2_binding_name    = "MEDIA_BUCKET"
-  kv_binding_name    = "SESSION_KV"
 }
 
 module "r2" {
