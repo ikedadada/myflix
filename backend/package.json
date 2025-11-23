@@ -6,6 +6,8 @@
     "dev": "wrangler dev src/presentation/http/server.ts --persist-to=.wrangler",
     "build": "wrangler deploy --dry-run --outdir ./dist",
     "deploy": "wrangler deploy",
+    "migrate:local": "wrangler d1 migrations apply myflix-dev-db --local",
+    "migrate:dev": "wrangler d1 migrations apply myflix-dev-db --env dev",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "biome lint",
