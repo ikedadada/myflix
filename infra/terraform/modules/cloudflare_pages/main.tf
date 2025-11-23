@@ -23,10 +23,3 @@ resource "cloudflare_pages_project" "this" {
 output "production_domain" {
   value = cloudflare_pages_project.this.subdomain
 }
-terraform {
-  required_providers {
-    cloudflare = {
-      source = "cloudflare/cloudflare"
-    }
-  }
-}
