@@ -1,3 +1,7 @@
 {
-  "terraform.languageServer.terraformExecPath": "/usr/local/bin/terraform"
+  "terraform.languageServer.terraformExecPath": "/home/linuxbrew/.linuxbrew/bin/terraform",
+  "terraform.languageServer.rootModules": [
+    "infra/terraform/envs/dev",
+    "infra/terraform/envs/prod"
+  ]
 }
