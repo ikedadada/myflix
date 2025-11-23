@@ -1,2 +1,4 @@
 terraform/.terraform
 terraform/**/*.tfstate*
+terraform/envs/dev/dev.tfvars
+terraform/envs/prod/prod.tfvars
