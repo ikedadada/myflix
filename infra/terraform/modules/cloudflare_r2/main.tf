@@ -14,3 +14,11 @@ resource "cloudflare_r2_bucket" "this" {
 output "bucket_name" {
   value = cloudflare_r2_bucket.this.name
 }
+
+terraform {
+  required_providers {
+    cloudflare = {
+      source = "cloudflare/cloudflare"
+    }
+  }
+}

@@ -33,3 +33,11 @@ EOT
 output "routes" {
   value = var.routes
 }
+
+terraform {
+  required_providers {
+    cloudflare = {
+      source = "cloudflare/cloudflare"
+    }
+  }
+}
