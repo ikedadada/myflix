@@ -1,0 +1,20 @@
+name = "myflix-backend"
+main = "src/presentation/http/server.ts"
+compatibility_date = "2024-06-15"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "myflix-dev-db"
+database_id = "00000000-0000-0000-0000-000000000000"
+
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "myflix-dev-media"
+
+[[kv_namespaces]]
+binding = "SESSION_KV"
+id = "00000000000000000000000000000000"
+
+[vars]
+ACCESS_JWKS_URL = "https://example.cloudflareaccess.com/cdn-cgi/access/certs"
+ACCESS_JWT_AUD = "myflix-dev"

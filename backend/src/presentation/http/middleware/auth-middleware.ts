@@ -1,0 +1,25 @@
+import type { MiddlewareHandler } from 'hono';
+import type { HonoEnv } from '../hono-env';
+import { AccessAuthProvider } from '@/infrastructure/external/auth-provider-impl';
+
+export const createAuthMiddleware = (
+  factory: (env: HonoEnv['Bindings']) => AccessAuthProvider
+): MiddlewareHandler<HonoEnv> => {
+  let provider: AccessAuthProvider | null = null;
+  return async (c, next) => {
+    const token = c.req.header('cf-access-jwt-assertion');
+    if (!token) {
+      return c.json({ message: 'Missing Access token' }, 401);
+    }
+    try {
+      if (!provider) {
+        provider = factory(c.env);
+      }
+      c.var.authContext = await provider.verify(token);
+      await next();
+    } catch (error) {
+      console.error('Auth middleware error', error);
+      return c.json({ message: 'Unauthorized' }, 401);
+    }
+  };
+};

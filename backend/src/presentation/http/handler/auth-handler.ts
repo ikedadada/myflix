@@ -1,0 +1,16 @@
+import type { Context } from 'hono';
+import type { HonoEnv } from '../hono-env';
+import { AuthService } from '@/application_service/auth-service';
+
+export class AuthHandler {
+  constructor(private readonly authService: AuthService) {}
+
+  me = async (c: Context<HonoEnv>) => {
+    const authContext = c.var.authContext;
+    if (!authContext) {
+      return c.json({ message: 'Unauthorized' }, 401);
+    }
+    const profile = await this.authService.resolveUser(authContext);
+    return c.json(profile);
+  };
+}
