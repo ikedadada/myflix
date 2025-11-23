@@ -9,6 +9,12 @@ variable "database_name" {
 resource "cloudflare_d1_database" "this" {
   account_id = var.account_id
   name       = var.database_name
+
+  # Explicitly mirror Cloudflare's default replication mode so provider
+  # doesn't try to send null and trigger 400 errors.
+  read_replication = {
+    mode = "disabled"
+  }
 }
 
 output "database_id" {
