@@ -14,13 +14,13 @@ This repository contains the MYFLIX backend (Cloudflare Workers + Hono), fronten
 1. Install toolchains via [mise](https://mise.jdx.dev/): `mise use -C backend`, `mise use -C frontend`.
 2. Install package dependencies with `npm install` inside `backend/` and `frontend/`.
 3. Configure environment files:
-   - Backend: copy `backend/.dev.vars.example` to `.dev.vars` and update `ACCESS_JWKS_URL` / `ACCESS_JWT_AUD`. Run `npm run migrate:local` to apply D1 migrations when using `wrangler dev`.
+   - Backend: copy `backend/.dev.vars.example` to `.dev.vars` and update `ACCESS_JWKS_URL` / `ACCESS_JWT_AUD`. Update `backend/wrangler.toml` `env.dev` bindings (D1/R2/KV) using the Terraform outputs for dev. Run `npm run migrate:local` to apply D1 migrations when using `wrangler dev`.
    - Frontend: copy `frontend/.env.example` to `.env.local` (or `.env`) and update `VITE_API_BASE_URL`.
 4. Run local services:
    - Backend: `npm run dev` (wrangler) exposing Cloudflare bindings defined in `backend/wrangler.toml`. Run `npx wrangler d1 migrations apply myflix-dev-db --local` before starting to create the schema.
    - Frontend: `npm run dev` (Vite) and configure `VITE_API_BASE_URL` to point at the dev Worker route (e.g., `http://127.0.0.1:8787`). The SPA now reads `/videos`, `/uploads`, and `/settings` endpoints during development.
 5. Execute automated checks before committing:
-   - Backend: `npm run lint`, `npm run test`, `npm run build`.
+- Backend: `npm run lint`, `npm run test`, `npm run build`, `npm run migrate:dev` (before deploying to dev/prod).
    - Frontend: `npm run lint`, `npm run test`, `npm run build`.
 6. For infrastructure updates, run `terraform plan -chdir=infra/terraform/envs/dev` and include the plan summary in pull requests.
 
