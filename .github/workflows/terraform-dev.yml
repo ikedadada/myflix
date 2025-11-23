@@ -21,11 +21,11 @@ jobs:
           terraform_version: 1.6.6
 
       - name: Terraform Init
-        run: terraform init envs/dev
+        run: terraform -chdir=envs/dev init
 
       - name: Terraform Plan
         run: |
-          terraform plan -chdir=envs/dev \
+          terraform -chdir=envs/dev plan \
             -var "cloudflare_account_id=${{ secrets.TF_DEV_ACCOUNT_ID }}" \
             -var "cloudflare_zone_id=${{ secrets.TF_DEV_ZONE_ID }}" \
             -var "project_slug=myflix" \
@@ -37,7 +37,7 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: |
-          terraform apply -chdir=envs/dev -auto-approve \
+          terraform -chdir=envs/dev apply -auto-approve \
             -var "cloudflare_account_id=${{ secrets.TF_DEV_ACCOUNT_ID }}" \
             -var "cloudflare_zone_id=${{ secrets.TF_DEV_ZONE_ID }}" \
             -var "project_slug=myflix" \
