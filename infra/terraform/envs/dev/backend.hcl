@@ -1,5 +1,5 @@
-bucket                      = "myflix-dev-state"
-key                         = "terraform/dev/terraform.tfstate"
+bucket                      = "myflix-state"
+key                         = "dev/terraform.tfstate"
 region                      = "auto"
 endpoint                    = "https://<your-account-id>.r2.cloudflarestorage.com"
 skip_credentials_validation = true
