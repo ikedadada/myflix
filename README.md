@@ -29,4 +29,9 @@ This repository contains the MYFLIX backend (Cloudflare Workers + Hono), fronten
 - GitHub Actions (`.github/workflows/ci.yml`) runs lint and test jobs for backend and frontend on every push and pull request. Keep both toolchains green before pushing to avoid CI failures.
 - Deployment runbooks live in `docs/dev-runbook.md` and `docs/prod-runbook.md`. Follow them for dev soak tests and production releases.
 
+## GitHub Actions secrets
+
+- Terraform dev workflow (`terraform-dev.yml`): `CLOUDFLARE_API_TOKEN`, `TF_DEV_ACCOUNT_ID`, `R2_DEV_STATE_ACCESS_KEY`, `R2_DEV_STATE_SECRET_ACCESS_KEY`, `TF_DEV_ACCESS_DOMAIN`, `TF_DEV_ALLOWED_EMAIL`.
+- Backend/Pages deploy workflows should source any Access/JWKS URLs, audiences, and API base URLs from repository/environment secrets instead of committing values. Provide the names in workflow `env:` blocks and set them in the GitHub UI.
+
 Refer to `AGENTS.md` for contributor etiquette and to the plan documents for module-level expectations.
