@@ -1,8 +1,8 @@
 # TODO (MVP優先順)
 
 - [ ] アップロード〜視聴の基本フロー
-  - [ ] `/uploads` 後の動画登録APIを追加し、R2 objectKey を `videos` に紐づける
-  - [ ] 再生用URL発行エンドポイント（署名付きURL or 公開URL）を追加
+  - [x] `/uploads` 後の動画登録APIを追加し、R2 objectKey を `videos` に紐づける
+  - [x] 再生用URL発行エンドポイント（署名付きURL or 公開URL）を追加（現状は `/videos/:id/stream` でR2から取得）
   - [ ] `/videos/:id/progress` を再生フローに組み込み、クライアントから呼べる形にする
 
 - [ ] 認証と保護
