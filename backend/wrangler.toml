@@ -3,6 +3,7 @@ main = "src/presentation/http/server.ts"
 compatibility_date = "2024-06-15"
 
 [env.dev]
+name = "myflix-backend-dev"
 vars = { ACCESS_JWKS_URL = "https://example.cloudflareaccess.com/cdn-cgi/access/certs", ACCESS_JWT_AUD = "myflix-dev" }
 
 [[env.dev.d1_databases]]
@@ -16,6 +17,7 @@ binding = "MEDIA_BUCKET"
 bucket_name = "myflix-dev-media"
 
 [env.prod]
+name = "myflix-backend-prod"
 vars = { ACCESS_JWKS_URL = "https://example.cloudflareaccess.com/cdn-cgi/access/certs", ACCESS_JWT_AUD = "myflix-prod" }
 
 [[env.prod.d1_databases]]

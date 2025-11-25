@@ -28,7 +28,7 @@ module "pages" {
 module "workers" {
   source             = "../../modules/cloudflare_workers"
   account_id         = var.cloudflare_account_id
-  script_name        = "${var.project_slug}-${local.environment}"
+  script_name        = "${var.project_slug}-backend-${local.environment}"
   routes             = []
   d1_binding_name    = "DB"
   r2_binding_name    = "MEDIA_BUCKET"
