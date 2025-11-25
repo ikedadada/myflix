@@ -8,6 +8,7 @@ export interface VideoProps {
   description: string;
   durationSeconds: number;
   createdAt: Date;
+  objectKey: string;
 }
 
 export class Video {
@@ -39,5 +40,9 @@ export class Video {
 
   createdAt(): Date {
     return this.props.createdAt;
+  }
+
+  objectKey(): string {
+    return this.props.objectKey;
   }
 }

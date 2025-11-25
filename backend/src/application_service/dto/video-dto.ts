@@ -5,11 +5,13 @@ export interface VideoSummaryDto {
   title: string;
   description: string;
   durationSeconds: number;
+  objectKey: string;
 }
 
 export const toVideoSummaryDto = (video: Video): VideoSummaryDto => ({
   id: video.id().toString(),
   title: video.title(),
   description: video.description(),
-  durationSeconds: video.durationSeconds()
+  durationSeconds: video.durationSeconds(),
+  objectKey: video.objectKey()
 });

@@ -1,0 +1,1 @@
+ALTER TABLE videos ADD COLUMN object_key TEXT NOT NULL DEFAULT '';

@@ -10,6 +10,7 @@ interface VideoRow {
   description: string;
   duration_seconds: number;
   created_at: string;
+  object_key: string;
 }
 
 const mapRowToVideo = (row: VideoRow): Video =>
@@ -19,7 +20,8 @@ const mapRowToVideo = (row: VideoRow): Video =>
     title: row.title,
     description: row.description,
     durationSeconds: row.duration_seconds,
-    createdAt: new Date(row.created_at)
+    createdAt: new Date(row.created_at),
+    objectKey: row.object_key
   });
 
 export class D1VideoRepository implements VideoRepository {
@@ -28,7 +30,7 @@ export class D1VideoRepository implements VideoRepository {
   async findById(id: VideoId): Promise<Video | null> {
     const row = await this.db
       .prepare(
-        'SELECT id, owner_id, title, description, duration_seconds, created_at FROM videos WHERE id = ?1'
+        'SELECT id, owner_id, title, description, duration_seconds, created_at, object_key FROM videos WHERE id = ?1'
       )
       .bind(id.toString())
       .first<VideoRow>();
@@ -38,7 +40,7 @@ export class D1VideoRepository implements VideoRepository {
   async listByOwner(ownerId: UserId): Promise<Video[]> {
     const { results } = await this.db
       .prepare(
-        'SELECT id, owner_id, title, description, duration_seconds, created_at FROM videos WHERE owner_id = ?1 ORDER BY created_at DESC'
+        'SELECT id, owner_id, title, description, duration_seconds, created_at, object_key FROM videos WHERE owner_id = ?1 ORDER BY created_at DESC'
       )
       .bind(ownerId.toString())
       .all<VideoRow>();
@@ -48,7 +50,7 @@ export class D1VideoRepository implements VideoRepository {
   async save(video: Video): Promise<void> {
     await this.db
       .prepare(
-        'INSERT OR REPLACE INTO videos (id, owner_id, title, description, duration_seconds, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6)'
+        'INSERT OR REPLACE INTO videos (id, owner_id, title, description, duration_seconds, created_at, object_key) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)'
       )
       .bind(
         video.id().toString(),
@@ -56,7 +58,8 @@ export class D1VideoRepository implements VideoRepository {
         video.title(),
         video.description(),
         video.durationSeconds(),
-        video.createdAt().toISOString()
+        video.createdAt().toISOString(),
+        video.objectKey()
       )
       .run();
   }
