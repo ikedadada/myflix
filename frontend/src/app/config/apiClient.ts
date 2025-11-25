@@ -23,11 +23,17 @@ export const apiClient = async <T>(path: string, init?: RequestInit): Promise<T>
     ? { 'Content-Type': 'application/json', ...baseHeaders }
     : baseHeaders;
 
-  const response = await fetch(buildApiUrl(path), {
-    ...init,
-    headers,
-    credentials: 'include'
-  });
+  let response: Response;
+  try {
+    response = await fetch(buildApiUrl(path), {
+      ...init,
+      headers,
+      credentials: 'include'
+    });
+  } catch (error) {
+    // Network / CORS failure yields a TypeError; surface as ApiError with status 0.
+    throw new ApiError(0, error instanceof Error ? error.message : 'Network error');
+  }
 
   if (!response.ok) {
     throw new ApiError(response.status);
