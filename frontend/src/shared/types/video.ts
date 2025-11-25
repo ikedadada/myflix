@@ -3,4 +3,5 @@ export interface VideoSummary {
   title: string;
   description: string;
   durationSeconds: number;
+  objectKey: string;
 }

@@ -5,6 +5,7 @@ interface UploadSessionDto {
   id: string;
   status: string;
   createdAt: string;
+  objectKey: string;
 }
 
 export const useUploadSessions = () => {
@@ -18,9 +19,13 @@ export const useUploadSessions = () => {
   });
 
   const create = useMutation({
-    mutationFn: () =>
-      apiClient<{ id: string }>('/uploads', {
-        method: 'POST'
+    mutationFn: (file: File) =>
+      apiClient<{ id: string; objectKey: string; status: string }>('/uploads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': file.type || 'application/octet-stream'
+        },
+        body: file
       }),
     onSuccess: () => client.invalidateQueries({ queryKey: key })
   });

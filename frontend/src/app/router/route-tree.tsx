@@ -4,6 +4,7 @@ import { HomePage } from '@/pages/home/HomePage';
 import { LibraryPage } from '@/pages/library/LibraryPage';
 import { UploadPage } from '@/pages/upload/UploadPage';
 import { SettingsPage } from '@/pages/settings/SettingsPage';
+import { VideoDetailPage } from '@/pages/video-detail/VideoDetailPage';
 import { ErrorPage } from '@/pages/error/ErrorPage';
 import { NotFoundPage } from '@/pages/error/NotFoundPage';
 
@@ -33,6 +34,12 @@ const uploadRoute = createRoute({
   component: UploadPage
 });
 
+const videoDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'videos/$videoId',
+  component: VideoDetailPage
+});
+
 const settingsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'settings',
@@ -45,7 +52,14 @@ const errorRoute = createRoute({
   component: ErrorPage
 });
 
-const routeTree = rootRoute.addChildren([homeRoute, libraryRoute, uploadRoute, settingsRoute, errorRoute]);
+const routeTree = rootRoute.addChildren([
+  homeRoute,
+  libraryRoute,
+  uploadRoute,
+  videoDetailRoute,
+  settingsRoute,
+  errorRoute
+]);
 
 export const router = createRouter({
   routeTree,
