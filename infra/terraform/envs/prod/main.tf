@@ -20,7 +20,7 @@ locals {
 module "pages" {
   source                 = "../../modules/cloudflare_pages"
   account_id             = var.cloudflare_account_id
-  project_name           = "${var.project_slug}-${local.environment}"
+  project_name           = "${var.project_slug}-frontend-${local.environment}"
   production_branch      = var.pages_production_branch
   preview_branch_pattern = var.pages_preview_branch_pattern
 }
