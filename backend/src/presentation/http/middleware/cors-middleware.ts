@@ -1,11 +1,16 @@
 import type { MiddlewareHandler } from 'hono';
 import type { HonoEnv } from '../hono-env';
 
+const normalizeAllowed = (raw: string): string => {
+  const trimmed = raw.trim().replace(/\/+$/, '');
+  return trimmed.replace(/^https?:\/\//, '');
+};
+
 const parseOrigins = (raw: string | undefined): string[] => {
   if (!raw) return [];
   return raw
     .split(',')
-    .map((s) => s.trim())
+    .map(normalizeAllowed)
     .filter(Boolean);
 };
 
@@ -19,7 +24,12 @@ const matchesOrigin = (origin: string, allowed: string): boolean => {
       return false;
     }
   }
-  return origin === allowed;
+  try {
+    const url = new URL(origin);
+    return url.hostname === allowed;
+  } catch {
+    return false;
+  }
 };
 
 export const createCorsMiddleware = (): MiddlewareHandler<HonoEnv> => {
