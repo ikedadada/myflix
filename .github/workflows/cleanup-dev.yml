@@ -1,0 +1,77 @@
+name: Cleanup Dev Data
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cleanup-dev:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      PROJECT_SLUG: myflix
+      ENVIRONMENT: dev
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.DEV_ACCOUNT_ID }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      R2_BUCKET_NAME: myflix-dev-media
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.11.1
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies (wrangler)
+        run: npm ci
+
+      - name: Install tools
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Resolve D1 database info
+        id: resolve_d1
+        run: |
+          DATABASE_NAME="${PROJECT_SLUG}-${ENVIRONMENT}-db"
+          echo "DATABASE_NAME=${DATABASE_NAME}" >> "$GITHUB_ENV"
+          DATABASE_ID=$(curl -s -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/d1/database" \
+            | jq -r ".result[] | select(.name==\"${DATABASE_NAME}\") | .uuid")
+          if [ -z "$DATABASE_ID" ] || [ "$DATABASE_ID" = "null" ]; then
+            echo "Failed to resolve D1 database id for ${DATABASE_NAME}" >&2
+            exit 1
+          fi
+          echo "DATABASE_ID=${DATABASE_ID}" >> "$GITHUB_ENV"
+
+      - name: Prepare wrangler config
+        run: |
+          sed \
+            -e "s#REPLACE_WITH_DEV_D1_ID#${DATABASE_ID}#g" \
+            -e "s#REPLACE_WITH_DEV_D1_NAME#${DATABASE_NAME}#g" \
+            wrangler.toml > wrangler.ci.toml
+
+      - name: Wipe D1 tables (dev)
+        run: |
+          SQL=$(cat <<'EOF'
+          DELETE FROM playback_sessions;
+          DELETE FROM upload_sessions;
+          DELETE FROM settings;
+          DELETE FROM videos;
+          EOF
+          )
+          npx wrangler d1 execute "${DATABASE_NAME}" \
+            --env dev \
+            --config wrangler.ci.toml \
+            --remote \
+            --command "${SQL}"
+
+      - name: Wipe R2 bucket (dev)
+        run: |
+          npx wrangler r2 object list "${R2_BUCKET_NAME}" --config wrangler.ci.toml --json | \
+            jq -r '.[].key' | while read -r key; do
+              [ -z "$key" ] && continue
+              echo "Deleting ${key}"
+              npx wrangler r2 object delete "${R2_BUCKET_NAME}" "${key}" --config wrangler.ci.toml || true
+            done
