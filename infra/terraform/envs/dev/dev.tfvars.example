@@ -1,6 +1,0 @@
-cloudflare_account_id = "cf-account-id"
-project_slug          = "myflix"
-pages_production_branch = "main"
-pages_preview_branch_pattern = "dev/*"
-access_domain         = "myteam.cloudflareaccess.com"
-allowed_emails        = ["dev@example.com"]
