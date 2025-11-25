@@ -13,10 +13,12 @@ const isBinaryBody = (body: unknown): boolean =>
 
 export const apiClient = async <T>(path: string, init?: RequestInit): Promise<T> => {
   const baseHeaders: HeadersInit = { ...(init?.headers ?? {}) };
+  const hasBody = init?.body !== undefined;
   const shouldSetJson =
+    hasBody &&
     !baseHeaders['Content-Type'] &&
     !baseHeaders['content-type'] &&
-    (init?.body === undefined || (!isBinaryBody(init.body) && typeof init.body !== 'string'));
+    (!isBinaryBody(init.body) && typeof init.body !== 'string');
   const headers = shouldSetJson
     ? { 'Content-Type': 'application/json', ...baseHeaders }
     : baseHeaders;
