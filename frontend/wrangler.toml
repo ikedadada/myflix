@@ -1,4 +1,1 @@
-name = "myflix-frontend"
-account_id = "REPLACE_WITH_DEV_ACCOUNT_ID"
 pages_build_output_dir = "./dist"
-project_name = "myflix-frontend-dev"

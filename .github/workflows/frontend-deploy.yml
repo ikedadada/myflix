@@ -37,5 +37,4 @@ jobs:
 
       - name: Deploy to Cloudflare Pages (dev)
         run: |
-          sed -i "s/REPLACE_WITH_DEV_ACCOUNT_ID/${CLOUDFLARE_ACCOUNT_ID}/g" wrangler.toml
-          npx wrangler pages deploy dist --branch main
+          npx wrangler pages deploy dist --project-name "${PROJECT_NAME}" --branch main
