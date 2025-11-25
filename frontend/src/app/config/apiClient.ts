@@ -1,5 +1,13 @@
 import { buildApiUrl } from './env';
 
+export class ApiError extends Error {
+  status: number;
+  constructor(status: number, message?: string) {
+    super(message ?? `API error: ${status}`);
+    this.status = status;
+  }
+}
+
 const isBinaryBody = (body: unknown): boolean =>
   body instanceof FormData || body instanceof Blob || body instanceof ArrayBuffer;
 
@@ -19,7 +27,7 @@ export const apiClient = async <T>(path: string, init?: RequestInit): Promise<T>
   });
 
   if (!response.ok) {
-    throw new Error(`API error: ${response.status}`);
+    throw new ApiError(response.status);
   }
   const contentType = response.headers.get('Content-Type') ?? '';
   if (contentType.includes('application/json')) {
