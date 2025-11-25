@@ -24,7 +24,7 @@ jobs:
 
       - name: Prepare backend config
         run: |
-          sed "s#<your-account-id>#${{ secrets.TF_DEV_ACCOUNT_ID }}#g" \
+          sed "s#<your-account-id>#${{ secrets.DEV_ACCOUNT_ID }}#g" \
             envs/dev/backend.hcl > envs/dev/backend.auto.tfbackend
 
       - name: Terraform Init
@@ -35,18 +35,18 @@ jobs:
       - name: Terraform Plan
         run: |
           terraform -chdir=envs/dev plan \
-            -var "cloudflare_account_id=${{ secrets.TF_DEV_ACCOUNT_ID }}" \
+            -var "cloudflare_account_id=${{ secrets.DEV_ACCOUNT_ID }}" \
             -var "cloudflare_api_token=${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             -var "project_slug=myflix" \
-            -var "access_domain=${{ secrets.TF_DEV_ACCESS_DOMAIN }}" \
-            -var 'allowed_emails=["${{ secrets.TF_DEV_ALLOWED_EMAIL }}"]'
+            -var "access_domain=${{ secrets.DEV_ACCESS_DOMAIN }}" \
+            -var 'allowed_emails=["${{ secrets.DEV_ALLOWED_EMAIL }}"]'
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: |
           terraform -chdir=envs/dev apply -auto-approve \
-            -var "cloudflare_account_id=${{ secrets.TF_DEV_ACCOUNT_ID }}" \
+            -var "cloudflare_account_id=${{ secrets.DEV_ACCOUNT_ID }}" \
             -var "cloudflare_api_token=${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             -var "project_slug=myflix" \
-            -var "access_domain=${{ secrets.TF_DEV_ACCESS_DOMAIN }}" \
-            -var 'allowed_emails=["${{ secrets.TF_DEV_ALLOWED_EMAIL }}"]'
+            -var "access_domain=${{ secrets.DEV_ACCESS_DOMAIN }}" \
+            -var 'allowed_emails=["${{ secrets.DEV_ALLOWED_EMAIL }}"]'

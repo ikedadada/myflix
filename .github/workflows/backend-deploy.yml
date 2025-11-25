@@ -11,10 +11,10 @@ jobs:
       run:
         working-directory: backend
     env:
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.TF_DEV_ACCOUNT_ID }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.DEV_ACCOUNT_ID }}
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      ACCESS_JWKS_URL: ${{ secrets.ACCESS_JWKS_URL_DEV }}
-      ACCESS_JWT_AUD: ${{ secrets.ACCESS_JWT_AUD_DEV }}
+      ACCESS_JWKS_URL: "https://${{ secrets.DEV_ACCESS_DOMAIN }}/cdn-cgi/access/certs"
+      ACCESS_JWT_AUD: ${{ secrets.DEV_ACCESS_JWT_AUD }}
       PROJECT_SLUG: myflix
       ENVIRONMENT: dev
     steps:
