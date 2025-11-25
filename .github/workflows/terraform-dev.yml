@@ -3,6 +3,10 @@ name: Terraform Dev Deploy
 on:
   push:
     branches: [main]
+    paths:
+      - 'infra/**'
+      - '.github/workflows/terraform-dev.yml'
+  workflow_dispatch:
 
 jobs:
   terraform-dev:
