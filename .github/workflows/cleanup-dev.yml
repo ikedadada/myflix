@@ -69,9 +69,9 @@ jobs:
 
       - name: Wipe R2 bucket (dev)
         run: |
-          npx wrangler r2 object list "${R2_BUCKET_NAME}" --config wrangler.ci.toml --json | \
+          npx wrangler r2 object list --bucket "${R2_BUCKET_NAME}" --config wrangler.ci.toml --json | \
             jq -r '.[].key' | while read -r key; do
               [ -z "$key" ] && continue
               echo "Deleting ${key}"
-              npx wrangler r2 object delete "${R2_BUCKET_NAME}" "${key}" --config wrangler.ci.toml || true
+              npx wrangler r2 object delete --bucket "${R2_BUCKET_NAME}" "${key}" --config wrangler.ci.toml || true
             done
