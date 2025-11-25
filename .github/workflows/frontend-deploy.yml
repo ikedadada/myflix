@@ -35,13 +35,7 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Prepare wrangler config
-        run: |
-          sed "s/REPLACE_WITH_DEV_ACCOUNT_ID/${CLOUDFLARE_ACCOUNT_ID}/g" \
-            wrangler.toml > wrangler.ci.toml
-
       - name: Deploy to Cloudflare Pages (dev)
         run: |
-          npx wrangler pages deploy dist \
-            --config wrangler.ci.toml \
-            --branch main
+          sed -i "s/REPLACE_WITH_DEV_ACCOUNT_ID/${CLOUDFLARE_ACCOUNT_ID}/g" wrangler.toml
+          npx wrangler pages deploy dist --branch main
