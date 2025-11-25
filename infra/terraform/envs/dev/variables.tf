@@ -23,9 +23,14 @@ variable "pages_preview_branch_pattern" {
   default     = "feature/*"
 }
 
-variable "access_domain" {
+variable "backend_domain" {
   type        = string
-  description = "Access protected hostname"
+  description = "Backend hostname protected by Access (e.g., workers.dev)"
+}
+
+variable "frontend_domain" {
+  type        = string
+  description = "Frontend hostname protected by Access (e.g., pages.dev)"
 }
 
 variable "allowed_emails" {

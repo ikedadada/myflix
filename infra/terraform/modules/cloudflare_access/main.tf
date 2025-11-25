@@ -6,8 +6,16 @@ variable "app_name" {
   type = string
 }
 
-variable "domain" {
-  type = string
+variable "destinations" {
+  type = list(object({
+    type = string
+    uri  = string
+  }))
+
+  validation {
+    condition     = length(var.destinations) > 0
+    error_message = "At least one destination must be provided for Access."
+  }
 }
 
 variable "allowed_emails" {
@@ -35,9 +43,14 @@ resource "cloudflare_zero_trust_access_policy" "allow_emails" {
 resource "cloudflare_zero_trust_access_application" "this" {
   account_id = var.account_id
   name       = var.app_name
-  domain     = var.domain
-  type = "self_hosted"
+  type       = "self_hosted"
   session_duration = "6h"
+  destinations = [
+    for d in var.destinations : {
+      type = d.type
+      uri  = d.uri
+    }
+  ]
   policies = [ 
     {
       id = cloudflare_zero_trust_access_policy.allow_emails.id,
