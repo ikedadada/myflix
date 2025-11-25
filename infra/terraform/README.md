@@ -17,20 +17,20 @@ The Terraform layout mirrors the project plan: `envs/` contain dev and prod entr
    ```bash
    cd infra/terraform
    ```
-2. dev用の tfvars と backend を作成（例）
+2. dev用の tfvars/backend/.envrc を作成（例）
    ```bash
    cp envs/dev/dev.tfvars.example envs/dev/dev.tfvars
    cp envs/dev/backend.local.hcl.example envs/dev/backend.local.hcl
-   # dev.tfvars を開いて以下を実環境値に置き換える:
-   # - cloudflare_account_id
-   # - access_domain
-   # - allowed_emails
-   # 必要なら project_slug も変更
-   # backend.local.hcl を開いて <your-account-id> を置き換える
+   cp envs/dev/.envrc.example envs/dev/.envrc
+   # dev.tfvars: cloudflare_account_id/access_domain/allowed_emails を実値にする（project_slugは必要に応じて）
+   # backend.local.hcl: <your-account-id> を実値にする
+   # .envrc: TF_VAR_cloudflare_api_token などの秘密値を設定し、`direnv allow` する
    ```
-3. Cloudflare API トークンを環境変数で設定
+3. direnv を有効化
    ```bash
-   export TF_VAR_cloudflare_api_token="<your-token>"
+   cd envs/dev
+   direnv allow
+   cd ../../
    ```
 4. init（ローカル専用 backend を使用）
    ```bash
