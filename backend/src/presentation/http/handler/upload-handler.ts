@@ -1,8 +1,6 @@
 import type { Context } from 'hono';
 import type { HonoEnv } from '../hono-env';
 import { UploadService } from '@/application_service/upload-service';
-import { UploadSession } from '@/domain/model/entity/upload-session';
-import { UploadSessionId } from '@/domain/model/value_object/upload-session-id';
 
 export class UploadHandler {
   constructor(private readonly uploadService: UploadService) {}
@@ -17,7 +15,8 @@ export class UploadHandler {
       sessions.map((session) => ({
         id: session.id().toString(),
         status: session.status(),
-        createdAt: session.createdAt().toISOString()
+        createdAt: session.createdAt().toISOString(),
+        objectKey: session.objectKey()
       }))
     );
   };
@@ -27,14 +26,22 @@ export class UploadHandler {
     if (!authContext) {
       return c.json({ message: 'Unauthorized' }, 401);
     }
-    const id = crypto.randomUUID();
-    const session = new UploadSession({
-      id: new UploadSessionId(id),
+    const contentType = c.req.header('content-type') ?? undefined;
+    const body = await c.req.arrayBuffer();
+    if (!body || body.byteLength === 0) {
+      return c.json({ message: 'Empty upload payload' }, 400);
+    }
+
+    const { session, objectKey } = await this.uploadService.uploadObject({
       ownerId: authContext.userId,
-      status: 'pending',
-      createdAt: new Date()
+      data: body,
+      contentType
     });
-    await this.uploadService.start(session);
-    return c.json({ id });
+
+    return c.json({
+      id: session.id().toString(),
+      status: session.status(),
+      objectKey
+    });
   };
 }

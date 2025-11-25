@@ -6,4 +6,5 @@ export interface UploadSessionRepository {
   findById(id: UploadSessionId): Promise<UploadSession | null>;
   listByOwner(ownerId: UserId): Promise<UploadSession[]>;
   save(session: UploadSession): Promise<void>;
+  updateStatus(session: UploadSession, status: UploadSession['status']): Promise<UploadSession>;
 }

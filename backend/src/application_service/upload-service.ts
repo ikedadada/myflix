@@ -4,7 +4,10 @@ import { UserId } from '@/domain/model/value_object/user-id';
 import { UploadSessionRepository } from '@/domain/repository/upload-session-repository';
 
 export class UploadService {
-  constructor(private readonly repository: UploadSessionRepository) {}
+  constructor(
+    private readonly repository: UploadSessionRepository,
+    private readonly bucket: R2Bucket
+  ) {}
 
   async list(ownerId: UserId): Promise<UploadSession[]> {
     return this.repository.listByOwner(ownerId);
@@ -16,5 +19,29 @@ export class UploadService {
 
   async findById(id: UploadSessionId): Promise<UploadSession | null> {
     return this.repository.findById(id);
+  }
+
+  async uploadObject(params: {
+    ownerId: UserId;
+    data: ArrayBuffer;
+    contentType?: string;
+  }): Promise<{ session: UploadSession; objectKey: string }> {
+    const id = new UploadSessionId(crypto.randomUUID());
+    const objectKey = `uploads/${params.ownerId.toString()}/${id.toString()}`;
+
+    await this.bucket.put(objectKey, params.data, {
+      httpMetadata: params.contentType ? { contentType: params.contentType } : undefined
+    });
+
+    const session = new UploadSession({
+      id,
+      ownerId: params.ownerId,
+      status: 'completed',
+      createdAt: new Date(),
+      objectKey
+    });
+
+    await this.repository.save(session);
+    return { session, objectKey };
   }
 }

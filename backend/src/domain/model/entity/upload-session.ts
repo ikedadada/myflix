@@ -6,6 +6,7 @@ export interface UploadSessionProps {
   ownerId: UserId;
   status: 'pending' | 'processing' | 'completed' | 'failed';
   createdAt: Date;
+  objectKey: string;
 }
 
 export class UploadSession {
@@ -25,6 +26,10 @@ export class UploadSession {
 
   createdAt(): Date {
     return this.props.createdAt;
+  }
+
+  objectKey(): string {
+    return this.props.objectKey;
   }
 
   mark(status: UploadSessionProps['status']): UploadSession {

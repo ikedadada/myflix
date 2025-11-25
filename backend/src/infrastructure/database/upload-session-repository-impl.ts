@@ -8,6 +8,7 @@ interface UploadSessionRow {
   owner_id: string;
   status: string;
   created_at: string;
+  object_key: string | null;
 }
 
 const mapRowToUploadSession = (row: UploadSessionRow): UploadSession =>
@@ -15,7 +16,8 @@ const mapRowToUploadSession = (row: UploadSessionRow): UploadSession =>
     id: new UploadSessionId(row.id),
     ownerId: new UserId(row.owner_id),
     status: row.status as UploadSession['status'],
-    createdAt: new Date(row.created_at)
+    createdAt: new Date(row.created_at),
+    objectKey: row.object_key ?? ''
   });
 
 export class D1UploadSessionRepository implements UploadSessionRepository {
@@ -23,7 +25,9 @@ export class D1UploadSessionRepository implements UploadSessionRepository {
 
   async findById(id: UploadSessionId): Promise<UploadSession | null> {
     const row = await this.db
-      .prepare('SELECT id, owner_id, status, created_at FROM upload_sessions WHERE id = ?1')
+      .prepare(
+        'SELECT id, owner_id, status, created_at, object_key FROM upload_sessions WHERE id = ?1'
+      )
       .bind(id.toString())
       .first<UploadSessionRow>();
     return row ? mapRowToUploadSession(row) : null;
@@ -32,7 +36,7 @@ export class D1UploadSessionRepository implements UploadSessionRepository {
   async listByOwner(ownerId: UserId): Promise<UploadSession[]> {
     const { results } = await this.db
       .prepare(
-        'SELECT id, owner_id, status, created_at FROM upload_sessions WHERE owner_id = ?1 ORDER BY created_at DESC'
+        'SELECT id, owner_id, status, created_at, object_key FROM upload_sessions WHERE owner_id = ?1 ORDER BY created_at DESC'
       )
       .bind(ownerId.toString())
       .all<UploadSessionRow>();
@@ -42,14 +46,21 @@ export class D1UploadSessionRepository implements UploadSessionRepository {
   async save(session: UploadSession): Promise<void> {
     await this.db
       .prepare(
-        'INSERT OR REPLACE INTO upload_sessions (id, owner_id, status, created_at) VALUES (?1, ?2, ?3, ?4)'
+        'INSERT OR REPLACE INTO upload_sessions (id, owner_id, status, created_at, object_key) VALUES (?1, ?2, ?3, ?4, ?5)'
       )
       .bind(
         session.id().toString(),
         session.ownerId().toString(),
         session.status(),
-        session.createdAt().toISOString()
+        session.createdAt().toISOString(),
+        session.objectKey()
       )
       .run();
+  }
+
+  async updateStatus(session: UploadSession, status: UploadSession['status']): Promise<UploadSession> {
+    const updated = session.mark(status);
+    await this.save(updated);
+    return updated;
   }
 }

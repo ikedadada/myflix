@@ -38,7 +38,7 @@ export const createContainer = (bindings: ServiceBindings): AppContainer => {
 
   const authService = new AuthService(userRepository);
   const videoService = new VideoService(videoRepository);
-  const uploadService = new UploadService(uploadRepository);
+  const uploadService = new UploadService(uploadRepository, bindings.MEDIA_BUCKET);
   const playbackService = new PlaybackService(playbackRepository);
   const metadataService = new MetadataService(videoService, playbackService);
   const settingsService = new SettingsService(settingsRepository);
