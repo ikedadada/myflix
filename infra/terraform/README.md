@@ -2,6 +2,13 @@
 
 The Terraform layout mirrors the project plan: `envs/` contain dev and prod entrypoints while `modules/` keep reusable resource definitions.
 
+## 運用ポリシー（backend指定/CI・ローカル/管理方針）
+
+- state backend: R2 (S3互換) を使用。`envs/*/backend.hcl` はテンプレートなので実値に置換してから使う。`backend.hcl` を直接書き換える場合はコミットしない（ローカル専用設定にする）。
+- CI/CD: GitHub Actions 上で `terraform plan` を実行し、state も同じ R2 backend を利用する。CI は `apply` しない方針（レビュー後に手動 apply するか、別ジョブで明示的に apply する）。
+- ローカル: 開発者は `plan` を実行して差分を確認する。`apply` は基本禁止（必要なら事前合意）。Cloudflare API Token や Account ID は環境変数/tfvars で渡し、Git には含めない。
+- backend指定の分離: ローカル/CI とも `-backend-config=backend.hcl` を指定して同一 backend を使う。別 backend を使いたい場合は `backend.local.hcl` を自作し、`.gitignore` に追加してローカルのみで使用する。
+
 ## ローカル実行手順（dev）
 
 前提: Terraform 1.6+、Cloudflare API Token（Pages/Workers/R2/D1/Access権限付き）、Cloudflare Account ID を手元で参照できること。
