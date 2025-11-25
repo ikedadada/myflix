@@ -42,7 +42,8 @@ jobs:
             -var "cloudflare_account_id=${{ secrets.DEV_ACCOUNT_ID }}" \
             -var "cloudflare_api_token=${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             -var "project_slug=myflix" \
-            -var "access_domain=${{ secrets.DEV_ACCESS_DOMAIN }}" \
+            -var "backend_domain=${{ secrets.DEV_BACKEND_DOMAIN }}" \
+            -var "frontend_domain=${{ secrets.DEV_FRONTEND_DOMAIN }}" \
             -var 'allowed_emails=["${{ secrets.DEV_ALLOWED_EMAIL }}"]'
 
       - name: Terraform Apply
@@ -52,5 +53,6 @@ jobs:
             -var "cloudflare_account_id=${{ secrets.DEV_ACCOUNT_ID }}" \
             -var "cloudflare_api_token=${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             -var "project_slug=myflix" \
-            -var "access_domain=${{ secrets.DEV_ACCESS_DOMAIN }}" \
+            -var "backend_domain=${{ secrets.DEV_BACKEND_DOMAIN }}" \
+            -var "frontend_domain=${{ secrets.DEV_FRONTEND_DOMAIN }}" \
             -var 'allowed_emails=["${{ secrets.DEV_ALLOWED_EMAIL }}"]'

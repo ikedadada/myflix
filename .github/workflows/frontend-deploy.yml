@@ -19,8 +19,6 @@ jobs:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       PROJECT_NAME: myflix-frontend-dev
       VITE_API_BASE_URL: https://myflix-backend-dev.koichiikeda-0111.workers.dev
-      VITE_ACCESS_DOMAIN: ${{ secrets.DEV_ACCESS_DOMAIN }}
-      VITE_ACCESS_JWT_AUD: ${{ secrets.DEV_ACCESS_JWT_AUD }}
     steps:
       - uses: actions/checkout@v4
 
