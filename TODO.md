@@ -22,3 +22,6 @@
   - [ ] 最低限のE2E（認証→アップロード→動画登録→一覧→再生URL取得）を追加しCIに組み込む
 
 - [x] Deployment playbooks in `docs/` (dev/prod runbooks, rollback steps) are done.
+
+## ブロッカー/最優先対応
+- [ ] フロントのアップロードAPIでCORSエラーが発生（Pages→Workers間のPOST）。Access/CORS設定を再確認し、プリフライトを通す or シンプルリクエスト化するなどで解消する。
