@@ -8,6 +8,8 @@ export const buildApiUrl = (path: string): string => new URL(path, env.apiBaseUr
 
 export const buildAccessLoginUrl = (redirectUrl: string): string | null => {
   if (!env.accessDomain || !env.accessAud) return null;
-  const encoded = encodeURIComponent(redirectUrl);
+  const callback = new URL('/auth/callback', env.apiBaseUrl);
+  callback.searchParams.set('next', redirectUrl);
+  const encoded = encodeURIComponent(callback.toString());
   return `https://${env.accessDomain}/cdn-cgi/access/login/${env.accessAud}?redirect_url=${encoded}`;
 };

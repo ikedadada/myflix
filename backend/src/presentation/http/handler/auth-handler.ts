@@ -13,4 +13,9 @@ export class AuthHandler {
     const profile = await this.authService.resolveUser(authContext);
     return c.json(profile);
   };
+
+  callback = async (c: Context<HonoEnv>) => {
+    const next = c.req.query('next') ?? '/';
+    return c.redirect(next, 302);
+  };
 }
