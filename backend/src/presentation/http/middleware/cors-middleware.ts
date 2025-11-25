@@ -14,7 +14,7 @@ const matchesOrigin = (origin: string, allowed: string): boolean => {
   if (allowed.startsWith('*.')) {
     try {
       const url = new URL(origin);
-      return url.hostname.endsWith(allowed.slice(1));
+      return url.hostname === allowed.slice(2) || url.hostname.endsWith(allowed.slice(1));
     } catch {
       return false;
     }
