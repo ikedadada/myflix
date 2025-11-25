@@ -9,14 +9,29 @@ const parseOrigins = (raw: string | undefined): string[] => {
     .filter(Boolean);
 };
 
+const matchesOrigin = (origin: string, allowed: string): boolean => {
+  if (allowed === '*') return true;
+  if (allowed.startsWith('*.')) {
+    try {
+      const url = new URL(origin);
+      return url.hostname.endsWith(allowed.slice(1));
+    } catch {
+      return false;
+    }
+  }
+  return origin === allowed;
+};
+
 export const createCorsMiddleware = (): MiddlewareHandler<HonoEnv> => {
   return async (c, next) => {
     const origins = parseOrigins(c.env.CORS_ALLOWED_ORIGINS);
     const requestOrigin = c.req.header('origin');
     const allowOrigin =
-      origins.includes('*') || (requestOrigin && origins.includes(requestOrigin))
-        ? requestOrigin ?? '*'
-        : null;
+      requestOrigin && origins.some((o) => matchesOrigin(requestOrigin, o))
+        ? requestOrigin
+        : origins.includes('*')
+          ? '*'
+          : null;
 
     const setHeaders = () => {
       if (allowOrigin) {
