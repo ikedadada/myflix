@@ -29,9 +29,6 @@ jobs:
       - name: Install dependencies (wrangler)
         run: npm ci
 
-      - name: Install jq (aws cli is preinstalled on GH runners)
-        run: sudo apt-get update && sudo apt-get install -y jq
-
       - name: Compute bucket name
         run: |
           echo "R2_BUCKET_NAME=${PROJECT_SLUG}-${ENVIRONMENT}-media" >> "$GITHUB_ENV"
