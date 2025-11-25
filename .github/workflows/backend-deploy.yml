@@ -3,6 +3,11 @@ name: Backend Deploy (dev)
 on:
   push:
     branches: [main]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-deploy.yml'
+      - '!backend/tmp/**'
+  workflow_dispatch:
 
 jobs:
   migrate-and-deploy:
