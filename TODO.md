@@ -3,7 +3,7 @@
 - [ ] アップロード〜視聴の基本フロー
   - [x] `/uploads` 後の動画登録APIを追加し、R2 objectKey を `videos` に紐づける
   - [x] 再生用URL発行エンドポイント（署名付きURL or 公開URL）を追加（現状は `/videos/:id/stream` でR2から取得）
-  - [ ] `/videos/:id/progress` を再生フローに組み込み、クライアントから呼べる形にする
+  - [ ] `/videos/:id/progress` を再生フローに組み込み、クライアントから呼べる形にする（再生位置はフロントMVP後に対応）
 
 - [ ] 認証と保護
   - [ ] Access設定のdev/prod整備（同じヘッダ運用で動作確認）
