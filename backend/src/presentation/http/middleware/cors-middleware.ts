@@ -42,6 +42,7 @@ export const createCorsMiddleware = (): MiddlewareHandler<HonoEnv> => {
       }
       c.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
       c.header('Access-Control-Allow-Headers', 'Content-Type, Cf-Access-Jwt-Assertion');
+      c.header('Access-Control-Allow-Credentials', 'true');
       c.header('Access-Control-Max-Age', '86400');
     };
 

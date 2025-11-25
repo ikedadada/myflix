@@ -23,7 +23,8 @@ export const apiClient = async <T>(path: string, init?: RequestInit): Promise<T>
 
   const response = await fetch(buildApiUrl(path), {
     ...init,
-    headers
+    headers,
+    credentials: 'include'
   });
 
   if (!response.ok) {
