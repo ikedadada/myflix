@@ -27,7 +27,9 @@ export const createCorsMiddleware = (): MiddlewareHandler<HonoEnv> => {
     const origins = parseOrigins(c.env.CORS_ALLOWED_ORIGINS);
     const requestOrigin = c.req.header('origin');
     const allowOrigin =
-      requestOrigin && origins.some((o) => matchesOrigin(requestOrigin, o))
+      requestOrigin &&
+      (origins.length === 0 ||
+        origins.some((o) => matchesOrigin(requestOrigin, o)))
         ? requestOrigin
         : origins.includes('*')
           ? '*'
