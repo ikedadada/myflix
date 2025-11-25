@@ -4,3 +4,4 @@ terraform/envs/dev/dev.tfvars
 terraform/envs/prod/prod.tfvars
 terraform/**/.terraform
 terraform/**/.terraform.lock.hcl
+terraform/envs/*/backend.local.hcl
