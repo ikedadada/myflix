@@ -51,8 +51,8 @@ module "access" {
   account_id    = var.cloudflare_account_id
   app_name      = "${var.project_slug}-${local.environment}"
   destinations  = [
-    { type = "self_hosted", uri = var.backend_domain },
-    { type = "self_hosted", uri = var.frontend_domain }
+    { type = "public", uri = var.backend_domain },
+    { type = "public", uri = var.frontend_domain }
   ]
   allowed_emails = var.allowed_emails
 }
