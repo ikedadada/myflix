@@ -1,6 +1,6 @@
+import type { AccessAuthProvider } from '@/infrastructure/external/auth-provider-impl';
 import type { MiddlewareHandler } from 'hono';
 import type { HonoEnv } from '../hono-env';
-import { AccessAuthProvider } from '@/infrastructure/external/auth-provider-impl';
 
 export const createAuthMiddleware = (
   factory: (env: HonoEnv['Bindings']) => AccessAuthProvider
@@ -15,7 +15,7 @@ export const createAuthMiddleware = (
       if (!provider) {
         provider = factory(c.env);
       }
-      c.var.authContext = await provider.verify(token);
+      c.set('authContext', await provider.verify(token));
       await next();
     } catch (error) {
       console.error('Auth middleware error', error);
