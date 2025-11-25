@@ -6,6 +6,8 @@ export interface ServiceBindings {
   SESSION_KV: KVNamespace;
   ACCESS_JWKS_URL: string;
   ACCESS_JWT_AUD: string;
+  CORS_ALLOWED_ORIGINS?: string;
+  ACCESS_LOGIN_URL?: string;
 }
 
 export interface ServiceVariables {

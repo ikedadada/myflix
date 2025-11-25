@@ -7,6 +7,7 @@ import { registerSettingsRoutes } from './routes/settings-routes';
 import { registerErrorHandler } from './middleware/error-handler';
 import { createLoggingMiddleware } from './middleware/logging-middleware';
 import { createAuthMiddleware } from './middleware/auth-middleware';
+import { createCorsMiddleware } from './middleware/cors-middleware';
 import type { HonoEnv } from './hono-env';
 import { createContainer, type AppContainer } from './container';
 import type { ServiceBindings } from '@/infrastructure/config/env';
@@ -25,6 +26,7 @@ const resolveContainer = (bindings: ServiceBindings): AppContainer => {
 };
 
 app.use('*', createLoggingMiddleware(logger));
+app.use('*', createCorsMiddleware());
 app.use('*', createAuthMiddleware((env) => new AccessAuthProvider(env.ACCESS_JWKS_URL, env.ACCESS_JWT_AUD)));
 
 registerAuthRoutes(app, resolveContainer);
