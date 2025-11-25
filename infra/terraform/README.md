@@ -20,7 +20,7 @@ The Terraform layout mirrors the project plan: `envs/` contain dev and prod entr
    ```
 2. dev用の backend/.envrc を作成（例）
    ```bash
-   cp envs/dev/backend.local.hcl.example envs/dev/backend.local.hcl
+   cp envs/dev/backend.hcl envs/dev/backend.local.hcl
    cp envs/dev/.envrc.example envs/dev/.envrc
    # backend.local.hcl: <your-account-id> を実値にする
    # .envrc: TF_VAR_* （cloudflare_api_token/account_id/access_domain/allowed_emails/project_slugなど）を設定し、`direnv allow` する
