@@ -15,6 +15,8 @@ provider "cloudflare" {
 
 locals {
   environment = "prod"
+  app_hostname = "${var.project_slug}-${local.environment}.${var.root_domain}"
+  backend_route_patterns = ["${local.app_hostname}/api/*"]
 }
 
 module "pages" {
@@ -25,11 +27,19 @@ module "pages" {
   preview_branch_pattern = var.pages_preview_branch_pattern
 }
 
+module "dns_app" {
+  source       = "../../modules/dns"
+  zone_id      = var.cloudflare_zone_id
+  hostname     = local.app_hostname
+  target_value = module.pages.production_domain
+}
+
 module "workers" {
   source             = "../../modules/cloudflare_workers"
   account_id         = var.cloudflare_account_id
   script_name        = "${var.project_slug}-backend-${local.environment}"
-  routes             = []
+  zone_id            = var.cloudflare_zone_id
+  routes             = local.backend_route_patterns
   d1_binding_name    = "DB"
   r2_binding_name    = "MEDIA_BUCKET"
 }
@@ -51,8 +61,7 @@ module "access" {
   account_id    = var.cloudflare_account_id
   app_name      = "${var.project_slug}-${local.environment}"
   destinations  = [
-    { type = "public", uri = var.backend_domain },
-    { type = "public", uri = var.frontend_domain }
+    { type = "public", uri = local.app_hostname }
   ]
   allowed_emails = var.allowed_emails
 }

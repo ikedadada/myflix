@@ -10,16 +10,17 @@ variable "target_value" {
   type = string
 }
 
-resource "cloudflare_record" "cname" {
+resource "cloudflare_dns_record" "cname" {
   zone_id = var.zone_id
   name    = var.hostname
   type    = "CNAME"
-  value   = var.target_value
+  content = var.target_value
   proxied = true
+  ttl     = 1
 }
 
 output "hostname" {
-  value = cloudflare_record.cname.hostname
+  value = cloudflare_dns_record.cname.name
 }
 
 terraform {

@@ -6,6 +6,10 @@ variable "script_name" {
   type = string
 }
 
+variable "zone_id" {
+  type = string
+}
+
 variable "routes" {
   type = list(string)
 }
@@ -18,14 +22,11 @@ variable "r2_binding_name" {
   type = string
 }
 
-resource "cloudflare_workers_script" "this" {
-  account_id  = var.account_id
-  script_name = var.script_name
-  content = <<EOT
-addEventListener('fetch', (event) => {
-  event.respondWith(new Response('deploy backend artifact via wrangler'));
-});
-EOT
+resource "cloudflare_workers_route" "this" {
+  for_each    = toset(var.routes)
+  zone_id     = var.zone_id
+  pattern     = each.value
+  script      = var.script_name
 }
 
 output "routes" {

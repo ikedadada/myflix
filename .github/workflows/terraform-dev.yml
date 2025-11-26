@@ -18,6 +18,7 @@ jobs:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{ secrets.R2_DEV_STATE_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_DEV_STATE_SECRET_ACCESS_KEY }}
+      WORKER_SCRIPT_NAME: myflix-backend-dev
     steps:
       - uses: actions/checkout@v4
 
@@ -25,6 +26,16 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.13.3
+
+      - name: Ensure backend worker exists (pre-check)
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            "https://api.cloudflare.com/client/v4/accounts/${{ secrets.DEV_ACCOUNT_ID }}/workers/scripts/${WORKER_SCRIPT_NAME}")
+          if [ "$STATUS" != "200" ]; then
+            echo "Worker script ${WORKER_SCRIPT_NAME} not found (status $STATUS). Deploy backend first." >&2
+            exit 1
+          fi
 
       - name: Prepare backend config
         run: |
@@ -41,9 +52,9 @@ jobs:
           terraform -chdir=envs/dev plan \
             -var "cloudflare_account_id=${{ secrets.DEV_ACCOUNT_ID }}" \
             -var "cloudflare_api_token=${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -var "cloudflare_zone_id=${{ secrets.DEV_ZONE_ID }}" \
+            -var "root_domain=${{ secrets.DEV_ROOT_DOMAIN }}" \
             -var "project_slug=myflix" \
-            -var "backend_domain=${{ secrets.DEV_BACKEND_DOMAIN }}" \
-            -var "frontend_domain=${{ secrets.DEV_FRONTEND_DOMAIN }}" \
             -var 'allowed_emails=["${{ secrets.DEV_ALLOWED_EMAIL }}"]'
 
       - name: Terraform Apply
@@ -52,7 +63,7 @@ jobs:
           terraform -chdir=envs/dev apply -auto-approve \
             -var "cloudflare_account_id=${{ secrets.DEV_ACCOUNT_ID }}" \
             -var "cloudflare_api_token=${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -var "cloudflare_zone_id=${{ secrets.DEV_ZONE_ID }}" \
+            -var "root_domain=${{ secrets.DEV_ROOT_DOMAIN }}" \
             -var "project_slug=myflix" \
-            -var "backend_domain=${{ secrets.DEV_BACKEND_DOMAIN }}" \
-            -var "frontend_domain=${{ secrets.DEV_FRONTEND_DOMAIN }}" \
             -var 'allowed_emails=["${{ secrets.DEV_ALLOWED_EMAIL }}"]'

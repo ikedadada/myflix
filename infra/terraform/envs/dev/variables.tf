@@ -8,6 +8,16 @@ variable "cloudflare_api_token" {
   description = "Token with permissions for Pages/Workers/R2/etc."
 }
 
+variable "root_domain" {
+  type        = string
+  description = "Apex domain (e.g., example.com) to build subdomains like myflix-dev.example.com"
+}
+
+variable "cloudflare_zone_id" {
+  type        = string
+  description = "Cloudflare zone ID for routing"
+}
+
 variable "project_slug" {
   type        = string
   description = "Base name used for resources"
@@ -21,16 +31,6 @@ variable "pages_production_branch" {
 variable "pages_preview_branch_pattern" {
   type        = string
   default     = "feature/*"
-}
-
-variable "backend_domain" {
-  type        = string
-  description = "Backend hostname protected by Access (e.g., workers.dev)"
-}
-
-variable "frontend_domain" {
-  type        = string
-  description = "Frontend hostname protected by Access (e.g., pages.dev)"
 }
 
 variable "allowed_emails" {
