@@ -12,22 +12,21 @@ const isBinaryBody = (body: unknown): boolean =>
   body instanceof FormData || body instanceof Blob || body instanceof ArrayBuffer;
 
 export const apiClient = async <T>(path: string, init?: RequestInit): Promise<T> => {
-  const baseHeaders: HeadersInit = { ...(init?.headers ?? {}) };
+  const baseHeaders = new Headers(init?.headers ?? {});
   const hasBody = init?.body !== undefined;
   const shouldSetJson =
     hasBody &&
-    !baseHeaders['Content-Type'] &&
-    !baseHeaders['content-type'] &&
+    !baseHeaders.has('Content-Type') &&
     (!isBinaryBody(init.body) && typeof init.body !== 'string');
-  const headers = shouldSetJson
-    ? { 'Content-Type': 'application/json', ...baseHeaders }
-    : baseHeaders;
+  if (shouldSetJson) {
+    baseHeaders.set('Content-Type', 'application/json');
+  }
 
   let response: Response;
   try {
     response = await fetch(buildApiUrl(path), {
       ...init,
-      headers,
+      headers: baseHeaders,
       credentials: 'include'
     });
   } catch (error) {
