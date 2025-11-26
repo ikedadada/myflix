@@ -14,7 +14,7 @@ import type { ServiceBindings } from '@/infrastructure/config/env';
 import { Logger } from '@/infrastructure/logging/logger';
 import { AccessAuthProvider } from '@/infrastructure/external/auth-provider-impl';
 
-const app = new Hono<HonoEnv>();
+const app = new Hono<HonoEnv>().basePath('/api');
 const logger = new Logger('api');
 
 let cachedContainer: AppContainer | null = null;
