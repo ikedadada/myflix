@@ -25,6 +25,7 @@ module "pages" {
   project_name           = "${var.project_slug}-frontend-${local.environment}"
   production_branch      = var.pages_production_branch
   preview_branch_pattern = var.pages_preview_branch_pattern
+  custom_domains         = [local.app_hostname]
 }
 
 module "dns_app" {
