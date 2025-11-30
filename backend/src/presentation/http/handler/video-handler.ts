@@ -150,4 +150,14 @@ export class VideoHandler {
       return c.json({ message: 'Failed to analyze video' }, 500);
     }
   };
+
+  thumbnailFromVideo = async (c: Context<HonoEnv>) => {
+    const authContext = c.var.authContext;
+    if (!authContext) {
+      return c.json({ message: 'Unauthorized' }, 401);
+    }
+    // NOTE: Worker環境では動画デコードができないため、フロント側で生成したサムネを送るか、
+    // 今後外部サムネ生成サービスを呼ぶ実装に差し替える。
+    return c.json({ message: 'Thumbnail generation from video is not supported on this endpoint. Please upload a thumbnail or generate on client side.' }, 501);
+  };
 }
