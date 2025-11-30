@@ -6,6 +6,14 @@
   - [ ] ローディング/エラー表示とリトライ、生成モデル名などのメタ表示
   - [ ] フロントのユニット/コンポーネントテスト追加（成功・エラー・未アップロード時の無効化）
 
+- [ ] バックエンド: `/videos/analyze` エンドポイントで動画→タイトル/説明を生成
+  - [ ] `POST /videos/analyze` (multipart: video, tone, userContext?) を追加し、Geminiマルチモーダルでタイトル/説明を返す（言語は日本語固定）
+  - [ ] domain: トーンenum、プロンプトビルダー（トーン別スタイル、日本語タイトル<=60文字/説明1–2文）、レスポンススキーマバリデータ
+  - [ ] application: `AnalyzeVideoUseCase`（検証→Gemini呼び出し→レスポンス検証、ストレージ非保存）
+  - [ ] infrastructure: Geminiクライアント（timeout+retry、型不一致はretryしない）
+  - [ ] presentation: multipart受信ハンドラ、MIME allowlist(`video/mp4`,`video/quicktime`)、サイズ上限100MB、tone/userContext検証、エラーマッピング（400/502/504等）
+  - [ ] テスト: prompt builder、レスポンスバリデータ、MIME/サイズバリデーションのunit、ハンドラインテグレーション（成功/tone不正/video欠如/MIME不正/サイズ超過/AI不正JSON）
+
 - [ ] アップロード〜視聴の基本フロー
   - [x] `/uploads` 後の動画登録APIを追加し、R2 objectKey を `videos` に紐づける
   - [x] 再生用URL発行エンドポイント（署名付きURL or 公開URL）を追加（現状は `/videos/:id/stream` でR2から取得）

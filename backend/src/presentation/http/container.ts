@@ -4,6 +4,7 @@ import { PlaybackService } from '@/application_service/playback-service';
 import { SettingsService } from '@/application_service/settings-service';
 import { UploadService } from '@/application_service/upload-service';
 import { VideoService } from '@/application_service/video-service';
+import { VideoAnalyzeService } from '@/application_service/video-analyze-service';
 import { D1PlaybackRepository } from '@/infrastructure/database/playback-repository-impl';
 import { D1SettingsRepository } from '@/infrastructure/database/settings-repository-impl';
 import { D1UploadSessionRepository } from '@/infrastructure/database/upload-session-repository-impl';
@@ -11,6 +12,7 @@ import { D1UserRepository } from '@/infrastructure/database/user-repository-impl
 import { D1VideoRepository } from '@/infrastructure/database/video-repository-impl';
 import { seedDemoData } from '@/infrastructure/database/seed';
 import type { ServiceBindings } from '@/infrastructure/config/env';
+import { GeminiClient } from '@/infrastructure/external/gemini-client';
 import { Logger } from '@/infrastructure/logging/logger';
 import { AuthHandler } from './handler/auth-handler';
 import { PlaybackHandler } from './handler/playback-handler';
@@ -42,12 +44,14 @@ export const createContainer = (bindings: ServiceBindings): AppContainer => {
   const playbackService = new PlaybackService(playbackRepository);
   const metadataService = new MetadataService(videoService, playbackService);
   const settingsService = new SettingsService(settingsRepository);
+  const geminiClient = new GeminiClient(bindings.GEMINI_API_KEY, bindings.GEMINI_MODEL);
+  const videoAnalyzeService = new VideoAnalyzeService(geminiClient);
 
   seedDemoData(bindings.DB).catch((error) => logger.error('Seed demo data failed', { error }));
 
   return {
     authHandler: new AuthHandler(authService),
-    videoHandler: new VideoHandler(videoService, metadataService),
+    videoHandler: new VideoHandler(videoService, metadataService, videoAnalyzeService),
     uploadHandler: new UploadHandler(uploadService),
     playbackHandler: new PlaybackHandler(playbackService),
     settingsHandler: new SettingsHandler(settingsService),

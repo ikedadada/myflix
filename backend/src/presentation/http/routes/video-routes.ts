@@ -10,4 +10,5 @@ export const registerVideoRoutes = (
   app.post('/videos', (c) => resolve(c.env).videoHandler.create(c));
   app.get('/videos/:id/metadata', (c) => resolve(c.env).videoHandler.metadata(c));
   app.get('/videos/:id/stream', (c) => resolve(c.env).videoHandler.stream(c));
+  app.post('/videos/analyze', (c) => resolve(c.env).videoHandler.analyze(c));
 };

@@ -20,6 +20,8 @@ jobs:
       ACCESS_JWKS_URL: "https://${{ secrets.DEV_ACCESS_DOMAIN }}/cdn-cgi/access/certs"
       ACCESS_JWT_AUD: ${{ secrets.DEV_ACCESS_JWT_AUD }}
       CORS_ALLOWED_ORIGINS: ${{ secrets.DEV_CORS_ALLOWED_ORIGINS }}
+      GEMINI_API_KEY: ${{ secrets.DEV_GEMINI_API_KEY }}
+      GEMINI_MODEL: ${{ secrets.DEV_GEMINI_MODEL }}
       PROJECT_SLUG: myflix
       ENVIRONMENT: dev
     steps:
@@ -65,8 +67,16 @@ jobs:
             -e "s#REPLACE_WITH_DEV_D1_NAME#${DATABASE_NAME}#g" \
             wrangler.toml > wrangler.ci.toml
 
+      - name: Set Gemini API key secret (dev)
+        run: |
+          if [ -z "${GEMINI_API_KEY}" ]; then
+            echo "GEMINI_API_KEY is not set" >&2
+            exit 1
+          fi
+          echo "${GEMINI_API_KEY}" | npx wrangler secret put GEMINI_API_KEY --env dev --config wrangler.ci.toml --quiet
+
       - name: Migrate D1 (dev)
         run: npx wrangler d1 migrations apply "${DATABASE_NAME}" --env dev --config wrangler.ci.toml --remote
 
       - name: Deploy Worker (dev)
-        run: npm run deploy -- --env dev --config wrangler.ci.toml --var "ACCESS_JWKS_URL:${ACCESS_JWKS_URL}" --var "ACCESS_JWT_AUD:${ACCESS_JWT_AUD}" --var "CORS_ALLOWED_ORIGINS:${CORS_ALLOWED_ORIGINS}"
+        run: npm run deploy -- --env dev --config wrangler.ci.toml --var "ACCESS_JWKS_URL:${ACCESS_JWKS_URL}" --var "ACCESS_JWT_AUD:${ACCESS_JWT_AUD}" --var "CORS_ALLOWED_ORIGINS:${CORS_ALLOWED_ORIGINS}" --var "GEMINI_MODEL:${GEMINI_MODEL:-gemini-1.5-pro}"

@@ -4,11 +4,17 @@ import { VideoService } from '@/application_service/video-service';
 import { MetadataService } from '@/application_service/metadata-service';
 import { VideoId } from '@/domain/model/value_object/video-id';
 import { UploadSessionId } from '@/domain/model/value_object/upload-session-id';
+import {
+  AnalyzeAiResponseError,
+  AnalyzeValidationError,
+  VideoAnalyzeService
+} from '@/application_service/video-analyze-service';
 
 export class VideoHandler {
   constructor(
     private readonly videoService: VideoService,
-    private readonly metadataService: MetadataService
+    private readonly metadataService: MetadataService,
+    private readonly videoAnalyzeService: VideoAnalyzeService
   ) {}
 
   list = async (c: Context<HonoEnv>) => {
@@ -85,5 +91,42 @@ export class VideoHandler {
       return c.json({ message: 'Video not found' }, 404);
     }
     return content;
+  };
+
+  analyze = async (c: Context<HonoEnv>) => {
+    const authContext = c.var.authContext;
+    if (!authContext) {
+      return c.json({ message: 'Unauthorized' }, 401);
+    }
+
+    const body = await c.req.parseBody();
+    const video = body['video'];
+    const toneRaw = body['tone'];
+    const userContext = typeof body['userContext'] === 'string' ? body['userContext'] : undefined;
+
+    if (!(video instanceof File)) {
+      return c.json({ message: 'Invalid payload: video is required' }, 400);
+    }
+    if (typeof toneRaw !== 'string') {
+      return c.json({ message: 'Invalid payload: tone is required' }, 400);
+    }
+
+    try {
+      const result = await this.videoAnalyzeService.analyze({
+        file: video,
+        tone: toneRaw,
+        userContext
+      });
+      return c.json(result);
+    } catch (error) {
+      if (error instanceof AnalyzeValidationError) {
+        return c.json({ message: error.message }, 400);
+      }
+      if (error instanceof AnalyzeAiResponseError) {
+        return c.json({ message: error.message }, 502);
+      }
+      console.error('Analyze video failed', error);
+      return c.json({ message: 'Failed to analyze video' }, 500);
+    }
   };
 }
