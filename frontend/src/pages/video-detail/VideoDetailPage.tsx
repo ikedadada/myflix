@@ -14,10 +14,13 @@ export const VideoDetailPage = () => {
     () => (video ? buildApiUrl(`/videos/${video.id}/stream`) : ''),
     [video]
   );
-  const thumbnailUrl =
-    video?.thumbnailUrl && video.thumbnailUrl.startsWith('/')
-      ? buildApiUrl(video.thumbnailUrl)
-      : video?.thumbnailUrl ?? defaultThumb;
+  const resolveThumbUrl = (url: string | null): string => {
+    if (!url) return defaultThumb;
+    if (url.startsWith('http')) return url;
+    if (url.startsWith('/api/')) return buildApiUrl(url.replace(/^\/api\//, ''));
+    return buildApiUrl(url);
+  };
+  const thumbnailUrl = resolveThumbUrl(video?.thumbnailUrl ?? null);
 
   if (isLoading) {
     return <p className="text-white/70">Loading video…</p>;

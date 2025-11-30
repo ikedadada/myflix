@@ -8,11 +8,15 @@ interface Props {
   video: VideoSummary;
 }
 
+const resolveThumbUrl = (url: string | null): string => {
+  if (!url) return defaultThumb;
+  if (url.startsWith('http')) return url;
+  if (url.startsWith('/api/')) return buildApiUrl(url.replace(/^\/api\//, ''));
+  return buildApiUrl(url);
+};
+
 export const VideoCard = ({ video }: Props) => {
-  const thumb =
-    video.thumbnailUrl && video.thumbnailUrl.startsWith('/')
-      ? buildApiUrl(video.thumbnailUrl)
-      : video.thumbnailUrl ?? defaultThumb;
+  const thumb = resolveThumbUrl(video.thumbnailUrl ?? null);
   return (
     <Link
       to="/videos/$videoId"
