@@ -53,7 +53,7 @@ export const UploadPage = () => {
   }, [file]);
 
   useEffect(() => {
-    if (!file || thumbnailFile || thumbnailObjectKey) return;
+    if (!file || thumbnailFile) return;
 
     let cancelled = false;
     let url: string | null = null;
@@ -68,21 +68,18 @@ export const UploadPage = () => {
       const sourceWidth = videoEl.videoWidth || 640;
       const sourceHeight = videoEl.videoHeight || 360;
       const targetWidth = 640;
-      const targetHeight = 360; // 16:9 の横長カード用
+      const targetHeight = 360; // 16:9
       const targetAspect = targetWidth / targetHeight;
       const sourceAspect = sourceWidth / sourceHeight;
 
-      // cover になるようにソースをトリミング
       let sx = 0;
       let sy = 0;
       let sw = sourceWidth;
       let sh = sourceHeight;
       if (sourceAspect > targetAspect) {
-        // 横長すぎる場合は左右をクロップ
         sw = sourceHeight * targetAspect;
         sx = (sourceWidth - sw) / 2;
       } else {
-        // 縦長すぎる場合は上下をクロップ
         sh = sourceWidth / targetAspect;
         sy = (sourceHeight - sh) / 2;
       }
@@ -93,12 +90,32 @@ export const UploadPage = () => {
       const ctx = canvas.getContext('2d');
       if (!ctx) throw new Error('Canvas unsupported');
       ctx.drawImage(videoEl, sx, sy, sw, sh, 0, 0, targetWidth, targetHeight);
+
+      // タイトルをオーバーレイ
+      if (title.trim()) {
+        const pad = 12;
+        ctx.fillStyle = 'rgba(0,0,0,0.55)';
+        ctx.fillRect(0, targetHeight - 72, targetWidth, 72);
+        ctx.fillStyle = '#fff';
+        ctx.font = '600 18px sans-serif';
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'left';
+        const maxWidth = targetWidth - pad * 2;
+        const text = title.trim();
+        ctx.fillText(text, pad, targetHeight - 36, maxWidth);
+      }
+
       const blob = await new Promise<Blob | null>((resolve) =>
         canvas.toBlob((b) => resolve(b), 'image/png')
       );
       if (!blob) throw new Error('Failed to create thumbnail blob');
+      if (thumbnailPreviewUrl) {
+        URL.revokeObjectURL(thumbnailPreviewUrl);
+        setThumbnailPreviewUrl(null);
+      }
       setThumbnailError(null);
       setThumbnailBlob(blob);
+      setThumbnailObjectKey(null);
       setThumbnailPreviewUrl(URL.createObjectURL(blob));
     };
 
@@ -113,7 +130,6 @@ export const UploadPage = () => {
 
       videoEl.onloadeddata = () => {
         if (cancelled) return;
-        // Seek a bit forward to avoid blank frame
         videoEl.currentTime = 0.1;
       };
       videoEl.onseeked = async () => {
@@ -141,7 +157,8 @@ export const UploadPage = () => {
       cancelled = true;
       cleanup();
     };
-  }, [file, thumbnailFile, thumbnailObjectKey]);
+    // regenerate when title changes, unless manual thumbnail is provided
+  }, [file, thumbnailFile, title]);
 
   const uploadAndCreate = useMutation({
     mutationFn: async () => {
