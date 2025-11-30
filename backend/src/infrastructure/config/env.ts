@@ -9,6 +9,7 @@ export interface ServiceBindings {
   ACCESS_LOGIN_URL?: string;
   GEMINI_API_KEY?: string;
   GEMINI_MODEL?: string;
+  ENV_NAME?: string;
 }
 
 export interface ServiceVariables {
