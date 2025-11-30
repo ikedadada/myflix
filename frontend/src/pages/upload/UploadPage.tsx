@@ -234,7 +234,11 @@ export const UploadPage = () => {
             onChange={(event) => setFile(event.target.files?.[0] ?? null)}
           />
         </label>
-        {selectedName && <p className="text-white/60">Selected: {selectedName}</p>}
+        <p className="text-sm text-white/60">
+          {selectedName
+            ? `Detected duration: ${durationSeconds ? `${durationSeconds} sec` : 'Detecting…'}`
+            : 'No file selected'}
+        </p>
 
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-4">
@@ -259,9 +263,6 @@ export const UploadPage = () => {
               />
             </label>
 
-            <p className="text-sm text-white/60">
-              Detected duration: {durationSeconds ? `${durationSeconds} sec` : 'Detecting…'}
-            </p>
           </div>
 
           <div className="space-y-3 rounded border border-white/10 bg-white/5 p-3">
