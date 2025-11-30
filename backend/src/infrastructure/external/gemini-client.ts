@@ -1,25 +1,23 @@
-import type { VideoTone } from '@/domain/model/value_object/video-tone';
-
-export interface GeminiGenerateVideoParams {
-  file: File;
-  tone: VideoTone;
+export interface GeminiGenerateParams {
   prompt: string;
-  userContext?: string;
+  file: File;
+  mimeType?: string;
+  generationConfig?: Record<string, unknown>;
 }
 
-export interface GeminiGenerateVideoResult {
+export interface GeminiGenerateResult {
   text: string;
   model?: string;
   durationMs?: number;
 }
 
-export class GeminiClient {
+export class GeminiClient implements VideoTextAiClient {
   constructor(
     private readonly apiKey: string | undefined,
     private readonly model: string = 'gemini-1.5-pro'
   ) {}
 
-  async generateVideoCopy(params: GeminiGenerateVideoParams): Promise<GeminiGenerateVideoResult> {
+  async generate(params: GeminiGenerateParams): Promise<GeminiGenerateResult> {
     if (!this.apiKey) {
       throw new Error('Gemini API key not configured');
     }
@@ -35,13 +33,14 @@ export class GeminiClient {
             { text: params.prompt },
             {
               inlineData: {
-                mimeType: params.file.type || 'video/mp4',
+                mimeType: params.mimeType || params.file.type || 'video/mp4',
                 data: base64
               }
             }
           ]
         }
-      ]
+      ],
+      ...(params.generationConfig ? { generationConfig: params.generationConfig } : {})
     };
 
     const controller = new AbortController();
@@ -58,16 +57,21 @@ export class GeminiClient {
       clearTimeout(timeoutId);
     }
 
+    const errorText = response.ok ? null : await response.text().catch(() => null);
     if (!response.ok) {
-      throw new Error(`Gemini request failed: ${response.status}`);
+      throw new Error(
+        `Gemini request failed: ${response.status}${errorText ? ` ${errorText}` : ''}`
+      );
     }
 
-    const data = (await response.json()) as {
+    const data = (await response.json().catch(async () => {
+      const text = await response.text().catch(() => '');
+      throw new Error(`Gemini response parse failed: ${text}`);
+    })) as {
       candidates?: Array<{
         content?: { parts?: Array<{ text?: string }> };
         model?: string;
       }>;
-      usageMetadata?: { totalTokenCount?: number };
     };
     const text =
       data.candidates?.[0]?.content?.parts?.find((part) => typeof part.text === 'string')?.text;
@@ -94,3 +98,5 @@ export class GeminiClient {
     return btoa(binary);
   }
 }
+import type { VideoCopyAiClient } from '@/application_service/ports/video-copy-ai-client';
+import type { VideoTextAiClient } from '@/application_service/ports/video-text-ai-client';

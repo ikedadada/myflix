@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { VideoAnalyzeService, AnalyzeValidationError } from './video-analyze-service';
-import type { GeminiGenerateVideoParams, GeminiGenerateVideoResult } from '@/infrastructure/external/gemini-client';
+import type { GeminiGenerateParams, GeminiGenerateResult } from '@/infrastructure/external/gemini-client';
 
 class StubGeminiClient {
-  async generateVideoCopy(_: GeminiGenerateVideoParams): Promise<GeminiGenerateVideoResult> {
+  async generate(_: GeminiGenerateParams): Promise<GeminiGenerateResult> {
     return {
       text: JSON.stringify({ title: 'テスト', description: '説明文' }),
       model: 'stub'

@@ -1,10 +1,7 @@
-import { buildVideoCopyPrompt } from '@/domain/model/value_object/video-copy-prompt';
-import {
-  GeneratedVideoCopyValidator,
-  type GeneratedVideoCopy
-} from '@/domain/model/value_object/generated-video-copy';
+import { buildVideoTextPrompt } from '@/domain/model/value_object/video-text-prompt';
+import { buildVideoTextFromJson, type VideoText } from '@/domain/model/value_object/video-text';
 import { isVideoTone, type VideoTone } from '@/domain/model/value_object/video-tone';
-import { GeminiClient } from '@/infrastructure/external/gemini-client';
+import type { VideoTextAiClient } from './ports/video-text-ai-client';
 
 export class AnalyzeValidationError extends Error {}
 export class AnalyzeAiResponseError extends Error {}
@@ -20,25 +17,34 @@ export interface AnalyzeVideoCommand {
 }
 
 export class VideoAnalyzeService {
-  constructor(private readonly geminiClient: GeminiClient) {}
+  constructor(private readonly aiClient: VideoTextAiClient) {}
 
-  async analyze(command: AnalyzeVideoCommand): Promise<GeneratedVideoCopy> {
+  async analyze(command: AnalyzeVideoCommand): Promise<VideoText> {
     const tone = this.parseTone(command.tone);
     this.validateFile(command.file);
     const userContext = this.parseUserContext(command.userContext);
 
-    const prompt = buildVideoCopyPrompt({ tone, userContext });
-    const response = await this.geminiClient.generateVideoCopy({
+    const prompt = buildVideoTextPrompt({ tone, userContext });
+    const response = await this.aiClient.generate({
       file: command.file,
-      tone,
-      userContext,
-      prompt
+      prompt,
+      generationConfig: {
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: 'object',
+          properties: {
+            title: { type: 'string', maxLength: 60 },
+            description: { type: 'string' }
+          },
+          required: ['title', 'description']
+        }
+      }
     });
 
-    let parsed: GeneratedVideoCopy;
+    let parsed: VideoText;
     try {
       const json = JSON.parse(response.text);
-      parsed = GeneratedVideoCopyValidator.parse(json, tone);
+      parsed = buildVideoTextFromJson(json, tone);
     } catch (error) {
       throw new AnalyzeAiResponseError(
         error instanceof Error ? error.message : 'Invalid AI response'
