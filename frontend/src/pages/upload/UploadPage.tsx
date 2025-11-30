@@ -403,22 +403,26 @@ export const UploadPage = () => {
         )}
       </div>
 
-      <div className="space-y-2">
-        <h2 className="text-lg font-semibold">Recent uploads</h2>
-        {sessions && sessions.length === 0 && <p className="text-white/60">No sessions yet.</p>}
-        <ul className="space-y-2 text-sm text-white/70">
-          {sessions?.map((session) => (
-            <li
-              key={session.id}
-              className="flex items-center justify-between rounded border border-white/10 px-3 py-2"
-            >
-              <span className="font-mono text-xs">{session.id.slice(0, 8)}</span>
-              <span className="text-white/60">{session.status}</span>
-              <span>{formatDate(session.createdAt)}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <details className="rounded-lg border border-white/10 bg-white/5 p-3">
+        <summary className="cursor-pointer text-lg font-semibold text-white">
+          Recent uploads
+        </summary>
+        <div className="mt-2 space-y-2">
+          {sessions && sessions.length === 0 && <p className="text-white/60">No sessions yet.</p>}
+          <ul className="space-y-2 text-sm text-white/70">
+            {sessions?.map((session) => (
+              <li
+                key={session.id}
+                className="flex items-center justify-between rounded border border-white/10 px-3 py-2"
+              >
+                <span className="font-mono text-xs">{session.id.slice(0, 8)}</span>
+                <span className="text-white/60">{session.status}</span>
+                <span>{formatDate(session.createdAt)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </details>
     </section>
   );
 };
