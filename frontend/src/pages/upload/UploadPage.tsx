@@ -340,8 +340,15 @@ export const UploadPage = () => {
           </label>
           {selectedThumbName && <p className="text-white/60">Selected thumbnail: {selectedThumbName}</p>}
           {thumbnailPreviewUrl && (
-            <div className="overflow-hidden rounded border border-white/10">
-              <img src={thumbnailPreviewUrl} alt="Thumbnail preview" className="h-32 w-full object-cover" />
+            <div className="overflow-hidden rounded border border-white/10 bg-black">
+              <img
+                src={thumbnailPreviewUrl}
+                alt="Thumbnail preview"
+                className="w-full max-h-64 object-contain bg-black"
+              />
+              <p className="px-2 py-1 text-center text-xs text-white/60">
+                Preview (resized to 16:9, showing full frame)
+              </p>
             </div>
           )}
           {thumbnailObjectKey && (
