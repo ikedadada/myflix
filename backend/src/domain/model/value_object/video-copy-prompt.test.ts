@@ -8,5 +8,6 @@ describe('buildVideoCopyPrompt', () => {
     expect(prompt).toContain('トーン');
     expect(prompt).toContain('60文字以内');
     expect(prompt).toContain('YouTube向け');
+    expect(prompt).toContain('コードフェンス');
   });
 });
