@@ -20,6 +20,7 @@ export const UploadPage = () => {
   const [file, setFile] = useState<File | null>(null);
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [thumbnailObjectKey, setThumbnailObjectKey] = useState<string | null>(null);
+  const [thumbnailBlob, setThumbnailBlob] = useState<Blob | null>(null);
   const [thumbnailUploading, setThumbnailUploading] = useState(false);
   const [thumbnailError, setThumbnailError] = useState<string | null>(null);
   const [title, setTitle] = useState('');
@@ -61,7 +62,7 @@ export const UploadPage = () => {
       }
     };
 
-    const captureAndUpload = async (videoEl: HTMLVideoElement) => {
+    const capture = async (videoEl: HTMLVideoElement) => {
       const width = videoEl.videoWidth || 640;
       const height = videoEl.videoHeight || 360;
       const targetWidth = 640;
@@ -76,19 +77,8 @@ export const UploadPage = () => {
         canvas.toBlob((b) => resolve(b), 'image/png')
       );
       if (!blob) throw new Error('Failed to create thumbnail blob');
-      setThumbnailUploading(true);
       setThumbnailError(null);
-      const res = await apiClient<{ id: string; objectKey: string; status: string }>(
-        '/uploads?kind=thumbnail',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': blob.type || 'image/png'
-          },
-          body: blob
-        }
-      );
-      setThumbnailObjectKey(res.objectKey);
+      setThumbnailBlob(blob);
     };
 
     const generate = () => {
@@ -108,19 +98,17 @@ export const UploadPage = () => {
       videoEl.onseeked = async () => {
         if (cancelled) return;
         try {
-          await captureAndUpload(videoEl);
+          await capture(videoEl);
         } catch (error) {
           console.error('Auto thumbnail failed', error);
           setThumbnailError('自動サムネ生成に失敗しました（任意でアップロードしてください）');
         } finally {
-          setThumbnailUploading(false);
           cleanup();
         }
       };
       videoEl.onerror = () => {
         if (cancelled) return;
         setThumbnailError('動画からサムネを生成できませんでした');
-        setThumbnailUploading(false);
         cleanup();
       };
       videoEl.load();
@@ -137,6 +125,23 @@ export const UploadPage = () => {
   const uploadAndCreate = useMutation({
     mutationFn: async () => {
       if (!file) throw new Error('File is required');
+      let thumbKey = thumbnailObjectKey;
+      if (!thumbKey && thumbnailBlob) {
+        setThumbnailUploading(true);
+        const res = await apiClient<{ id: string; objectKey: string; status: string }>(
+          '/uploads?kind=thumbnail',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': thumbnailBlob.type || 'image/png'
+            },
+            body: thumbnailBlob
+          }
+        );
+        thumbKey = res.objectKey;
+        setThumbnailObjectKey(res.objectKey);
+        setThumbnailUploading(false);
+      }
       const upload = await createUploadSession(file);
       const video = await apiClient<VideoSummary>('/videos', {
         method: 'POST',
@@ -145,7 +150,7 @@ export const UploadPage = () => {
           title: title || file.name,
           description: description || 'Uploaded video',
           durationSeconds: durationSeconds ?? 60,
-          thumbnailObjectKey: thumbnailObjectKey
+          thumbnailObjectKey: thumbKey
         })
       });
       return { uploadId: upload.id, video };
@@ -154,6 +159,9 @@ export const UploadPage = () => {
       client.invalidateQueries({ queryKey: ['videos'] });
       client.invalidateQueries({ queryKey: ['uploads'] });
       setFile(null);
+      setThumbnailBlob(null);
+      setThumbnailObjectKey(null);
+      setThumbnailFile(null);
     }
   });
 
