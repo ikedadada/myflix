@@ -7,6 +7,17 @@ export const createAuthMiddleware = (
 ): MiddlewareHandler<HonoEnv> => {
   let provider: AccessAuthProvider | null = null;
   return async (c, next) => {
+    const envName = c.env.ENV_NAME;
+    if (envName === 'local') {
+      // Local環境では認証をスキップし、デフォルトユーザーで処理する
+      c.set('authContext', {
+        userId: { toString: () => 'local-user' },
+        email: 'local@example.com'
+      } as never);
+      await next();
+      return;
+    }
+
     const token = c.req.header('cf-access-jwt-assertion');
     if (!token) {
       return c.json({ message: 'Missing Access token' }, 401);
