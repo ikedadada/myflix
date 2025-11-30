@@ -45,7 +45,8 @@ export class VideoService {
       description: params.description,
       durationSeconds: params.durationSeconds,
       createdAt: new Date(),
-      objectKey: session.objectKey()
+      objectKey: session.objectKey(),
+      thumbnailStatus: 'pending'
     });
 
     await this.videoRepository.save(video);
@@ -65,6 +66,44 @@ export class VideoService {
     const contentType = object.httpMetadata?.contentType ?? 'application/octet-stream';
     return new Response(object.body, {
       headers: { 'Content-Type': contentType }
+    });
+  }
+
+  async getThumbnail(ownerId: UserId, videoId: VideoId): Promise<Response | null> {
+    const video = await this.videoRepository.findById(videoId);
+    if (
+      !video ||
+      video.ownerId().toString() !== ownerId.toString() ||
+      !video.thumbnailKey()
+    ) {
+      return null;
+    }
+    const object = await this.bucket.get(video.thumbnailKey() as string);
+    if (!object || !object.body) {
+      return null;
+    }
+    const contentType = object.httpMetadata?.contentType ?? 'image/jpeg';
+    return new Response(object.body, {
+      headers: { 'Content-Type': contentType }
+    });
+  }
+
+  async setThumbnailFromUpload(params: {
+    ownerId: UserId;
+    videoId: VideoId;
+    objectKey: string;
+  }): Promise<void> {
+    const video = await this.videoRepository.findById(params.videoId);
+    if (!video || video.ownerId().toString() !== params.ownerId.toString()) {
+      throw new Error('Video not found or unauthorized');
+    }
+
+    await this.videoRepository.updateThumbnail({
+      videoId: params.videoId,
+      ownerId: params.ownerId,
+      thumbnailKey: params.objectKey,
+      thumbnailStatus: 'succeeded',
+      thumbnailError: null
     });
   }
 }

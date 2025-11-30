@@ -93,6 +93,43 @@ export class VideoHandler {
     return content;
   };
 
+  thumbnail = async (c: Context<HonoEnv>) => {
+    const authContext = c.var.authContext;
+    if (!authContext) {
+      return c.json({ message: 'Unauthorized' }, 401);
+    }
+    const videoId = new VideoId(c.req.param('id'));
+    const content = await this.videoService.getThumbnail(authContext.userId, videoId);
+    if (!content) {
+      return c.json({ message: 'Thumbnail not found' }, 404);
+    }
+    return content;
+  };
+
+  updateThumbnail = async (c: Context<HonoEnv>) => {
+    const authContext = c.var.authContext;
+    if (!authContext) {
+      return c.json({ message: 'Unauthorized' }, 401);
+    }
+    const videoId = new VideoId(c.req.param('id'));
+    const body = await c.req.json().catch(() => null);
+    if (!body || body.mode !== 'upload' || typeof body.objectKey !== 'string') {
+      return c.json({ message: 'Invalid payload' }, 400);
+    }
+
+    try {
+      await this.videoService.setThumbnailFromUpload({
+        ownerId: authContext.userId,
+        videoId,
+        objectKey: body.objectKey
+      });
+      return c.json({ status: 'succeeded' });
+    } catch (error) {
+      console.error('Update thumbnail failed', error);
+      return c.json({ message: 'Failed to update thumbnail' }, 400);
+    }
+  };
+
   analyze = async (c: Context<HonoEnv>) => {
     const authContext = c.var.authContext;
     if (!authContext) {

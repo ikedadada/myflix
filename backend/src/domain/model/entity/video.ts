@@ -9,6 +9,9 @@ export interface VideoProps {
   durationSeconds: number;
   createdAt: Date;
   objectKey: string;
+  thumbnailKey?: string | null;
+  thumbnailStatus?: 'pending' | 'processing' | 'succeeded' | 'failed';
+  thumbnailError?: string | null;
 }
 
 export class Video {
@@ -44,5 +47,22 @@ export class Video {
 
   objectKey(): string {
     return this.props.objectKey;
+  }
+
+  thumbnailKey(): string | null {
+    return this.props.thumbnailKey ?? null;
+  }
+
+  thumbnailStatus():
+    | 'pending'
+    | 'processing'
+    | 'succeeded'
+    | 'failed'
+    | null {
+    return this.props.thumbnailStatus ?? null;
+  }
+
+  thumbnailError(): string | null {
+    return this.props.thumbnailError ?? null;
   }
 }
