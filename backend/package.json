@@ -4,8 +4,11 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev src/presentation/http/server.ts --persist-to=.wrangler",
+    "dev:local": "wrangler dev src/presentation/http/server.ts --env dev --persist-to=.wrangler --local --log-level=debug",
     "build": "wrangler deploy --dry-run --outdir ./dist",
     "deploy": "wrangler deploy",
+    "d1:init:local": "wrangler d1 create myflix-dev-db-local --local && wrangler d1 migrations apply myflix-dev-db-local --local --env dev",
+    "d1:reset:local": "rm -rf .wrangler/d1 && npm run d1:init:local",
     "migrate:local": "wrangler d1 migrations apply myflix-dev-db --local",
     "migrate:dev": "wrangler d1 migrations apply myflix-dev-db --env dev",
     "test": "vitest run",
