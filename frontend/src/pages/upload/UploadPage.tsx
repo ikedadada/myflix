@@ -50,71 +50,88 @@ export const UploadPage = () => {
   }, [file]);
 
   useEffect(() => {
-    if (!file || thumbnailFile || thumbnailObjectKey) {
-      return;
-    }
-    let revoked = false;
-    const url = URL.createObjectURL(file);
-    const videoEl = document.createElement('video');
-    videoEl.src = url;
-    videoEl.muted = true;
-    videoEl.playsInline = true;
-    videoEl.crossOrigin = 'anonymous';
+    if (!file || thumbnailFile || thumbnailObjectKey) return;
 
+    let cancelled = false;
+    let url: string | null = null;
     const cleanup = () => {
-      if (!revoked) {
+      if (url) {
         URL.revokeObjectURL(url);
-        revoked = true;
+        url = null;
       }
     };
 
-    const handleLoaded = async () => {
-      try {
-        const width = videoEl.videoWidth || 640;
-        const height = videoEl.videoHeight || 360;
-        const targetWidth = 640;
-        const targetHeight = Math.round((height / width) * targetWidth) || 360;
-        const canvas = document.createElement('canvas');
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) throw new Error('Canvas unsupported');
-        ctx.drawImage(videoEl, 0, 0, targetWidth, targetHeight);
-        const blob = await new Promise<Blob | null>((resolve) =>
-          canvas.toBlob((b) => resolve(b), 'image/png')
-        );
-        if (!blob) throw new Error('Failed to create thumbnail blob');
-        setThumbnailUploading(true);
-        setThumbnailError(null);
-        const res = await apiClient<{ id: string; objectKey: string; status: string }>(
-          '/uploads?kind=thumbnail',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': blob.type || 'image/png'
-            },
-            body: blob
-          }
-        );
-        setThumbnailObjectKey(res.objectKey);
-      } catch (error) {
-        console.error('Auto thumbnail failed', error);
-        setThumbnailError('自動サムネ生成に失敗しました（任意でアップロードしてください）');
-      } finally {
+    const captureAndUpload = async (videoEl: HTMLVideoElement) => {
+      const width = videoEl.videoWidth || 640;
+      const height = videoEl.videoHeight || 360;
+      const targetWidth = 640;
+      const targetHeight = Math.round((height / width) * targetWidth) || 360;
+      const canvas = document.createElement('canvas');
+      canvas.width = targetWidth;
+      canvas.height = targetHeight;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('Canvas unsupported');
+      ctx.drawImage(videoEl, 0, 0, targetWidth, targetHeight);
+      const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob((b) => resolve(b), 'image/png')
+      );
+      if (!blob) throw new Error('Failed to create thumbnail blob');
+      setThumbnailUploading(true);
+      setThumbnailError(null);
+      const res = await apiClient<{ id: string; objectKey: string; status: string }>(
+        '/uploads?kind=thumbnail',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': blob.type || 'image/png'
+          },
+          body: blob
+        }
+      );
+      setThumbnailObjectKey(res.objectKey);
+    };
+
+    const generate = () => {
+      const videoEl = document.createElement('video');
+      url = URL.createObjectURL(file);
+      videoEl.src = url;
+      videoEl.muted = true;
+      videoEl.playsInline = true;
+      videoEl.preload = 'auto';
+      videoEl.crossOrigin = 'anonymous';
+
+      videoEl.onloadeddata = () => {
+        if (cancelled) return;
+        // Seek a bit forward to avoid blank frame
+        videoEl.currentTime = 0.1;
+      };
+      videoEl.onseeked = async () => {
+        if (cancelled) return;
+        try {
+          await captureAndUpload(videoEl);
+        } catch (error) {
+          console.error('Auto thumbnail failed', error);
+          setThumbnailError('自動サムネ生成に失敗しました（任意でアップロードしてください）');
+        } finally {
+          setThumbnailUploading(false);
+          cleanup();
+        }
+      };
+      videoEl.onerror = () => {
+        if (cancelled) return;
+        setThumbnailError('動画からサムネを生成できませんでした');
         setThumbnailUploading(false);
         cleanup();
-      }
+      };
+      videoEl.load();
     };
 
-    videoEl.onloadeddata = handleLoaded;
-    videoEl.onerror = () => {
-      setThumbnailError('動画からサムネを生成できませんでした');
+    generate();
+
+    return () => {
+      cancelled = true;
       cleanup();
     };
-    // Trigger load
-    videoEl.load();
-
-    return cleanup;
   }, [file, thumbnailFile, thumbnailObjectKey]);
 
   const uploadAndCreate = useMutation({
