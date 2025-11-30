@@ -3,6 +3,7 @@ import { useParams } from '@tanstack/react-router';
 import { useVideos } from '@/shared/hooks/useVideos';
 import { buildApiUrl } from '@/app/config/env';
 import { formatDuration } from '@/shared/lib/format-duration';
+import defaultThumb from '@/assets/default-thumbnail.svg';
 
 export const VideoDetailPage = () => {
   const { videoId } = useParams({ from: '/videos/$videoId' });
@@ -13,7 +14,10 @@ export const VideoDetailPage = () => {
     () => (video ? buildApiUrl(`/videos/${video.id}/stream`) : ''),
     [video]
   );
-  const thumbnailUrl = video?.thumbnailUrl ?? null;
+  const thumbnailUrl =
+    video?.thumbnailUrl && video.thumbnailUrl.startsWith('/')
+      ? buildApiUrl(video.thumbnailUrl)
+      : video?.thumbnailUrl ?? defaultThumb;
 
   if (isLoading) {
     return <p className="text-white/70">Loading video…</p>;
@@ -34,13 +38,7 @@ export const VideoDetailPage = () => {
         <p className="text-sm text-white/60">Duration: {formatDuration(video.durationSeconds)}</p>
       </div>
       <div className="overflow-hidden rounded-lg border border-white/10 bg-black">
-        {thumbnailUrl ? (
-          <img src={thumbnailUrl} alt={video.title} className="h-48 w-full object-cover" />
-        ) : (
-          <div className="flex h-48 w-full items-center justify-center text-white/50">
-            No thumbnail
-          </div>
-        )}
+        <img src={thumbnailUrl} alt={video.title} className="h-48 w-full object-cover" />
       </div>
       <div className="overflow-hidden rounded-lg border border-white/10 bg-black">
         {streamUrl ? (

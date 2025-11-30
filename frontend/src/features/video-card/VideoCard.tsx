@@ -2,13 +2,17 @@ import type { VideoSummary } from '@/shared/types/video';
 import { Link } from '@tanstack/react-router';
 import { formatDuration } from '@/shared/lib/format-duration';
 import defaultThumb from '@/assets/default-thumbnail.svg';
+import { buildApiUrl } from '@/app/config/env';
 
 interface Props {
   video: VideoSummary;
 }
 
 export const VideoCard = ({ video }: Props) => {
-  const thumb = video.thumbnailUrl ?? defaultThumb;
+  const thumb =
+    video.thumbnailUrl && video.thumbnailUrl.startsWith('/')
+      ? buildApiUrl(video.thumbnailUrl)
+      : video.thumbnailUrl ?? defaultThumb;
   return (
     <Link
       to="/videos/$videoId"
