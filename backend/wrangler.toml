@@ -23,7 +23,7 @@ vars = { ACCESS_JWKS_URL = "http://localhost/mock-jwks", ACCESS_JWT_AUD = "local
 [[env.local.d1_databases]]
 binding = "DB"
 database_name = "myflix-local-db"
-database_id = "REPLACE_WITH_LOCAL_D1_ID"
+database_id = "local"
 migrations_dir = "src/infrastructure/database/migrations"
 
 [[env.local.r2_buckets]]
