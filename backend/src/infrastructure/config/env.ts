@@ -3,7 +3,6 @@ import type { AuthenticatedUserContext } from '@/application_service/dto/user-dt
 export interface ServiceBindings {
   DB: D1Database;
   MEDIA_BUCKET: R2Bucket;
-  SESSION_KV: KVNamespace;
   ACCESS_JWKS_URL: string;
   ACCESS_JWT_AUD: string;
   CORS_ALLOWED_ORIGINS?: string;
