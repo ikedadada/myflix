@@ -12,8 +12,6 @@ interface VideoRow {
   created_at: string;
   object_key: string;
   thumbnail_key: string | null;
-  thumbnail_status: 'pending' | 'processing' | 'succeeded' | 'failed' | null;
-  thumbnail_error: string | null;
 }
 
 const mapRowToVideo = (row: VideoRow): Video =>
@@ -25,9 +23,7 @@ const mapRowToVideo = (row: VideoRow): Video =>
     durationSeconds: row.duration_seconds,
     createdAt: new Date(row.created_at),
     objectKey: row.object_key,
-    thumbnailKey: row.thumbnail_key,
-    thumbnailStatus: row.thumbnail_status ?? null,
-    thumbnailError: row.thumbnail_error
+    thumbnailKey: row.thumbnail_key
   });
 
 export class D1VideoRepository implements VideoRepository {
@@ -36,7 +32,7 @@ export class D1VideoRepository implements VideoRepository {
   async findById(id: VideoId): Promise<Video | null> {
     const row = await this.db
       .prepare(
-        'SELECT id, owner_id, title, description, duration_seconds, created_at, object_key, thumbnail_key, thumbnail_status, thumbnail_error FROM videos WHERE id = ?1'
+        'SELECT id, owner_id, title, description, duration_seconds, created_at, object_key, thumbnail_key FROM videos WHERE id = ?1'
       )
       .bind(id.toString())
       .first<VideoRow>();
@@ -46,7 +42,7 @@ export class D1VideoRepository implements VideoRepository {
   async listByOwner(ownerId: UserId): Promise<Video[]> {
     const { results } = await this.db
       .prepare(
-        'SELECT id, owner_id, title, description, duration_seconds, created_at, object_key, thumbnail_key, thumbnail_status, thumbnail_error FROM videos WHERE owner_id = ?1 ORDER BY created_at DESC'
+        'SELECT id, owner_id, title, description, duration_seconds, created_at, object_key, thumbnail_key FROM videos WHERE owner_id = ?1 ORDER BY created_at DESC'
       )
       .bind(ownerId.toString())
       .all<VideoRow>();
@@ -56,7 +52,7 @@ export class D1VideoRepository implements VideoRepository {
   async save(video: Video): Promise<void> {
     await this.db
       .prepare(
-        'INSERT OR REPLACE INTO videos (id, owner_id, title, description, duration_seconds, created_at, object_key, thumbnail_key, thumbnail_status, thumbnail_error) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)'
+        'INSERT OR REPLACE INTO videos (id, owner_id, title, description, duration_seconds, created_at, object_key, thumbnail_key) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)'
       )
       .bind(
         video.id().toString(),
@@ -66,28 +62,22 @@ export class D1VideoRepository implements VideoRepository {
         video.durationSeconds(),
         video.createdAt().toISOString(),
         video.objectKey(),
-        video.thumbnailKey(),
-        video.thumbnailStatus() ?? 'pending',
-        video.thumbnailError()
+        video.thumbnailKey()
       )
       .run();
   }
 
-  async updateThumbnail(params: {
+  async updateThumbnailKey(params: {
     videoId: VideoId;
     ownerId: UserId;
     thumbnailKey: string | null;
-    thumbnailStatus: 'pending' | 'processing' | 'succeeded' | 'failed';
-    thumbnailError?: string | null;
   }): Promise<void> {
     await this.db
       .prepare(
-        'UPDATE videos SET thumbnail_key = ?1, thumbnail_status = ?2, thumbnail_error = ?3 WHERE id = ?4 AND owner_id = ?5'
+        'UPDATE videos SET thumbnail_key = ?1 WHERE id = ?2 AND owner_id = ?3'
       )
       .bind(
         params.thumbnailKey,
-        params.thumbnailStatus,
-        params.thumbnailError ?? null,
         params.videoId.toString(),
         params.ownerId.toString()
       )

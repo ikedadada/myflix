@@ -5,7 +5,6 @@ export interface VideoSummary {
   durationSeconds: number;
   objectKey: string;
   thumbnailUrl: string | null;
-  thumbnailStatus: 'pending' | 'processing' | 'succeeded' | 'failed' | null;
 }
 
 export type VideoTone = 'friendly' | 'professional' | 'playful' | 'concise';

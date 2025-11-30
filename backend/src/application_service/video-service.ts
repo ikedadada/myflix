@@ -29,6 +29,7 @@ export class VideoService {
     title: string;
     description: string;
     durationSeconds: number;
+    thumbnailKey?: string | null;
   }): Promise<Video> {
     const session = await this.uploadSessionRepository.findById(params.uploadId);
     if (!session || session.ownerId().toString() !== params.ownerId.toString()) {
@@ -46,7 +47,7 @@ export class VideoService {
       durationSeconds: params.durationSeconds,
       createdAt: new Date(),
       objectKey: session.objectKey(),
-      thumbnailStatus: 'pending'
+      thumbnailKey: params.thumbnailKey ?? null
     });
 
     await this.videoRepository.save(video);
@@ -88,22 +89,20 @@ export class VideoService {
     });
   }
 
-  async setThumbnailFromUpload(params: {
+  async updateThumbnailKey(params: {
     ownerId: UserId;
     videoId: VideoId;
-    objectKey: string;
+    thumbnailKey: string | null;
   }): Promise<void> {
     const video = await this.videoRepository.findById(params.videoId);
     if (!video || video.ownerId().toString() !== params.ownerId.toString()) {
       throw new Error('Video not found or unauthorized');
     }
 
-    await this.videoRepository.updateThumbnail({
+    await this.videoRepository.updateThumbnailKey({
       videoId: params.videoId,
       ownerId: params.ownerId,
-      thumbnailKey: params.objectKey,
-      thumbnailStatus: 'succeeded',
-      thumbnailError: null
+      thumbnailKey: params.thumbnailKey
     });
   }
 }

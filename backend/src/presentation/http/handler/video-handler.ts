@@ -42,6 +42,10 @@ export class VideoHandler {
     ) {
       return c.json({ message: 'Invalid payload' }, 400);
     }
+    const thumbnailKey =
+      typeof body.thumbnailObjectKey === 'string' && body.thumbnailObjectKey.length > 0
+        ? body.thumbnailObjectKey
+        : null;
 
     try {
       const video = await this.videoService.createFromUpload({
@@ -49,7 +53,8 @@ export class VideoHandler {
         uploadId: new UploadSessionId(body.uploadId),
         title: body.title,
         description: body.description,
-        durationSeconds: body.durationSeconds
+        durationSeconds: body.durationSeconds,
+        thumbnailKey
       });
       return c.json(
         {
@@ -57,7 +62,10 @@ export class VideoHandler {
           title: video.title(),
           description: video.description(),
           durationSeconds: video.durationSeconds(),
-          objectKey: video.objectKey()
+          objectKey: video.objectKey(),
+          thumbnailUrl: video.thumbnailKey()
+            ? `/api/videos/${video.id().toString()}/thumbnail`
+            : null
         },
         201
       );
@@ -104,30 +112,6 @@ export class VideoHandler {
       return c.json({ message: 'Thumbnail not found' }, 404);
     }
     return content;
-  };
-
-  updateThumbnail = async (c: Context<HonoEnv>) => {
-    const authContext = c.var.authContext;
-    if (!authContext) {
-      return c.json({ message: 'Unauthorized' }, 401);
-    }
-    const videoId = new VideoId(c.req.param('id'));
-    const body = await c.req.json().catch(() => null);
-    if (!body || body.mode !== 'upload' || typeof body.objectKey !== 'string') {
-      return c.json({ message: 'Invalid payload' }, 400);
-    }
-
-    try {
-      await this.videoService.setThumbnailFromUpload({
-        ownerId: authContext.userId,
-        videoId,
-        objectKey: body.objectKey
-      });
-      return c.json({ status: 'succeeded' });
-    } catch (error) {
-      console.error('Update thumbnail failed', error);
-      return c.json({ message: 'Failed to update thumbnail' }, 400);
-    }
   };
 
   analyze = async (c: Context<HonoEnv>) => {

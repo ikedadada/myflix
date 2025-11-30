@@ -7,7 +7,6 @@ export interface VideoSummaryDto {
   durationSeconds: number;
   objectKey: string;
   thumbnailUrl: string | null;
-  thumbnailStatus: 'pending' | 'processing' | 'succeeded' | 'failed' | null;
 }
 
 export const toVideoSummaryDto = (video: Video): VideoSummaryDto => ({
@@ -16,6 +15,5 @@ export const toVideoSummaryDto = (video: Video): VideoSummaryDto => ({
   description: video.description(),
   durationSeconds: video.durationSeconds(),
   objectKey: video.objectKey(),
-  thumbnailUrl: video.thumbnailKey() ? `/api/videos/${video.id().toString()}/thumbnail` : null,
-  thumbnailStatus: video.thumbnailStatus()
+  thumbnailUrl: video.thumbnailKey() ? `/api/videos/${video.id().toString()}/thumbnail` : null
 });
