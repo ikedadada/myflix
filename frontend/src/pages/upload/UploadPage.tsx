@@ -29,6 +29,7 @@ export const UploadPage = () => {
   const [durationSeconds, setDurationSeconds] = useState<number | null>(null);
   const [tone, setTone] = useState<VideoTone>('friendly');
   const [userContext, setUserContext] = useState('');
+  const [showAiSettings, setShowAiSettings] = useState(false);
 
   useEffect(() => {
     if (!file) {
@@ -235,62 +236,6 @@ export const UploadPage = () => {
         </label>
         {selectedName && <p className="text-white/60">Selected: {selectedName}</p>}
 
-        <div className="space-y-3 rounded border border-white/10 bg-white/5 p-3">
-          <div className="flex flex-wrap items-center justify-between gap-2 text-sm font-semibold">
-            <span>タイトル/説明をAIで自動生成</span>
-            {generatedCopy?.model && (
-              <span className="text-xs font-normal text-white/60">
-                model: {generatedCopy.model}
-              </span>
-            )}
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {toneOptions.map((option) => (
-              <Button
-                key={option.value}
-                type="button"
-                size="sm"
-                variant={tone === option.value ? 'solid' : 'outline'}
-                onClick={() => setTone(option.value)}
-                aria-pressed={tone === option.value}
-                className="min-w-[120px] justify-start"
-              >
-                <div className="flex flex-col items-start leading-tight">
-                  <span>{option.label}</span>
-                  <span className="text-[11px] text-white/70">{option.note}</span>
-                </div>
-              </Button>
-            ))}
-          </div>
-          <label className="flex flex-col gap-2 text-sm">
-            用途/ターゲット（任意）
-            <input
-              value={userContext}
-              onChange={(e) => setUserContext(e.target.value)}
-              className="rounded border border-white/20 bg-white/5 px-3 py-2 text-white"
-              placeholder="例: YouTubeショート向け / 学習者向け"
-            />
-          </label>
-          <div className="flex flex-wrap items-center gap-3">
-            <Button
-              type="button"
-              onClick={handleGenerate}
-              disabled={!file || isGenerating}
-              variant="outline"
-            >
-              {isGenerating ? '生成中…' : 'タイトルと説明を自動生成'}
-            </Button>
-            {!file && <p className="text-xs text-white/60">先に動画ファイルを選択してください</p>}
-          </div>
-          {generationError && <p className="text-sm text-red-400">{generationError}</p>}
-          {generatedCopy && (
-            <p className="text-xs text-white/60">
-              生成済み: {toneOptions.find((t) => t.value === generatedCopy.tone)?.label ?? generatedCopy.tone}{' '}
-              / {generatedCopy.durationMs ? `${generatedCopy.durationMs}ms` : '—'}
-            </p>
-          )}
-        </div>
-
         <label className="flex flex-col gap-2 text-sm">
           Title
           <input
@@ -315,6 +260,73 @@ export const UploadPage = () => {
         <p className="text-sm text-white/60">
           Detected duration: {durationSeconds ? `${durationSeconds} sec` : 'Detecting…'}
         </p>
+
+        <div className="space-y-3 rounded border border-white/10 bg-white/5 p-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 text-sm font-semibold">
+            <span>タイトル/説明をAIで自動生成</span>
+            {generatedCopy?.model && (
+              <span className="text-xs font-normal text-white/60">
+                model: {generatedCopy.model}
+              </span>
+            )}
+          </div>
+          <button
+            type="button"
+            className="text-xs text-white/70 underline"
+            onClick={() => setShowAiSettings((v) => !v)}
+          >
+            {showAiSettings ? 'AI設定を隠す' : 'AI設定を表示'}
+          </button>
+          {showAiSettings && (
+            <div className="space-y-3">
+              <div className="flex flex-wrap gap-2">
+                {toneOptions.map((option) => (
+                  <Button
+                    key={option.value}
+                    type="button"
+                    size="sm"
+                    variant={tone === option.value ? 'solid' : 'outline'}
+                    onClick={() => setTone(option.value)}
+                    aria-pressed={tone === option.value}
+                    className="min-w-[120px] justify-start"
+                  >
+                    <div className="flex flex-col items-start leading-tight">
+                      <span>{option.label}</span>
+                      <span className="text-[11px] text-white/70">{option.note}</span>
+                    </div>
+                  </Button>
+                ))}
+              </div>
+              <label className="flex flex-col gap-2 text-sm">
+                用途/ターゲット（任意）
+                <input
+                  value={userContext}
+                  onChange={(e) => setUserContext(e.target.value)}
+                  className="rounded border border-white/20 bg-white/5 px-3 py-2 text-white"
+                  placeholder="例: YouTubeショート向け / 学習者向け"
+                />
+              </label>
+            </div>
+          )}
+          <div className="flex flex-wrap items-center gap-3">
+            <Button
+              type="button"
+              onClick={handleGenerate}
+              disabled={!file || isGenerating}
+              variant="outline"
+            >
+              {isGenerating ? '生成中…' : 'タイトルと説明を自動生成'}
+            </Button>
+            {!file && <p className="text-xs text-white/60">先に動画ファイルを選択してください</p>}
+          </div>
+          {generationError && <p className="text-sm text-red-400">{generationError}</p>}
+          {generatedCopy && (
+            <p className="text-xs text-white/60">
+              生成済み: {toneOptions.find((t) => t.value === generatedCopy.tone)?.label ?? generatedCopy.tone}{' '}
+              / {generatedCopy.durationMs ? `${generatedCopy.durationMs}ms` : '—'}
+            </p>
+          )}
+        </div>
 
         <div className="space-y-3 rounded border border-white/10 bg-white/5 p-3">
           <label className="flex flex-col gap-2 text-sm">
