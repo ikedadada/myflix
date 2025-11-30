@@ -29,7 +29,7 @@ export class UploadService {
   }): Promise<{ session: UploadSession; objectKey: string }> {
     const id = new UploadSessionId(crypto.randomUUID());
     const prefix = params.kind ?? 'video';
-    const objectKey = `${params.ownerId.toString()}/${id.toString()}/${prefix}`;
+    const objectKey = `uploads/${params.ownerId.toString()}/${id.toString()}/${prefix}`;
 
     await this.bucket.put(objectKey, params.data, {
       httpMetadata: params.contentType ? { contentType: params.contentType } : undefined
