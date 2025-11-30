@@ -1,19 +1,16 @@
-# TODO: サムネイル生成〜表示（ローカル検証優先 → デプロイ後検証）
+# TODO: サムネイル生成〜表示（ローカル検証優先 → 本実装）
 
-## ローカルでまず通す
-- [ ] マイグレーション追加: `videos.thumbnail_key`, `thumbnail_status` (pending/processing/succeeded/failed), `thumbnail_error`
-- [ ] DTO/メタデータに `thumbnailUrl`/`thumbnailStatus` を追加し、`/videos` と `/videos/:id/metadata` で返す
-- [ ] API: `POST /videos/:id/thumbnail`（mode: frame | upload | ai、owner限定）。とりあえず mode=upload を先に実装して手動差し替えを可能にする
-- [ ] フロント: カードで `thumbnailUrl` を表示（なければプレースホルダー）。動画詳細でサムネ設定UIを暫定追加（uploadのみ対応）
-- [ ] ローカル検証: `npm run migrate:local` → `npm run dev` → フロントからアップロード→サムネ差し替え→カード表示でサムネが出ることを確認
+## ローカルでまず通す（同期フロー）
+- [ ] DTO/メタデータに `thumbnailUrl` を追加し、`/videos` と `/videos/:id/metadata` で返す（listは実装済み、metadataは未対応）
+- [ ] `/videos` 登録時に `thumbnailObjectKey` を受け取り保存（実装済みだがフロントから送る導線を追加）
+- [ ] フロント: カード表示で `thumbnailUrl` を使う（なければデフォルト画像）、登録フォームでサムネobjectKeyを渡せる暫定UIを追加
+- [ ] ローカル検証: `npm run migrate:local` → `npm run dev` → 動画アップロード＋任意のサムネキー指定 → カードにサムネが出ることを確認
 
-## 本実装（ジョブ・自動生成を含む）
-- [ ] キュー導入: wrangler.toml に Queue 定義追加（producer/consumer）。`env.local` でも動くようにする
-- [ ] 生成ジョブ: mode=frame で timeSeconds を受け、外部サムネAPI/FFmpegサービスを呼んで R2 `thumbnails/` に保存。完了時に `thumbnail_key` / `thumbnail_status` 更新
-- [ ] mode=ai: プリセットで自動選択するジョブを追加（候補は1枚でよい）。失敗時は status=failed と error を記録
-- [ ] リトライ: `POST /videos/:id/thumbnail/retry` を追加（owner限定）
-- [ ] フロント: サムネ設定UIに mode切替（frame指定、upload、auto）、ステータス表示とリトライボタン、更新後のプレビュー反映
+## 本実装（自動切り出し・Queue化）
+- [ ] `POST /videos/:id/thumbnail/from-video` を追加し、`timeSeconds` を受けてR2動画からフレーム切り出し→R2サムネ保存→objectKey返却（外部サムネAPI/サービスを利用）
+- [ ] フロント: 上記エンドポイントを呼んで取得したサムネキーを `/videos` 登録時に渡す（初期値は0秒切り出し）
+- [ ] Queue導入を検討: 重い切り出しを非同期ジョブ化し、完了後に `thumbnail_key` を更新
 
 ## デプロイ後の検証
-- [ ] dev環境にマイグレーション適用後、サムネAPI/Queueが動作するかを手動検証（アップロード→サムネ生成→カード表示）
-- [ ] 最低限の統合テストをCIに追加（メタデータで thumbnail フィールドが返ること、サムネAPIのバリデーション）
+- [ ] dev環境でアップロード→サムネ切り出し→登録→カード表示の流れを手動確認
+- [ ] 最低限の統合テスト（メタデータで thumbnail フィールドが返ること、from-video API のバリデーション）を追加
