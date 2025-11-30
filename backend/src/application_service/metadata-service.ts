@@ -6,6 +6,7 @@ import { VideoId } from '@/domain/model/value_object/video-id';
 export interface VideoMetadataDto {
   videoId: string;
   lastPositionSeconds: number | null;
+  thumbnailUrl: string | null;
 }
 
 export class MetadataService {
@@ -22,7 +23,10 @@ export class MetadataService {
     const playback = await this.playbackService.getProgress(userId, videoId);
     return {
       videoId: video.id().toString(),
-      lastPositionSeconds: playback ? playback.lastPosition().value() : null
+      lastPositionSeconds: playback ? playback.lastPosition().value() : null,
+      thumbnailUrl: video.thumbnailKey()
+        ? `/api/videos/${video.id().toString()}/thumbnail`
+        : null
     };
   }
 }
