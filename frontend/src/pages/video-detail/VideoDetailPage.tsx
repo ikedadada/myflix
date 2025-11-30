@@ -13,6 +13,7 @@ export const VideoDetailPage = () => {
     () => (video ? buildApiUrl(`/videos/${video.id}/stream`) : ''),
     [video]
   );
+  const thumbnailUrl = video?.thumbnailUrl ?? null;
 
   if (isLoading) {
     return <p className="text-white/70">Loading video…</p>;
@@ -31,6 +32,15 @@ export const VideoDetailPage = () => {
         <h1 className="text-3xl font-semibold">{video.title}</h1>
         <p className="text-white/70">{video.description}</p>
         <p className="text-sm text-white/60">Duration: {formatDuration(video.durationSeconds)}</p>
+      </div>
+      <div className="overflow-hidden rounded-lg border border-white/10 bg-black">
+        {thumbnailUrl ? (
+          <img src={thumbnailUrl} alt={video.title} className="h-48 w-full object-cover" />
+        ) : (
+          <div className="flex h-48 w-full items-center justify-center text-white/50">
+            No thumbnail
+          </div>
+        )}
       </div>
       <div className="overflow-hidden rounded-lg border border-white/10 bg-black">
         {streamUrl ? (
