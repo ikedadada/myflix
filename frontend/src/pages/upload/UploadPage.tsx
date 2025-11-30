@@ -97,7 +97,7 @@ export const UploadPage = () => {
         ctx.fillStyle = 'rgba(0,0,0,0.55)';
         ctx.fillRect(0, targetHeight - 72, targetWidth, 72);
         ctx.fillStyle = '#fff';
-        ctx.font = '600 18px sans-serif';
+        ctx.font = '700 22px sans-serif';
         ctx.textBaseline = 'middle';
         ctx.textAlign = 'left';
         const maxWidth = targetWidth - pad * 2;
