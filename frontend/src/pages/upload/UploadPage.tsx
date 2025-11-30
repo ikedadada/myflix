@@ -21,6 +21,7 @@ export const UploadPage = () => {
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [thumbnailObjectKey, setThumbnailObjectKey] = useState<string | null>(null);
   const [thumbnailBlob, setThumbnailBlob] = useState<Blob | null>(null);
+  const [thumbnailPreviewUrl, setThumbnailPreviewUrl] = useState<string | null>(null);
   const [thumbnailUploading, setThumbnailUploading] = useState(false);
   const [thumbnailError, setThumbnailError] = useState<string | null>(null);
   const [title, setTitle] = useState('');
@@ -63,22 +64,41 @@ export const UploadPage = () => {
     };
 
     const capture = async (videoEl: HTMLVideoElement) => {
-      const width = videoEl.videoWidth || 640;
-      const height = videoEl.videoHeight || 360;
+      const sourceWidth = videoEl.videoWidth || 640;
+      const sourceHeight = videoEl.videoHeight || 360;
       const targetWidth = 640;
-      const targetHeight = Math.round((height / width) * targetWidth) || 360;
+      const targetHeight = 360; // 16:9 の横長カード用
+      const targetAspect = targetWidth / targetHeight;
+      const sourceAspect = sourceWidth / sourceHeight;
+
+      // cover になるようにソースをトリミング
+      let sx = 0;
+      let sy = 0;
+      let sw = sourceWidth;
+      let sh = sourceHeight;
+      if (sourceAspect > targetAspect) {
+        // 横長すぎる場合は左右をクロップ
+        sw = sourceHeight * targetAspect;
+        sx = (sourceWidth - sw) / 2;
+      } else {
+        // 縦長すぎる場合は上下をクロップ
+        sh = sourceWidth / targetAspect;
+        sy = (sourceHeight - sh) / 2;
+      }
+
       const canvas = document.createElement('canvas');
       canvas.width = targetWidth;
       canvas.height = targetHeight;
       const ctx = canvas.getContext('2d');
       if (!ctx) throw new Error('Canvas unsupported');
-      ctx.drawImage(videoEl, 0, 0, targetWidth, targetHeight);
+      ctx.drawImage(videoEl, sx, sy, sw, sh, 0, 0, targetWidth, targetHeight);
       const blob = await new Promise<Blob | null>((resolve) =>
         canvas.toBlob((b) => resolve(b), 'image/png')
       );
       if (!blob) throw new Error('Failed to create thumbnail blob');
       setThumbnailError(null);
       setThumbnailBlob(blob);
+      setThumbnailPreviewUrl(URL.createObjectURL(blob));
     };
 
     const generate = () => {
@@ -160,6 +180,10 @@ export const UploadPage = () => {
       client.invalidateQueries({ queryKey: ['uploads'] });
       setFile(null);
       setThumbnailBlob(null);
+      if (thumbnailPreviewUrl) {
+        URL.revokeObjectURL(thumbnailPreviewUrl);
+        setThumbnailPreviewUrl(null);
+      }
       setThumbnailObjectKey(null);
       setThumbnailFile(null);
     }
@@ -302,37 +326,24 @@ export const UploadPage = () => {
               onChange={(event) => {
                 setThumbnailFile(event.target.files?.[0] ?? null);
                 setThumbnailObjectKey(null);
+                const blob = event.target.files?.[0] ?? null;
+                setThumbnailBlob(blob);
+                if (thumbnailPreviewUrl) {
+                  URL.revokeObjectURL(thumbnailPreviewUrl);
+                  setThumbnailPreviewUrl(null);
+                }
+                if (blob) {
+                  setThumbnailPreviewUrl(URL.createObjectURL(blob));
+                }
               }}
             />
           </label>
           {selectedThumbName && <p className="text-white/60">Selected thumbnail: {selectedThumbName}</p>}
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            disabled={!thumbnailFile}
-            onClick={async () => {
-              if (!thumbnailFile) return;
-              try {
-                const res = await apiClient<{ id: string; objectKey: string; status: string }>(
-                  '/uploads?kind=thumbnail',
-                  {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': thumbnailFile.type || 'application/octet-stream'
-                    },
-                    body: thumbnailFile
-                  }
-                );
-                setThumbnailObjectKey(res.objectKey);
-              } catch (error) {
-                console.error('Thumbnail upload failed', error);
-                setThumbnailObjectKey(null);
-              }
-            }}
-          >
-            Upload thumbnail image
-          </Button>
+          {thumbnailPreviewUrl && (
+            <div className="overflow-hidden rounded border border-white/10">
+              <img src={thumbnailPreviewUrl} alt="Thumbnail preview" className="h-32 w-full object-cover" />
+            </div>
+          )}
           {thumbnailObjectKey && (
             <p className="text-xs text-green-400">Thumbnail uploaded: {thumbnailObjectKey}</p>
           )}
