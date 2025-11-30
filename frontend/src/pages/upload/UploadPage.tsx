@@ -18,6 +18,8 @@ export const UploadPage = () => {
   } = useGenerateVideoCopy();
 
   const [file, setFile] = useState<File | null>(null);
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [thumbnailObjectKey, setThumbnailObjectKey] = useState<string | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [durationSeconds, setDurationSeconds] = useState<number | null>(null);
@@ -55,7 +57,8 @@ export const UploadPage = () => {
           uploadId: upload.id,
           title: title || file.name,
           description: description || 'Uploaded video',
-          durationSeconds: durationSeconds ?? 60
+          durationSeconds: durationSeconds ?? 60,
+          thumbnailObjectKey: thumbnailObjectKey
         })
       });
       return { uploadId: upload.id, video };
@@ -69,6 +72,7 @@ export const UploadPage = () => {
 
   const disabled = !file || uploadAndCreate.isPending || creating;
   const selectedName = useMemo(() => file?.name ?? '', [file]);
+  const selectedThumbName = useMemo(() => thumbnailFile?.name ?? '', [thumbnailFile]);
 
   const toneOptions: { value: VideoTone; label: string; note: string }[] = [
     { value: 'friendly', label: 'フレンドリー', note: 'カジュアルで親しみやすい' },
@@ -192,6 +196,55 @@ export const UploadPage = () => {
         <p className="text-sm text-white/60">
           Detected duration: {durationSeconds ? `${durationSeconds} sec` : 'Detecting…'}
         </p>
+
+        <div className="space-y-3 rounded border border-white/10 bg-white/5 p-3">
+          <label className="flex flex-col gap-2 text-sm">
+            Thumbnail (optional)
+            <input
+              type="file"
+              accept="image/*"
+              className="rounded border border-dashed border-white/30 bg-transparent px-3 py-2 text-white"
+              onChange={(event) => {
+                setThumbnailFile(event.target.files?.[0] ?? null);
+                setThumbnailObjectKey(null);
+              }}
+            />
+          </label>
+          {selectedThumbName && <p className="text-white/60">Selected thumbnail: {selectedThumbName}</p>}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={!thumbnailFile}
+            onClick={async () => {
+              if (!thumbnailFile) return;
+              try {
+                const res = await apiClient<{ id: string; objectKey: string; status: string }>(
+                  '/uploads?kind=thumbnail',
+                  {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': thumbnailFile.type || 'application/octet-stream'
+                    },
+                    body: thumbnailFile
+                  }
+                );
+                setThumbnailObjectKey(res.objectKey);
+              } catch (error) {
+                console.error('Thumbnail upload failed', error);
+                setThumbnailObjectKey(null);
+              }
+            }}
+          >
+            Upload thumbnail image
+          </Button>
+          {thumbnailObjectKey && (
+            <p className="text-xs text-green-400">Thumbnail uploaded: {thumbnailObjectKey}</p>
+          )}
+          {!thumbnailObjectKey && thumbnailFile && (
+            <p className="text-xs text-white/60">Upload the selected image to attach as thumbnail.</p>
+          )}
+        </div>
 
         <Button disabled={disabled} onClick={() => uploadAndCreate.mutate()}>
           {uploadAndCreate.isPending ? 'Uploading…' : 'Upload & Register'}

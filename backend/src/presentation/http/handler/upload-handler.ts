@@ -26,6 +26,8 @@ export class UploadHandler {
     if (!authContext) {
       return c.json({ message: 'Unauthorized' }, 401);
     }
+    const kindParam = c.req.query('kind');
+    const kind = kindParam === 'thumbnail' ? 'thumbnail' : 'video';
     const contentType = c.req.header('content-type') ?? undefined;
     const body = await c.req.arrayBuffer();
     if (!body || body.byteLength === 0) {
@@ -35,7 +37,8 @@ export class UploadHandler {
     const { session, objectKey } = await this.uploadService.uploadObject({
       ownerId: authContext.userId,
       data: body,
-      contentType
+      contentType,
+      kind
     });
 
     return c.json({
