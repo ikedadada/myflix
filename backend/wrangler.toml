@@ -8,13 +8,13 @@ vars = { ACCESS_JWKS_URL = "https://example.cloudflareaccess.com/cdn-cgi/access/
 
 [[env.dev.d1_databases]]
 binding = "DB"
-database_name = "myflix-dev-db-local"
+database_name = "REPLACE_WITH_DEV_D1_NAME"
 database_id = "REPLACE_WITH_DEV_D1_ID"
 migrations_dir = "src/infrastructure/database/migrations"
 
 [[env.dev.r2_buckets]]
 binding = "MEDIA_BUCKET"
-bucket_name = "myflix-dev-media-local"
+bucket_name = "myflix-dev-media"
 
 [env.prod]
 name = "myflix-backend-prod"

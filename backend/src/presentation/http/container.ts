@@ -47,10 +47,7 @@ export const createContainer = (bindings: ServiceBindings): AppContainer => {
   const geminiClient = new GeminiClient(bindings.GEMINI_API_KEY, bindings.GEMINI_MODEL);
   const videoAnalyzeService = new VideoAnalyzeService(geminiClient);
 
-  const canSeed = bindings.DB && typeof (bindings.DB as unknown as { prepare: unknown }).prepare === 'function';
-  if (canSeed) {
-    seedDemoData(bindings.DB).catch((error) => logger.error('Seed demo data failed', { error }));
-  }
+  seedDemoData(bindings.DB).catch((error) => logger.error('Seed demo data failed', { error }));
 
   return {
     authHandler: new AuthHandler(authService),
