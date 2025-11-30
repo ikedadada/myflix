@@ -20,6 +20,8 @@ export const UploadPage = () => {
   const [file, setFile] = useState<File | null>(null);
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [thumbnailObjectKey, setThumbnailObjectKey] = useState<string | null>(null);
+  const [thumbnailUploading, setThumbnailUploading] = useState(false);
+  const [thumbnailError, setThumbnailError] = useState<string | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [durationSeconds, setDurationSeconds] = useState<number | null>(null);
@@ -46,6 +48,74 @@ export const UploadPage = () => {
     };
     videoEl.src = objectUrl;
   }, [file]);
+
+  useEffect(() => {
+    if (!file || thumbnailFile || thumbnailObjectKey) {
+      return;
+    }
+    let revoked = false;
+    const url = URL.createObjectURL(file);
+    const videoEl = document.createElement('video');
+    videoEl.src = url;
+    videoEl.muted = true;
+    videoEl.playsInline = true;
+    videoEl.crossOrigin = 'anonymous';
+
+    const cleanup = () => {
+      if (!revoked) {
+        URL.revokeObjectURL(url);
+        revoked = true;
+      }
+    };
+
+    const handleLoaded = async () => {
+      try {
+        const width = videoEl.videoWidth || 640;
+        const height = videoEl.videoHeight || 360;
+        const targetWidth = 640;
+        const targetHeight = Math.round((height / width) * targetWidth) || 360;
+        const canvas = document.createElement('canvas');
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error('Canvas unsupported');
+        ctx.drawImage(videoEl, 0, 0, targetWidth, targetHeight);
+        const blob = await new Promise<Blob | null>((resolve) =>
+          canvas.toBlob((b) => resolve(b), 'image/png')
+        );
+        if (!blob) throw new Error('Failed to create thumbnail blob');
+        setThumbnailUploading(true);
+        setThumbnailError(null);
+        const res = await apiClient<{ id: string; objectKey: string; status: string }>(
+          '/uploads?kind=thumbnail',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': blob.type || 'image/png'
+            },
+            body: blob
+          }
+        );
+        setThumbnailObjectKey(res.objectKey);
+      } catch (error) {
+        console.error('Auto thumbnail failed', error);
+        setThumbnailError('自動サムネ生成に失敗しました（任意でアップロードしてください）');
+      } finally {
+        setThumbnailUploading(false);
+        cleanup();
+      }
+    };
+
+    videoEl.onloadeddata = handleLoaded;
+    videoEl.onerror = () => {
+      setThumbnailError('動画からサムネを生成できませんでした');
+      cleanup();
+    };
+    // Trigger load
+    videoEl.load();
+
+    return cleanup;
+  }, [file, thumbnailFile, thumbnailObjectKey]);
 
   const uploadAndCreate = useMutation({
     mutationFn: async () => {
@@ -244,6 +314,10 @@ export const UploadPage = () => {
           {!thumbnailObjectKey && thumbnailFile && (
             <p className="text-xs text-white/60">Upload the selected image to attach as thumbnail.</p>
           )}
+          {thumbnailUploading && (
+            <p className="text-xs text-white/60">Generating thumbnail from video…</p>
+          )}
+          {thumbnailError && <p className="text-xs text-red-400">{thumbnailError}</p>}
         </div>
 
         <Button disabled={disabled} onClick={() => uploadAndCreate.mutate()}>
