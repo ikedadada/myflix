@@ -5,3 +5,13 @@ export interface VideoSummary {
   durationSeconds: number;
   objectKey: string;
 }
+
+export type VideoTone = 'friendly' | 'professional' | 'playful' | 'concise';
+
+export interface GeneratedVideoCopy {
+  title: string;
+  description: string;
+  tone: VideoTone;
+  model?: string;
+  durationMs?: number;
+}

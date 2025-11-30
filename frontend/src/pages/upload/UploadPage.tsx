@@ -1,19 +1,28 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Button } from '@/shared/ui/Button';
 import { useUploadSessions } from '@/shared/hooks/useUploadSessions';
 import { formatDate } from '@/shared/lib/format-date';
 import { apiClient } from '@/app/config/apiClient';
-import type { VideoSummary } from '@/shared/types/video';
+import { useGenerateVideoCopy } from '@/shared/hooks/useGenerateVideoCopy';
+import { Button } from '@/shared/ui/Button';
+import type { GeneratedVideoCopy, VideoSummary, VideoTone } from '@/shared/types/video';
 
 export const UploadPage = () => {
   const client = useQueryClient();
   const { data: sessions, create: createUploadSession, creating } = useUploadSessions();
+  const {
+    generate,
+    isGenerating,
+    errorMessage: generationError,
+    lastResult: generatedCopy
+  } = useGenerateVideoCopy();
 
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [durationSeconds, setDurationSeconds] = useState<number | null>(null);
+  const [tone, setTone] = useState<VideoTone>('friendly');
+  const [userContext, setUserContext] = useState('');
 
   useEffect(() => {
     if (!file) {
@@ -61,6 +70,29 @@ export const UploadPage = () => {
   const disabled = !file || uploadAndCreate.isPending || creating;
   const selectedName = useMemo(() => file?.name ?? '', [file]);
 
+  const toneOptions: { value: VideoTone; label: string; note: string }[] = [
+    { value: 'friendly', label: 'フレンドリー', note: 'カジュアルで親しみやすい' },
+    { value: 'professional', label: 'プロフェッショナル', note: '簡潔でフォーマル' },
+    { value: 'playful', label: '遊び心', note: '軽快で楽しい' },
+    { value: 'concise', label: '簡潔', note: '短く要点のみ' }
+  ];
+
+  const handleGenerate = async () => {
+    if (!file) return;
+    try {
+      const result: GeneratedVideoCopy = await generate({
+        file,
+        tone,
+        language: 'ja',
+        userContext: userContext.trim()
+      });
+      setTitle(result.title);
+      setDescription(result.description);
+    } catch {
+      // エラーメッセージは generationError に表示
+    }
+  };
+
   return (
     <section className="space-y-6">
       <div>
@@ -79,6 +111,62 @@ export const UploadPage = () => {
           />
         </label>
         {selectedName && <p className="text-white/60">Selected: {selectedName}</p>}
+
+        <div className="space-y-3 rounded border border-white/10 bg-white/5 p-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 text-sm font-semibold">
+            <span>タイトル/説明をAIで自動生成</span>
+            {generatedCopy?.model && (
+              <span className="text-xs font-normal text-white/60">
+                model: {generatedCopy.model}
+              </span>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {toneOptions.map((option) => (
+              <Button
+                key={option.value}
+                type="button"
+                size="sm"
+                variant={tone === option.value ? 'solid' : 'outline'}
+                onClick={() => setTone(option.value)}
+                aria-pressed={tone === option.value}
+                className="min-w-[120px] justify-start"
+              >
+                <div className="flex flex-col items-start leading-tight">
+                  <span>{option.label}</span>
+                  <span className="text-[11px] text-white/70">{option.note}</span>
+                </div>
+              </Button>
+            ))}
+          </div>
+          <label className="flex flex-col gap-2 text-sm">
+            用途/ターゲット（任意）
+            <input
+              value={userContext}
+              onChange={(e) => setUserContext(e.target.value)}
+              className="rounded border border-white/20 bg-white/5 px-3 py-2 text-white"
+              placeholder="例: YouTubeショート向け / 学習者向け"
+            />
+          </label>
+          <div className="flex flex-wrap items-center gap-3">
+            <Button
+              type="button"
+              onClick={handleGenerate}
+              disabled={!file || isGenerating}
+              variant="outline"
+            >
+              {isGenerating ? '生成中…' : 'タイトルと説明を自動生成'}
+            </Button>
+            {!file && <p className="text-xs text-white/60">先に動画ファイルを選択してください</p>}
+          </div>
+          {generationError && <p className="text-sm text-red-400">{generationError}</p>}
+          {generatedCopy && (
+            <p className="text-xs text-white/60">
+              生成済み: {toneOptions.find((t) => t.value === generatedCopy.tone)?.label ?? generatedCopy.tone}{' '}
+              / {generatedCopy.durationMs ? `${generatedCopy.durationMs}ms` : '—'}
+            </p>
+          )}
+        </div>
 
         <label className="flex flex-col gap-2 text-sm">
           Title
