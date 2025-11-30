@@ -16,6 +16,20 @@ migrations_dir = "src/infrastructure/database/migrations"
 binding = "MEDIA_BUCKET"
 bucket_name = "myflix-dev-media"
 
+[env.local]
+name = "myflix-backend-local"
+vars = { ACCESS_JWKS_URL = "http://localhost/mock-jwks", ACCESS_JWT_AUD = "local", CORS_ALLOWED_ORIGINS = "*", GEMINI_MODEL = "gemini-2.5-pro" }
+
+[[env.local.d1_databases]]
+binding = "DB"
+database_name = "myflix-local-db"
+database_id = "REPLACE_WITH_LOCAL_D1_ID"
+migrations_dir = "src/infrastructure/database/migrations"
+
+[[env.local.r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "myflix-local-media"
+
 [env.prod]
 name = "myflix-backend-prod"
 vars = { ACCESS_JWKS_URL = "https://example.cloudflareaccess.com/cdn-cgi/access/certs", ACCESS_JWT_AUD = "myflix-prod", CORS_ALLOWED_ORIGINS = "", GEMINI_MODEL = "gemini-2.5-pro" }
