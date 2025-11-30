@@ -4,6 +4,7 @@ import { VideoService } from '@/application_service/video-service';
 import { MetadataService } from '@/application_service/metadata-service';
 import { VideoId } from '@/domain/model/value_object/video-id';
 import { UploadSessionId } from '@/domain/model/value_object/upload-session-id';
+import { UserId } from '@/domain/model/value_object/user-id';
 import {
   AnalyzeAiResponseError,
   AnalyzeValidationError,
@@ -112,6 +113,24 @@ export class VideoHandler {
       return c.json({ message: 'Thumbnail not found' }, 404);
     }
     return content;
+  };
+
+  thumbnailFromVideo = async (c: Context<HonoEnv>) => {
+    const authContext = c.var.authContext;
+    if (!authContext) {
+      return c.json({ message: 'Unauthorized' }, 401);
+    }
+    const videoId = new VideoId(c.req.param('id'));
+    try {
+      const key = await this.videoService.setDefaultThumbnail(authContext.userId, videoId);
+      return c.json({
+        thumbnailObjectKey: key,
+        thumbnailUrl: `/api/videos/${videoId.toString()}/thumbnail`
+      });
+    } catch (error) {
+      console.error('Thumbnail from video failed', error);
+      return c.json({ message: 'Failed to create thumbnail' }, 400);
+    }
   };
 
   analyze = async (c: Context<HonoEnv>) => {
