@@ -32,12 +32,12 @@ export const VideoCard = ({ video }: Props) => {
             <p className="line-clamp-2 text-base font-semibold text-white drop-shadow">
               {video.title}
             </p>
-            <div className="mt-1 flex items-center gap-2 text-xs text-white/80">
+            <div className="mt-1 flex items-center justify-end gap-2 text-xs text-white/80">
+              <span className="rounded-full bg-white/10 px-2 py-1">#{video.id.slice(0, 6)}</span>
               <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-1 backdrop-blur-sm">
                 <span className="h-1.5 w-1.5 rounded-full bg-green-400" aria-hidden />
                 {formatDuration(video.durationSeconds)}
               </span>
-              <span className="rounded-full bg-white/10 px-2 py-1">#{video.id.slice(0, 6)}</span>
             </div>
           </div>
         </div>
