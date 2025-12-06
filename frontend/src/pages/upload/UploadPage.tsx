@@ -91,20 +91,6 @@ export const UploadPage = () => {
       if (!ctx) throw new Error('Canvas unsupported');
       ctx.drawImage(videoEl, sx, sy, sw, sh, 0, 0, targetWidth, targetHeight);
 
-      // タイトルをオーバーレイ
-      if (title.trim()) {
-        const pad = 12;
-        ctx.fillStyle = 'rgba(0,0,0,0.55)';
-        ctx.fillRect(0, targetHeight - 72, targetWidth, 72);
-        ctx.fillStyle = '#fff';
-        ctx.font = '700 22px sans-serif';
-        ctx.textBaseline = 'middle';
-        ctx.textAlign = 'left';
-        const maxWidth = targetWidth - pad * 2;
-        const text = title.trim();
-        ctx.fillText(text, pad, targetHeight - 36, maxWidth);
-      }
-
       const blob = await new Promise<Blob | null>((resolve) =>
         canvas.toBlob((b) => resolve(b), 'image/png')
       );
