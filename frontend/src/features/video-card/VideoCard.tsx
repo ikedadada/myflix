@@ -21,7 +21,7 @@ export const VideoCard = ({ video }: Props) => {
     <Link
       to="/videos/$videoId"
       params={{ videoId: video.id }}
-      className="group block overflow-hidden rounded-lg border border-white/10 bg-black transition hover:-translate-y-0.5 hover:border-white/30 hover:shadow-lg hover:shadow-black/40"
+      className="group block overflow-hidden rounded-lg border border-border bg-card transition hover:-translate-y-0.5 hover:border-accent/60 hover:shadow-lg hover:shadow-black/40"
     >
       <div className="relative aspect-video w-full">
         <img src={thumb} alt={video.title} className="h-full w-full object-cover" />

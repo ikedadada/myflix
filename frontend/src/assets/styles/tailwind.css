@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --color-surface: 249 250 251; /* neutral-50 */
+    --color-card: 255 255 255; /* white */
+    --color-text: 15 23 42; /* slate-900 */
+    --color-muted: 71 85 105; /* slate-600 */
+    --color-border: 229 231 235; /* gray-200 */
+    --color-accent: 8 145 178; /* cyan-600 */
+  }
+
+  .dark {
+    --color-surface: 10 12 16; /* near black */
+    --color-card: 17 24 39; /* gray-900 */
+    --color-text: 241 245 249; /* slate-100 */
+    --color-muted: 148 163 184; /* slate-400 */
+    --color-border: 51 65 85; /* slate-700 */
+    --color-accent: 6 182 212; /* cyan-500 */
+  }
+}

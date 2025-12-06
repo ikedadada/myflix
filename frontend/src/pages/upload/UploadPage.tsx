@@ -224,20 +224,20 @@ export const UploadPage = () => {
     <section className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">Upload</h1>
-        <p className="text-white/70">Upload a video to R2 and register it as a playable item.</p>
+        <p className="text-text/70">Upload a video to R2 and register it as a playable item.</p>
       </div>
 
-      <div className="space-y-4 rounded-lg border border-white/10 bg-white/5 p-4">
+      <div className="space-y-4 rounded-lg border border-border bg-card p-4">
         <label className="flex flex-col gap-2 text-sm">
           Choose a file
           <input
             type="file"
             accept="video/*"
-            className="rounded border border-dashed border-white/30 bg-transparent p-6 text-white"
+            className="rounded border border-dashed border-border bg-transparent p-6 text-text"
             onChange={(event) => setFile(event.target.files?.[0] ?? null)}
           />
         </label>
-        <p className="text-sm text-white/60">
+        <p className="text-sm text-text/60">
           {selectedName
             ? `Detected duration: ${durationSeconds ? `${durationSeconds} sec` : 'Detecting…'}`
             : 'No file selected'}
@@ -250,7 +250,7 @@ export const UploadPage = () => {
               <input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="rounded border border-white/20 bg-white/5 px-3 py-2 text-white"
+                className="rounded border border-border bg-card px-3 py-2 text-text"
                 placeholder="My video"
               />
             </label>
@@ -260,7 +260,7 @@ export const UploadPage = () => {
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="rounded border border-white/20 bg-white/5 px-3 py-2 text-white"
+                className="rounded border border-border bg-card px-3 py-2 text-text"
                 placeholder="Optional description"
                 rows={5}
               />
@@ -268,16 +268,16 @@ export const UploadPage = () => {
 
           </div>
 
-          <div className="space-y-3 rounded border border-white/10 bg-white/5 p-3">
+          <div className="space-y-3 rounded border border-border bg-card p-3">
             <div className="flex flex-wrap items-center justify-between gap-2 text-sm font-semibold">
               <span>タイトル/説明をAIで自動生成</span>
               {generatedCopy?.model && (
-                <span className="text-xs font-normal text-white/60">model: {generatedCopy.model}</span>
+                <span className="text-xs font-normal text-text/60">model: {generatedCopy.model}</span>
               )}
             </div>
             <button
               type="button"
-              className="text-xs text-white/70 underline"
+              className="text-xs text-text/70 underline"
               onClick={() => setShowAiSettings((v) => !v)}
             >
               {showAiSettings ? 'AI設定を隠す' : 'AI設定を表示'}
@@ -297,7 +297,7 @@ export const UploadPage = () => {
                     >
                       <div className="flex flex-col items-start leading-tight">
                         <span>{option.label}</span>
-                        <span className="text-[11px] text-white/70">{option.note}</span>
+                        <span className="text-[11px] text-text/70">{option.note}</span>
                       </div>
                     </Button>
                   ))}
@@ -307,7 +307,7 @@ export const UploadPage = () => {
                   <input
                     value={userContext}
                     onChange={(e) => setUserContext(e.target.value)}
-                    className="rounded border border-white/20 bg-white/5 px-3 py-2 text-white"
+                    className="rounded border border-border bg-card px-3 py-2 text-text"
                     placeholder="例: YouTubeショート向け / 学習者向け"
                   />
                 </label>
@@ -317,11 +317,11 @@ export const UploadPage = () => {
               <Button type="button" onClick={handleGenerate} disabled={!file || isGenerating} variant="outline">
                 {isGenerating ? '生成中…' : 'タイトルと説明を自動生成'}
               </Button>
-              {!file && <p className="text-xs text-white/60">先に動画ファイルを選択してください</p>}
+              {!file && <p className="text-xs text-text/60">先に動画ファイルを選択してください</p>}
             </div>
             {generationError && <p className="text-sm text-red-400">{generationError}</p>}
             {generatedCopy && (
-              <p className="text-xs text-white/60">
+              <p className="text-xs text-text/60">
                 生成済み: {toneOptions.find((t) => t.value === generatedCopy.tone)?.label ?? generatedCopy.tone}{' '}
                 / {generatedCopy.durationMs ? `${generatedCopy.durationMs}ms` : '—'}
               </p>
@@ -329,13 +329,13 @@ export const UploadPage = () => {
           </div>
         </div>
 
-        <div className="space-y-3 rounded border border-white/10 bg-white/5 p-3">
+        <div className="space-y-3 rounded border border-border bg-card p-3">
           <label className="flex flex-col gap-2 text-sm">
             Thumbnail (optional)
             <input
               type="file"
               accept="image/*"
-              className="rounded border border-dashed border-white/30 bg-transparent px-3 py-2 text-white"
+              className="rounded border border-dashed border-border bg-transparent px-3 py-2 text-text"
               onChange={(event) => {
                 setThumbnailFile(event.target.files?.[0] ?? null);
                 setThumbnailObjectKey(null);
@@ -351,15 +351,15 @@ export const UploadPage = () => {
               }}
             />
           </label>
-          {selectedThumbName && <p className="text-white/60">Selected thumbnail: {selectedThumbName}</p>}
+          {selectedThumbName && <p className="text-text/60">Selected thumbnail: {selectedThumbName}</p>}
           {thumbnailPreviewUrl && (
-            <div className="overflow-hidden rounded border border-white/10 bg-black">
+            <div className="overflow-hidden rounded border border-border bg-card">
               <img
                 src={thumbnailPreviewUrl}
                 alt="Thumbnail preview"
-                className="w-full max-h-64 object-contain bg-black"
+                className="w-full max-h-64 object-contain bg-card"
               />
-              <p className="px-2 py-1 text-center text-xs text-white/60">
+              <p className="px-2 py-1 text-center text-xs text-text/60">
                 Preview (resized to 16:9, showing full frame)
               </p>
             </div>
@@ -368,10 +368,10 @@ export const UploadPage = () => {
             <p className="text-xs text-green-400">Thumbnail uploaded: {thumbnailObjectKey}</p>
           )}
           {!thumbnailObjectKey && thumbnailFile && (
-            <p className="text-xs text-white/60">Upload the selected image to attach as thumbnail.</p>
+            <p className="text-xs text-text/60">Upload the selected image to attach as thumbnail.</p>
           )}
           {thumbnailUploading && (
-            <p className="text-xs text-white/60">Generating thumbnail from video…</p>
+            <p className="text-xs text-text/60">Generating thumbnail from video…</p>
           )}
           {thumbnailError && <p className="text-xs text-red-400">{thumbnailError}</p>}
         </div>
@@ -389,20 +389,20 @@ export const UploadPage = () => {
         )}
       </div>
 
-      <details className="rounded-lg border border-white/10 bg-white/5 p-3">
-        <summary className="cursor-pointer text-lg font-semibold text-white">
+      <details className="rounded-lg border border-border bg-card p-3">
+        <summary className="cursor-pointer text-lg font-semibold text-text">
           Recent uploads
         </summary>
         <div className="mt-2 space-y-2">
-          {sessions && sessions.length === 0 && <p className="text-white/60">No sessions yet.</p>}
-          <ul className="space-y-2 text-sm text-white/70">
+          {sessions && sessions.length === 0 && <p className="text-text/60">No sessions yet.</p>}
+          <ul className="space-y-2 text-sm text-text/70">
             {sessions?.map((session) => (
               <li
                 key={session.id}
-                className="flex items-center justify-between rounded border border-white/10 px-3 py-2"
+                className="flex items-center justify-between rounded border border-border px-3 py-2"
               >
                 <span className="font-mono text-xs">{session.id.slice(0, 8)}</span>
-                <span className="text-white/60">{session.status}</span>
+                <span className="text-text/60">{session.status}</span>
                 <span>{formatDate(session.createdAt)}</span>
               </li>
             ))}
