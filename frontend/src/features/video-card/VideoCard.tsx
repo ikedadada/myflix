@@ -21,10 +21,10 @@ export const VideoCard = ({ video }: Props) => {
     <Link
       to="/videos/$videoId"
       params={{ videoId: video.id }}
-      className="group block rounded-lg border border-white/10 bg-white/5 p-4 backdrop-blur-md transition hover:-translate-y-0.5 hover:border-white/20 hover:shadow-lg hover:shadow-black/30"
+      className="group block overflow-hidden rounded-lg border border-white/10 bg-black transition hover:-translate-y-0.5 hover:border-white/30 hover:shadow-lg hover:shadow-black/40"
     >
-      <div className="relative mb-3 overflow-hidden rounded-md border border-white/10 bg-gradient-to-br from-white/10 via-white/5 to-black/20">
-        <img src={thumb} alt={video.title} className="h-40 w-full object-cover" />
+      <div className="relative aspect-video w-full">
+        <img src={thumb} alt={video.title} className="h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent opacity-90 transition group-hover:opacity-100" />
         <div className="absolute inset-x-0 bottom-0 flex items-start gap-2 p-3">
           <span className="mt-1 h-6 w-1 rounded-full bg-cyan-400" aria-hidden />
@@ -43,7 +43,7 @@ export const VideoCard = ({ video }: Props) => {
         </div>
       </div>
       <h3 className="sr-only">{video.title}</h3>
-      <p className="text-sm text-white/70 line-clamp-2">{video.description}</p>
+      {/* description intentionally omitted for a minimalist card */}
     </Link>
   );
 };
