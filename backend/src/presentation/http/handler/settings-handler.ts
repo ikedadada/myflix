@@ -13,7 +13,13 @@ export class SettingsHandler {
       return c.json({ message: 'Unauthorized' }, 401);
     }
     const settings = await this.settingsService.findByOwner(authContext.userId);
-    return c.json(settings ?? { theme: 'system', autoplay: true });
+    return c.json(
+      settings ?? {
+        id: `settings-${authContext.userId.toString()}`,
+        ownerId: authContext.userId.toString(),
+        autoplay: true
+      }
+    );
   };
 
   update = async (c: Context<HonoEnv>) => {
@@ -21,11 +27,10 @@ export class SettingsHandler {
     if (!authContext) {
       return c.json({ message: 'Unauthorized' }, 401);
     }
-    const body = await c.req.json<{ theme: 'light' | 'dark' | 'system'; autoplay: boolean }>();
+    const body = await c.req.json<{ autoplay: boolean }>();
     const settings = new Settings({
       id: new SettingsId(`settings-${authContext.userId.toString()}`),
       ownerId: authContext.userId,
-      theme: body.theme,
       autoplay: body.autoplay
     });
     const updated = await this.settingsService.update(settings);

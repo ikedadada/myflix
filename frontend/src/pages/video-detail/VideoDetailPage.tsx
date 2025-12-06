@@ -14,6 +14,10 @@ export const VideoDetailPage = () => {
     () => (video ? buildApiUrl(`/videos/${video.id}/stream`) : ''),
     [video]
   );
+  const captionsUrl = useMemo(
+    () => (video ? buildApiUrl(`/videos/${video.id}/captions.vtt`) : ''),
+    [video]
+  );
   const resolveThumbUrl = (url: string | null): string => {
     if (!url) return defaultThumb;
     if (url.startsWith('http')) return url;
@@ -23,31 +27,33 @@ export const VideoDetailPage = () => {
   const thumbnailUrl = resolveThumbUrl(video?.thumbnailUrl ?? null);
 
   if (isLoading) {
-    return <p className="text-white/70">Loading video…</p>;
+    return <p className="text-muted">Loading video…</p>;
   }
   if (isError) {
-    return <p className="text-red-400">Failed to load video.</p>;
+    return <p className="text-danger">Failed to load video.</p>;
   }
   if (!video) {
-    return <p className="text-white/70">Video not found.</p>;
+    return <p className="text-muted">Video not found.</p>;
   }
 
   return (
     <section className="space-y-6">
       <div className="space-y-2">
-        <p className="text-xs text-white/50">#{video.id.slice(0, 6)}</p>
-        <h1 className="text-3xl font-semibold">{video.title}</h1>
-        <p className="text-white/70">{video.description}</p>
-        <p className="text-sm text-white/60">Duration: {formatDuration(video.durationSeconds)}</p>
+        <p className="text-xs text-muted">#{video.id.slice(0, 6)}</p>
+        <h1 className="text-3xl font-semibold text-text">{video.title}</h1>
+        <p className="text-muted">{video.description}</p>
+        <p className="text-sm text-muted">Duration: {formatDuration(video.durationSeconds)}</p>
       </div>
-      <div className="overflow-hidden rounded-lg border border-white/10 bg-black">
+      <div className="overflow-hidden rounded-lg border border-border bg-card">
         <img src={thumbnailUrl} alt={video.title} className="h-48 w-full object-cover" />
       </div>
-      <div className="overflow-hidden rounded-lg border border-white/10 bg-black">
+      <div className="overflow-hidden rounded-lg border border-border bg-card">
         {streamUrl ? (
-          <video key={streamUrl} controls className="h-full w-full" src={streamUrl} />
+          <video key={streamUrl} controls className="h-full w-full" src={streamUrl}>
+            <track kind="captions" src={captionsUrl} label="Captions" srcLang="en" />
+          </video>
         ) : (
-          <p className="p-4 text-white/60">No stream available.</p>
+          <p className="p-4 text-muted">No stream available.</p>
         )}
       </div>
     </section>

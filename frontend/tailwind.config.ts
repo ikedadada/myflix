@@ -13,6 +13,8 @@ export default {
         muted: 'rgb(var(--color-muted) / <alpha-value>)',
         border: 'rgb(var(--color-border) / <alpha-value>)',
         accent: 'rgb(var(--color-accent) / <alpha-value>)',
+        danger: 'rgb(var(--color-danger) / <alpha-value>)',
+        success: 'rgb(var(--color-success) / <alpha-value>)',
         brand: {
           DEFAULT: '#ff4d4f',
           dark: '#b3261e'

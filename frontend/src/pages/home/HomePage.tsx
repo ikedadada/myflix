@@ -7,9 +7,9 @@ export const HomePage = () => {
 
   return (
     <section className="space-y-8">
-      {isError && <p className="text-red-400">Failed to load your library.</p>}
-      {isLoading && !videos && <p className="text-white/60">Loading videos…</p>}
-      {!isLoading && videos?.length === 0 && <p className="text-white/60">No videos yet.</p>}
+      {isError && <p className="text-danger">Failed to load your library.</p>}
+      {isLoading && !videos && <p className="text-muted">Loading videos…</p>}
+      {!isLoading && videos?.length === 0 && <p className="text-muted">No videos yet.</p>}
 
       {videos && videos.length > 0 && (
         <div className="space-y-6">
@@ -41,6 +41,20 @@ const Section = ({ title, videos }: { title: string; videos: ReturnType<typeof u
       node.removeEventListener('scroll', update);
       window.removeEventListener('resize', resize);
     };
+  }, []);
+
+  useEffect(() => {
+    const itemCount = videos?.length ?? 0;
+    if (itemCount === 0) {
+      setCanScrollLeft(false);
+      setCanScrollRight(false);
+      return;
+    }
+    const node = sliderRef.current;
+    if (!node) return;
+    const { scrollLeft, clientWidth, scrollWidth } = node;
+    setCanScrollLeft(scrollLeft > 0);
+    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 1);
   }, [videos?.length]);
   const scrollBy = (direction: 'left' | 'right') => {
     const node = sliderRef.current;
@@ -53,8 +67,8 @@ const Section = ({ title, videos }: { title: string; videos: ReturnType<typeof u
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-white">{title}</h2>
-        <div className="h-px flex-1 bg-white/10 ml-4" />
+        <h2 className="text-lg font-semibold text-text">{title}</h2>
+        <div className="ml-4 h-px flex-1 bg-border" />
       </div>
       <div className="relative">
         {showNav && canScrollLeft && (
@@ -62,7 +76,7 @@ const Section = ({ title, videos }: { title: string; videos: ReturnType<typeof u
             type="button"
             aria-label="Scroll left"
             onClick={() => scrollBy('left')}
-            className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/60 px-2 py-2 text-white shadow-lg backdrop-blur hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+            className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full border border-border bg-card/90 px-2 py-2 text-text shadow-lg backdrop-blur hover:bg-accent/15 focus:outline-none focus:ring-2 focus:ring-accent"
           >
             ‹
           </button>
@@ -72,7 +86,7 @@ const Section = ({ title, videos }: { title: string; videos: ReturnType<typeof u
             type="button"
             aria-label="Scroll right"
             onClick={() => scrollBy('right')}
-            className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/60 px-2 py-2 text-white shadow-lg backdrop-blur hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+            className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full border border-border bg-card/90 px-2 py-2 text-text shadow-lg backdrop-blur hover:bg-accent/15 focus:outline-none focus:ring-2 focus:ring-accent"
           >
             ›
           </button>

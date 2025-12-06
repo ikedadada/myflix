@@ -14,7 +14,6 @@ export const useSettings = () => {
       return {
         id: payload.id ?? 'temp',
         ownerId: payload.ownerId ?? 'current',
-        theme: payload.theme ?? 'system',
         autoplay: payload.autoplay ?? true
       };
     },
@@ -22,7 +21,7 @@ export const useSettings = () => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: (input: Pick<UserSettings, 'theme' | 'autoplay'>) =>
+    mutationFn: (input: Pick<UserSettings, 'autoplay'>) =>
       apiClient<UserSettings>('/settings', {
         method: 'PUT',
         body: JSON.stringify(input)

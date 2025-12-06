@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiClient, ApiError } from '@/app/config/apiClient';
+import { apiClient } from '@/app/config/apiClient';
 import type { ApiUser } from '@/shared/types/api';
 
 export const useAuthUser = () => {

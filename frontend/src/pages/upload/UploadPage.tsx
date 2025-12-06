@@ -95,10 +95,6 @@ export const UploadPage = () => {
         canvas.toBlob((b) => resolve(b), 'image/png')
       );
       if (!blob) throw new Error('Failed to create thumbnail blob');
-      if (thumbnailPreviewUrl) {
-        URL.revokeObjectURL(thumbnailPreviewUrl);
-        setThumbnailPreviewUrl(null);
-      }
       setThumbnailError(null);
       setThumbnailBlob(blob);
       setThumbnailObjectKey(null);
@@ -143,8 +139,16 @@ export const UploadPage = () => {
       cancelled = true;
       cleanup();
     };
-    // regenerate when title changes, unless manual thumbnail is provided
-  }, [file, thumbnailFile, title]);
+  }, [file, thumbnailFile]);
+
+  useEffect(
+    () => () => {
+      if (thumbnailPreviewUrl) {
+        URL.revokeObjectURL(thumbnailPreviewUrl);
+      }
+    },
+    [thumbnailPreviewUrl]
+  );
 
   const uploadAndCreate = useMutation({
     mutationFn: async () => {
@@ -319,7 +323,7 @@ export const UploadPage = () => {
               </Button>
               {!file && <p className="text-xs text-text/60">先に動画ファイルを選択してください</p>}
             </div>
-            {generationError && <p className="text-sm text-red-400">{generationError}</p>}
+            {generationError && <p className="text-sm text-danger">{generationError}</p>}
             {generatedCopy && (
               <p className="text-xs text-text/60">
                 生成済み: {toneOptions.find((t) => t.value === generatedCopy.tone)?.label ?? generatedCopy.tone}{' '}
@@ -365,7 +369,7 @@ export const UploadPage = () => {
             </div>
           )}
           {thumbnailObjectKey && (
-            <p className="text-xs text-green-400">Thumbnail uploaded: {thumbnailObjectKey}</p>
+            <p className="text-xs text-success">Thumbnail uploaded: {thumbnailObjectKey}</p>
           )}
           {!thumbnailObjectKey && thumbnailFile && (
             <p className="text-xs text-text/60">Upload the selected image to attach as thumbnail.</p>
@@ -373,17 +377,17 @@ export const UploadPage = () => {
           {thumbnailUploading && (
             <p className="text-xs text-text/60">Generating thumbnail from video…</p>
           )}
-          {thumbnailError && <p className="text-xs text-red-400">{thumbnailError}</p>}
+          {thumbnailError && <p className="text-xs text-danger">{thumbnailError}</p>}
         </div>
 
         <Button disabled={disabled} onClick={() => uploadAndCreate.mutate()}>
           {uploadAndCreate.isPending ? 'Uploading…' : 'Upload & Register'}
         </Button>
         {uploadAndCreate.isError && (
-          <p className="text-sm text-red-400">Failed to upload. Please retry.</p>
+          <p className="text-sm text-danger">Failed to upload. Please retry.</p>
         )}
         {uploadAndCreate.isSuccess && (
-          <p className="text-sm text-green-400">
+          <p className="text-sm text-success">
             Uploaded and registered! Video ID: {uploadAndCreate.data.video.id}
           </p>
         )}

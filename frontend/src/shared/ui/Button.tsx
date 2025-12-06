@@ -4,13 +4,13 @@ import { clsx } from 'clsx';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
-        solid: 'bg-brand text-white hover:bg-brand-dark',
-        outline: 'border border-white/20 text-white hover:bg-white/5',
-        ghost: 'text-white/80 hover:bg-white/5'
+        solid: 'bg-accent text-surface shadow-sm hover:bg-accent/90',
+        outline: 'border border-border text-text hover:bg-surface',
+        ghost: 'text-muted hover:bg-surface'
       },
       size: {
         sm: 'h-9 px-3',

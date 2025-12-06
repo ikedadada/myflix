@@ -4,7 +4,6 @@ import { UserId } from '../value_object/user-id';
 export interface SettingsProps {
   id: SettingsId;
   ownerId: UserId;
-  theme: 'light' | 'dark' | 'system';
   autoplay: boolean;
 }
 
@@ -17,10 +16,6 @@ export class Settings {
 
   ownerId(): UserId {
     return this.props.ownerId;
-  }
-
-  theme(): SettingsProps['theme'] {
-    return this.props.theme;
   }
 
   autoplay(): boolean {
