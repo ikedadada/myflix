@@ -3,6 +3,7 @@ import { Link, Outlet } from '@tanstack/react-router';
 import { APP_NAME } from '../config/constants';
 import { useTheme } from '../providers/ThemeProvider';
 import { Button } from '@/shared/ui/Button';
+import { useAuthUser } from '@/shared/hooks/useAuthUser';
 
 interface Props {
   children?: ReactNode;
@@ -10,6 +11,7 @@ interface Props {
 
 export const AppLayout = ({ children }: Props) => {
   const { toggle, theme } = useTheme();
+  const { data: user } = useAuthUser();
   return (
     <div className="min-h-screen bg-neutral-950 text-white">
       <header className="flex items-center justify-between border-b border-white/10 px-8 py-4">
@@ -26,9 +28,9 @@ export const AppLayout = ({ children }: Props) => {
           <Link to="/settings" className="text-white/80 hover:text-white">
             Settings
           </Link>
-          <Button variant="ghost" size="sm" onClick={toggle}>
-            {theme === 'dark' ? 'Light' : 'Dark'}
-          </Button>
+          <span className="text-white/60">
+            Signed in{user?.displayName ? ` as ${user.displayName}` : ''}
+          </span>
         </nav>
       </header>
       <main className="mx-auto w-full px-6 py-10">
