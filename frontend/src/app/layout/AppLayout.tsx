@@ -31,7 +31,7 @@ export const AppLayout = ({ children }: Props) => {
           </Button>
         </nav>
       </header>
-      <main className="mx-auto w-full max-w-6xl px-6 py-10">
+      <main className="mx-auto w-full max-w-7xl px-6 py-10 lg:px-10">
         {children ?? <Outlet />}
       </main>
     </div>
