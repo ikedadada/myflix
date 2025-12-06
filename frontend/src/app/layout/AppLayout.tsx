@@ -10,7 +10,7 @@ interface Props {
 export const AppLayout = ({ children }: Props) => {
   const { data: user } = useAuthUser();
   return (
-    <div className="min-h-screen bg-surface text-text">
+    <div className="min-h-screen">
       <header className="flex items-center justify-between border-b border-border bg-card/90 px-8 py-4 backdrop-blur">
         <Link to="/" className="text-xl font-semibold tracking-wide text-text">
           {APP_NAME}

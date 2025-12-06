@@ -10,6 +10,16 @@ import { NotFoundPage } from '@/pages/error/NotFoundPage';
 
 const rootRoute = createRootRoute({
   component: () => (
+    <div className="min-h-screen bg-surface text-text">
+      <Outlet />
+    </div>
+  )
+});
+
+const appLayoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: 'app-layout',
+  component: () => (
     <AppLayout>
       <Outlet />
     </AppLayout>
@@ -17,19 +27,19 @@ const rootRoute = createRootRoute({
 });
 
 const homeRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appLayoutRoute,
   path: '/',
   component: HomePage
 });
 
 const libraryRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appLayoutRoute,
   path: 'library',
   component: LibraryPage
 });
 
 const uploadRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appLayoutRoute,
   path: 'upload',
   component: UploadPage
 });
@@ -41,24 +51,20 @@ const videoDetailRoute = createRoute({
 });
 
 const settingsRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appLayoutRoute,
   path: 'settings',
   component: SettingsPage
 });
 
 const errorRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appLayoutRoute,
   path: 'error',
   component: ErrorPage
 });
 
 const routeTree = rootRoute.addChildren([
-  homeRoute,
-  libraryRoute,
-  uploadRoute,
-  videoDetailRoute,
-  settingsRoute,
-  errorRoute
+  appLayoutRoute.addChildren([homeRoute, libraryRoute, uploadRoute, settingsRoute, errorRoute]),
+  videoDetailRoute
 ]);
 
 export const router = createRouter({
