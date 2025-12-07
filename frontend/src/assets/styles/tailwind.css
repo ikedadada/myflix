@@ -26,4 +26,14 @@
     --color-success: 74 222 128; /* green-400 */
     color-scheme: dark;
   }
+
+  [data-themed-select] {
+    background-color: rgb(var(--color-card));
+    color: rgb(var(--color-text));
+  }
+
+  [data-themed-select] option {
+    background-color: rgb(var(--color-card));
+    color: rgb(var(--color-text));
+  }
 }
