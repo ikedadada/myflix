@@ -4,6 +4,7 @@
 
 @layer base {
   :root {
+    /* legacy tokens kept for compatibility; prefer shadcn tokens below */
     --color-surface: 249 250 251; /* neutral-50 */
     --color-card: 255 255 255; /* white */
     --color-text: 15 23 42; /* slate-900 */
@@ -40,6 +41,7 @@
   }
 
   .dark {
+    /* legacy tokens kept for compatibility; prefer shadcn tokens below */
     --color-surface: 10 12 16; /* near black */
     --color-card: 17 24 39; /* gray-900 */
     --color-text: 241 245 249; /* slate-100 */
