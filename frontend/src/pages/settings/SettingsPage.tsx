@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
-import { Button } from '@/shared/ui/Button';
 import { useSettings } from '@/shared/hooks/useSettings';
 import { useToast } from '@/shared/hooks/useToast';
 import { useTheme } from '@/app/providers/ThemeProvider';
-import { PageHeader } from '@/shared/components/PageHeader';
+import { PageHeader } from '@/shared/components/layout/PageHeader';
 import {
+  Button,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/shared/ui/Select';
-import { Switch } from '@/shared/ui/Switch';
+  SelectValue,
+  Switch
+} from '@/shared/ui';
 
 export const SettingsPage = () => {
   const toast = useToast();

@@ -1,6 +1,6 @@
-import { VideoCard } from '@/features/video-card/VideoCard';
+import { VideoCard } from '@/features/library/VideoCard';
 import { useVideos } from '@/shared/hooks/useVideos';
-import { PageHeader } from '@/shared/components/PageHeader';
+import { PageHeader } from '@/shared/components/layout/PageHeader';
 
 export const LibraryPage = () => {
   const { data: videos, isLoading } = useVideos();

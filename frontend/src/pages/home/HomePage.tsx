@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useVideos } from '@/shared/hooks/useVideos';
-import { VideoCard } from '@/features/video-card/VideoCard';
+import { VideoCard } from '@/features/library/VideoCard';
 
 export const HomePage = () => {
   const { data: videos, isLoading, isError } = useVideos();

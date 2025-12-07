@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui';
 import type { ApiUser } from '@/shared/types/api';
 
 interface Props {

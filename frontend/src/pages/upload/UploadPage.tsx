@@ -4,13 +4,21 @@ import { useUploadSessions } from '@/shared/hooks/useUploadSessions';
 import { formatDate } from '@/shared/lib/format-date';
 import { apiClient } from '@/app/config/apiClient';
 import { useGenerateVideoCopy } from '@/shared/hooks/useGenerateVideoCopy';
-import { Button } from '@/shared/ui/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
-import { Input } from '@/shared/ui/Input';
-import { Textarea } from '@/shared/ui/Textarea';
 import type { GeneratedVideoCopy, VideoSummary, VideoTone } from '@/shared/types/video';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/shared/ui/Accordion';
-import { PageHeader } from '@/shared/components/PageHeader';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Input,
+  Textarea
+} from '@/shared/ui';
+import { PageHeader } from '@/shared/components/layout/PageHeader';
 
 export const UploadPage = () => {
   const client = useQueryClient();
