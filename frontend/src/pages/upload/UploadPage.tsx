@@ -238,8 +238,11 @@ export const UploadPage = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">Choose a file</label>
+            <label className="text-sm font-medium text-foreground" htmlFor="upload-file">
+              Choose a file
+            </label>
             <Input
+              id="upload-file"
               type="file"
               accept="video/*"
               className="border-dashed"
@@ -255,8 +258,11 @@ export const UploadPage = () => {
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Title</label>
+                <label className="text-sm font-medium text-foreground" htmlFor="upload-title">
+                  Title
+                </label>
                 <Input
+                  id="upload-title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="My video"
@@ -264,8 +270,11 @@ export const UploadPage = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Description</label>
+                <label className="text-sm font-medium text-foreground" htmlFor="upload-description">
+                  Description
+                </label>
                 <Textarea
+                  id="upload-description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Optional description"
@@ -318,8 +327,11 @@ export const UploadPage = () => {
                       ))}
                     </div>
                     <div className="space-y-2 text-sm">
-                      <label className="text-sm font-medium text-foreground">用途/ターゲット（任意）</label>
+                      <label className="text-sm font-medium text-foreground" htmlFor="upload-context">
+                        用途/ターゲット（任意）
+                      </label>
                       <Input
+                        id="upload-context"
                         value={userContext}
                         onChange={(e) => setUserContext(e.target.value)}
                         placeholder="例: YouTubeショート向け / 学習者向け"
@@ -355,8 +367,11 @@ export const UploadPage = () => {
             </CardHeader>
             <CardContent className="space-y-3 pt-0">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Select image</label>
+                <label className="text-sm font-medium text-foreground" htmlFor="upload-thumbnail">
+                  Select image
+                </label>
                 <Input
+                  id="upload-thumbnail"
                   type="file"
                   accept="image/*"
                   className="border-dashed"
