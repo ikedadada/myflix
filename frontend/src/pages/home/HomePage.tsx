@@ -70,13 +70,13 @@ const Section = ({ title, videos }: { title: string; videos: ReturnType<typeof u
         <h2 className="text-lg font-semibold text-text">{title}</h2>
         <div className="ml-4 h-px flex-1 bg-border" />
       </div>
-      <div className="relative overflow-hidden">
+      <div className="relative overflow-visible">
         {showNav && canScrollLeft && (
           <button
             type="button"
             aria-label="左にスクロール"
             onClick={() => scrollBy('left')}
-            className="group absolute left-2 top-1/2 z-10 -translate-y-1/2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="group absolute left-2 top-1/2 z-30 -translate-y-1/2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card/90 text-text shadow-lg backdrop-blur transition group-hover:bg-accent/15">
               ‹
@@ -88,7 +88,7 @@ const Section = ({ title, videos }: { title: string; videos: ReturnType<typeof u
             type="button"
             aria-label="右にスクロール"
             onClick={() => scrollBy('right')}
-            className="group absolute right-2 top-1/2 z-10 -translate-y-1/2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="group absolute right-2 top-1/2 z-30 -translate-y-1/2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card/90 text-text shadow-lg backdrop-blur transition group-hover:bg-accent/15">
               ›
@@ -97,17 +97,20 @@ const Section = ({ title, videos }: { title: string; videos: ReturnType<typeof u
         )}
         <div
           ref={sliderRef}
-          className="flex gap-4 overflow-hidden pb-3"
+          className="no-scrollbar flex gap-4 overflow-x-auto overflow-y-visible py-4 pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-transparent"
           style={{ scrollSnapType: 'x mandatory' }}
         >
-          {videos?.map((video) => (
-            <div
-              key={video.id}
-              className="min-w-[280px] max-w-[320px] flex-shrink-0 scroll-snap-align-start"
-            >
-              <VideoCard video={video} />
-            </div>
-          ))}
+          {videos?.map((video, idx) => {
+            const direction = idx === 0 ? 'right' : idx === videos.length - 1 ? 'left' : 'center';
+            return (
+              <div
+                key={video.id}
+                className="min-w-[280px] max-w-[320px] flex-shrink-0 scroll-snap-align-start"
+              >
+                <VideoCard video={video} expandDirection={direction} />
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
