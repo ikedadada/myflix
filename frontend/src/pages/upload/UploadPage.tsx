@@ -66,8 +66,10 @@ export const UploadPage = () => {
       const computed = Math.max(1, Math.round(videoEl.duration || 0));
       setDurationSeconds(computed);
       const currentTitle = getValues('title');
-      setValue('title', currentTitle || file.name.replace(/\.[^.]+$/, ''), {
-        shouldValidate: false
+      const nextTitle = currentTitle || file.name.replace(/\.[^.]+$/, '');
+      setValue('title', nextTitle, {
+        shouldValidate: false,
+        shouldDirty: true
       });
     };
     videoEl.onerror = () => {
