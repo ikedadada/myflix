@@ -53,6 +53,18 @@ export const UploadPage = () => {
   const tone = watch('tone');
   const userContext = watch('userContext');
 
+  const handleFileChange = (file: File | null) => {
+    setFile(file);
+    if (!file) return;
+    const currentTitle = getValues('title');
+    if (!currentTitle) {
+      setValue('title', file.name.replace(/\.[^.]+$/, ''), {
+        shouldValidate: false,
+        shouldDirty: true
+      });
+    }
+  };
+
   useEffect(() => {
     if (!file) {
       setDurationSeconds(null);
@@ -272,7 +284,7 @@ export const UploadPage = () => {
               type="file"
               accept="video/*"
               className="border-dashed"
-              onChange={(event) => setFile(event.target.files?.[0] ?? null)}
+              onChange={(event) => handleFileChange(event.target.files?.[0] ?? null)}
             />
             {errors.title && (
               <p className="text-xs text-danger">{errors.title.message}</p>
