@@ -5,11 +5,12 @@ import { formatDate } from '@/shared/lib/format-date';
 import { apiClient } from '@/app/config/apiClient';
 import { useGenerateVideoCopy } from '@/shared/hooks/useGenerateVideoCopy';
 import { Button } from '@/shared/ui/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
 import { Input } from '@/shared/ui/Input';
 import { Textarea } from '@/shared/ui/Textarea';
 import type { GeneratedVideoCopy, VideoSummary, VideoTone } from '@/shared/types/video';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/shared/ui/Accordion';
+import { PageHeader } from '@/shared/components/PageHeader';
 
 export const UploadPage = () => {
   const client = useQueryClient();
@@ -230,13 +231,11 @@ export const UploadPage = () => {
 
   return (
     <section className="space-y-6">
+      <PageHeader
+        title="Upload"
+        description="Upload a video to R2 and register it as a playable item."
+      />
       <Card className="border-border/80">
-        <CardHeader>
-          <CardTitle>Upload</CardTitle>
-          <CardDescription>
-            Upload a video to R2 and register it as a playable item.
-          </CardDescription>
-        </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground" htmlFor="upload-file">
