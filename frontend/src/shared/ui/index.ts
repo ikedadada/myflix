@@ -6,3 +6,5 @@ export * from './Select';
 export * from './Switch';
 export * from './Textarea';
 export * from './Accordion';
+export * from '@/components/ui/avatar';
+export * from '@/components/ui/dropdown-menu';
