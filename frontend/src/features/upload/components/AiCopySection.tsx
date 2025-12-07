@@ -22,7 +22,6 @@ export const AiCopySection = ({
 }: AiCopySectionProps) => {
   const contextId = useId();
   const [tone, setTone] = useState<VideoTone>('friendly');
-  const [showAiSettings, setShowAiSettings] = useState(false);
   const {
     generate,
     isGenerating,
@@ -60,51 +59,42 @@ export const AiCopySection = ({
           <span className="text-xs font-normal text-muted-foreground">model: {generatedCopy.model}</span>
         )}
       </div>
-      <Button
-        type="button"
-        variant="ghost"
-        size="sm"
-        className="px-0 text-xs text-muted-foreground underline"
-        onClick={() => setShowAiSettings((v) => !v)}
-      >
-        {showAiSettings ? 'AI設定を隠す' : 'AI設定を表示'}
-      </Button>
-      {showAiSettings && (
-        <div className="space-y-3">
-          <div className="flex flex-wrap gap-2">
-            {toneOptions.map((option) => (
-              <Button
+      <div className="space-y-3">
+        <div className="grid gap-2 sm:grid-cols-2" role="group" aria-label="tone options">
+          {toneOptions.map((option) => {
+            const isActive = tone === option.value;
+            return (
+              <button
                 key={option.value}
                 type="button"
-                size="sm"
-                variant={tone === option.value ? 'solid' : 'outline'}
                 onClick={() => setTone(option.value)}
-                aria-pressed={tone === option.value}
-                className="min-w-[120px] justify-start"
+                aria-pressed={isActive}
+                className={`flex w-full items-start justify-between rounded-md border px-3 py-2 text-left text-sm transition-colors ${isActive ? 'border-primary bg-primary/10 text-primary' : 'border-border/80 bg-card text-foreground hover:border-border'}`}
               >
-                <span className="flex flex-col items-start leading-tight">
-                  <span>{option.label}</span>
+                <span className="flex flex-col leading-tight">
+                  <span className="font-semibold">{option.label}</span>
                   <span className="text-[11px] text-muted-foreground">{option.note}</span>
                 </span>
-              </Button>
-            ))}
-          </div>
-          <div className="space-y-2 text-sm">
-            <label className="text-sm font-medium text-foreground" htmlFor={contextId}>
-              用途/ターゲット（任意）
-            </label>
-            <input
-              id={contextId}
-              {...register('userContext')}
-              className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-              placeholder="例: YouTubeショート向け / 学習者向け"
-            />
-            {errors.userContext && (
-              <p className="text-xs text-danger">{errors.userContext.message}</p>
-            )}
-          </div>
+                {isActive && <span className="text-[11px] font-semibold">選択中</span>}
+              </button>
+            );
+          })}
         </div>
-      )}
+        <div className="space-y-2 text-sm">
+          <label className="text-sm font-medium text-foreground" htmlFor={contextId}>
+            用途/ターゲット（任意）
+          </label>
+          <input
+            id={contextId}
+            {...register('userContext')}
+            className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            placeholder="例: YouTubeショート向け / 学習者向け"
+          />
+          {errors.userContext && (
+            <p className="text-xs text-danger">{errors.userContext.message}</p>
+          )}
+        </div>
+      </div>
       <div className="flex flex-wrap items-center gap-3">
         <Button type="button" onClick={handleGenerate} disabled={!file || isGenerating} variant="outline">
           {isGenerating ? '生成中…' : 'タイトルと説明を自動生成'}

@@ -10,15 +10,15 @@ interface TextInputsProps {
   setValue: UseFormSetValue<UploadFormValues>;
 }
 
-export const TextInputs = ({ register, errors , suggestedTitle, setValue}: TextInputsProps) => {
+export const TextInputs = ({ register, errors, suggestedTitle, setValue }: TextInputsProps) => {
   const titleId = useId();
   const descriptionId = useId();
 
-    useEffect(() => {
-      if (suggestedTitle) {
-        setValue('title', suggestedTitle, { shouldValidate: false, shouldDirty: true });
-      }
-    }, [suggestedTitle, setValue]);
+  useEffect(() => {
+    if (suggestedTitle) {
+      setValue('title', suggestedTitle, { shouldValidate: false, shouldDirty: true });
+    }
+  }, [suggestedTitle, setValue]);
   return (
     <div className="space-y-4">
       <div className="space-y-2">
