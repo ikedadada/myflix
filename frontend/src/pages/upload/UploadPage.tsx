@@ -268,7 +268,7 @@ export const UploadPage = () => {
       return { uploadId: upload.id, video };
     },
     onSuccess: (result) => {
-      toast('アップロードが完了しました', {
+      toast.success('アップロードが完了しました', {
         description: `Video ID: ${result.video.id}`
       });
       client.invalidateQueries({ queryKey: ['videos'] });
@@ -290,7 +290,9 @@ export const UploadPage = () => {
       });
     },
     onError: () => {
-      toast('アップロードに失敗しました', { description: '時間をおいて再試行してください' });
+      toast.error('アップロードに失敗しました', {
+        description: '時間をおいて再試行してください'
+      });
     }
   });
 

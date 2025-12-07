@@ -15,7 +15,7 @@ export const AppProviders = ({ children }: Props) => {
     <ThemeProvider>
       <QueryClientProvider client={client}>
         {children}
-        <Toaster position="top-right" richColors />
+        <Toaster position="bottom-right" richColors />
         <ReactQueryDevtools buttonPosition="bottom-right" initialIsOpen={false} />
       </QueryClientProvider>
     </ThemeProvider>

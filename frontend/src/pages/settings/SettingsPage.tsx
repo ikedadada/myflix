@@ -32,7 +32,7 @@ export const SettingsPage = () => {
 
   const handleSave = async () => {
     await update({ autoplay });
-    toast('Settings saved');
+    toast.success('Settings saved');
   };
 
   return (
