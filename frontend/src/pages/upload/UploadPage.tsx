@@ -9,12 +9,14 @@ import { ThumbnailSection } from '@/features/upload/components/ThumbnailSection'
 import { useUploadForm } from '@/features/upload/useUploadForm';
 import { PageHeader } from '@/shared/components/layout/PageHeader';
 import { useUploadSessions } from '@/shared/hooks/useUploadSessions';
+import { useToast } from '@/shared/hooks/useToast';
 import type { VideoSummary } from '@/shared/types/video';
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@/shared/ui';
 
 export const UploadPage = () => {
   const client = useQueryClient();
   const { create: createUploadSession, creating } = useUploadSessions();
+  const toast = useToast();
 
   const [file, setFile] = useState<File | null>(null);
   const [durationSeconds, setDurationSeconds] = useState<number | null>(null);
@@ -265,7 +267,10 @@ export const UploadPage = () => {
       });
       return { uploadId: upload.id, video };
     },
-    onSuccess: () => {
+    onSuccess: (result) => {
+      toast('アップロードが完了しました', {
+        description: `Video ID: ${result.video.id}`
+      });
       client.invalidateQueries({ queryKey: ['videos'] });
       client.invalidateQueries({ queryKey: ['uploads'] });
       setFile(null);
@@ -283,6 +288,9 @@ export const UploadPage = () => {
         tone: 'friendly',
         userContext: ''
       });
+    },
+    onError: () => {
+      toast('アップロードに失敗しました', { description: '時間をおいて再試行してください' });
     }
   });
 
@@ -367,14 +375,6 @@ export const UploadPage = () => {
               </Button>
               <div className="space-y-1 text-sm text-muted-foreground">
                 <p>内容を確認してから実行してください。</p>
-                {uploadAndCreate.isError && (
-                  <p className="text-danger">Failed to upload. Please retry.</p>
-                )}
-                {uploadAndCreate.isSuccess && uploadAndCreate.data && (
-                  <p className="text-success">
-                    Uploaded and registered! Video ID: {uploadAndCreate.data.video.id}
-                  </p>
-                )}
               </div>
             </CardContent>
           </Card>
