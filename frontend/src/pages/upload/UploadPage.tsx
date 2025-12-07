@@ -77,20 +77,13 @@ export const UploadPage = () => {
       URL.revokeObjectURL(objectUrl);
       const computed = Math.max(1, Math.round(videoEl.duration || 0));
       setDurationSeconds(computed);
-      if (!title?.trim()) {
-        const nextTitle = file.name.replace(/\.[^.]+$/, '');
-        setValue('title', nextTitle, {
-          shouldValidate: false,
-          shouldDirty: true
-        });
-      }
     };
     videoEl.onerror = () => {
       URL.revokeObjectURL(objectUrl);
       setDurationSeconds(60);
     };
     videoEl.src = objectUrl;
-  }, [file, setValue, title]);
+  }, [file]);
 
   useEffect(() => {
     if (!file || thumbnailFile) return;
