@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/sha
 import { Input } from '@/shared/ui/Input';
 import { Textarea } from '@/shared/ui/Textarea';
 import type { GeneratedVideoCopy, VideoSummary, VideoTone } from '@/shared/types/video';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/shared/ui/Accordion';
 
 export const UploadPage = () => {
   const client = useQueryClient();
@@ -438,29 +439,35 @@ export const UploadPage = () => {
         </CardContent>
       </Card>
 
-      <details className="rounded-xl border border-border bg-card/80">
-        <summary className="flex cursor-pointer items-center justify-between gap-2 px-4 py-3 text-lg font-semibold text-foreground">
-          <span>Recent uploads</span>
-          <span className="text-sm font-normal text-muted-foreground">Latest upload sessions</span>
-        </summary>
-        <div className="space-y-2 border-t border-border px-4 py-3">
-          {sessions && sessions.length === 0 && (
-            <p className="text-muted-foreground">No sessions yet.</p>
-          )}
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            {sessions?.map((session) => (
-              <li
-                key={session.id}
-                className="flex items-center justify-between rounded border border-border px-3 py-2"
-              >
-                <span className="font-mono text-xs">{session.id.slice(0, 8)}</span>
-                <span>{session.status}</span>
-                <span>{formatDate(session.createdAt)}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </details>
+      <Accordion type="single" collapsible className="rounded-xl border border-border bg-card/80">
+        <AccordionItem value="recent">
+          <AccordionTrigger className="px-4 py-3 text-lg font-semibold text-foreground">
+            <div className="flex w-full items-center justify-between gap-2">
+              <span>Recent uploads</span>
+              <span className="text-sm font-normal text-muted-foreground">
+                Latest upload sessions
+              </span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="space-y-2 border-t border-border px-4 py-3">
+            {sessions && sessions.length === 0 && (
+              <p className="text-muted-foreground">No sessions yet.</p>
+            )}
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              {sessions?.map((session) => (
+                <li
+                  key={session.id}
+                  className="flex items-center justify-between rounded border border-border px-3 py-2"
+                >
+                  <span className="font-mono text-xs">{session.id.slice(0, 8)}</span>
+                  <span>{session.status}</span>
+                  <span>{formatDate(session.createdAt)}</span>
+                </li>
+              ))}
+            </ul>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </section>
   );
 };
