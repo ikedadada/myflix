@@ -438,13 +438,15 @@ export const UploadPage = () => {
         </CardContent>
       </Card>
 
-      <Card className="border-border/80">
-        <CardHeader>
-          <CardTitle className="text-lg">Recent uploads</CardTitle>
-          <CardDescription>Latest upload sessions with status.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          {sessions && sessions.length === 0 && <p className="text-muted-foreground">No sessions yet.</p>}
+      <details className="rounded-xl border border-border bg-card/80">
+        <summary className="flex cursor-pointer items-center justify-between gap-2 px-4 py-3 text-lg font-semibold text-foreground">
+          <span>Recent uploads</span>
+          <span className="text-sm font-normal text-muted-foreground">Latest upload sessions</span>
+        </summary>
+        <div className="space-y-2 border-t border-border px-4 py-3">
+          {sessions && sessions.length === 0 && (
+            <p className="text-muted-foreground">No sessions yet.</p>
+          )}
           <ul className="space-y-2 text-sm text-muted-foreground">
             {sessions?.map((session) => (
               <li
@@ -457,8 +459,8 @@ export const UploadPage = () => {
               </li>
             ))}
           </ul>
-        </CardContent>
-      </Card>
+        </div>
+      </details>
     </section>
   );
 };
