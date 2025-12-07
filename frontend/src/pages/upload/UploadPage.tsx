@@ -44,9 +44,8 @@ export const UploadPage = () => {
     register,
     handleSubmit,
     setValue,
-    getValues,
     watch,
-    formState: { errors }
+    formState: { errors, dirtyFields }
   } = useUploadForm();
   const title = watch('title');
   const description = watch('description');
@@ -56,8 +55,7 @@ export const UploadPage = () => {
   const handleFileChange = (file: File | null) => {
     setFile(file);
     if (!file) return;
-    const currentTitle = getValues('title');
-    if (!currentTitle) {
+    if (!dirtyFields.title) {
       setValue('title', file.name.replace(/\.[^.]+$/, ''), {
         shouldValidate: false,
         shouldDirty: true
@@ -77,19 +75,20 @@ export const UploadPage = () => {
       URL.revokeObjectURL(objectUrl);
       const computed = Math.max(1, Math.round(videoEl.duration || 0));
       setDurationSeconds(computed);
-      const currentTitle = getValues('title');
-      const nextTitle = currentTitle || file.name.replace(/\.[^.]+$/, '');
-      setValue('title', nextTitle, {
-        shouldValidate: false,
-        shouldDirty: true
-      });
+      if (!dirtyFields.title) {
+        const nextTitle = file.name.replace(/\.[^.]+$/, '');
+        setValue('title', nextTitle, {
+          shouldValidate: false,
+          shouldDirty: true
+        });
+      }
     };
     videoEl.onerror = () => {
       URL.revokeObjectURL(objectUrl);
       setDurationSeconds(60);
     };
     videoEl.src = objectUrl;
-  }, [file, setValue, getValues]);
+  }, [file, setValue, dirtyFields.title]);
 
   useEffect(() => {
     if (!file || thumbnailFile) return;
