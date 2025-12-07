@@ -63,10 +63,7 @@ export const FilePicker = ({ file, onChange }: FilePickerProps) => {
   }, [file, onChange]);
 
   return (
-    <div className="space-y-2">
-      <label className="text-sm font-medium text-foreground" htmlFor={inputId}>
-        ファイルを選択
-      </label>
+    <div>
       <Input
         id={inputId}
         type="file"

@@ -41,22 +41,22 @@ export const UserMenu = ({ user }: Props) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" sideOffset={10}>
         <DropdownMenuLabel className="text-xs text-muted-foreground">
-          {user?.displayName ?? user?.email ?? 'Signed in'}
+          {user?.displayName ?? user?.email ?? 'ログイン中'}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link to="/library" className="w-full">
-            Library
+            ライブラリ
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link to="/upload" className="w-full">
-            Upload
+            アップロード
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link to="/settings" className="w-full">
-            Settings
+            設定
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>

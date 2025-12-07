@@ -7,16 +7,16 @@ export const LibraryPage = () => {
   return (
     <section className="space-y-4">
       <PageHeader
-        title="Library"
-        description="This page reads from the backend `/videos` endpoint so designers can validate the API contract."
+        title="ライブラリ"
+        description="アップロード済みの動画一覧を表示します。"
       />
-      {isLoading && <p className="text-muted-foreground">Loading…</p>}
+      {isLoading && <p className="text-muted-foreground">読み込み中…</p>}
       <div className="grid gap-4 md:grid-cols-3">
         {videos?.map((video) => (
           <VideoCard key={video.id} video={video} />
         ))}
         {!isLoading && videos?.length === 0 && (
-          <p className="text-muted-foreground">No uploads yet.</p>
+          <p className="text-muted-foreground">まだアップロードがありません。</p>
         )}
       </div>
     </section>

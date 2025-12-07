@@ -7,13 +7,13 @@ export const HomePage = () => {
 
   return (
     <section className="space-y-8">
-      {isError && <p className="text-danger">Failed to load your library.</p>}
-      {isLoading && !videos && <p className="text-muted">Loading videos…</p>}
-      {!isLoading && videos?.length === 0 && <p className="text-muted">No videos yet.</p>}
+      {isError && <p className="text-danger">ライブラリの読み込みに失敗しました。</p>}
+      {isLoading && !videos && <p className="text-muted">動画を読み込み中…</p>}
+      {!isLoading && videos?.length === 0 && <p className="text-muted">まだ動画がありません。</p>}
 
       {videos && videos.length > 0 && (
         <div className="space-y-6">
-          <Section title="My Library" videos={videos} />
+          <Section title="マイライブラリ" videos={videos} />
         </div>
       )}
     </section>
@@ -74,7 +74,7 @@ const Section = ({ title, videos }: { title: string; videos: ReturnType<typeof u
         {showNav && canScrollLeft && (
           <button
             type="button"
-            aria-label="Scroll left"
+            aria-label="左にスクロール"
             onClick={() => scrollBy('left')}
             className="group absolute left-2 top-1/2 z-10 -translate-y-1/2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
@@ -86,7 +86,7 @@ const Section = ({ title, videos }: { title: string; videos: ReturnType<typeof u
         {showNav && canScrollRight && (
           <button
             type="button"
-            aria-label="Scroll right"
+            aria-label="右にスクロール"
             onClick={() => scrollBy('right')}
             className="group absolute right-2 top-1/2 z-10 -translate-y-1/2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
