@@ -1,14 +1,14 @@
 import { Link } from '@tanstack/react-router';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui';
 import {
+  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/shared/ui';
+} from '@/shared/ui';
 import type { ApiUser } from '@/shared/types/api';
 
 interface Props {
