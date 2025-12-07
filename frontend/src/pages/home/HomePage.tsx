@@ -76,9 +76,11 @@ const Section = ({ title, videos }: { title: string; videos: ReturnType<typeof u
             type="button"
             aria-label="Scroll left"
             onClick={() => scrollBy('left')}
-            className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full border border-border bg-card/90 px-2 py-2 text-text shadow-lg backdrop-blur hover:bg-accent/15 focus:outline-none focus:ring-2 focus:ring-accent"
+            className="group absolute left-2 top-1/2 z-10 -translate-y-1/2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
-            ‹
+            <span className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card/90 text-text shadow-lg backdrop-blur transition group-hover:bg-accent/15">
+              ‹
+            </span>
           </button>
         )}
         {showNav && canScrollRight && (
@@ -86,9 +88,11 @@ const Section = ({ title, videos }: { title: string; videos: ReturnType<typeof u
             type="button"
             aria-label="Scroll right"
             onClick={() => scrollBy('right')}
-            className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full border border-border bg-card/90 px-2 py-2 text-text shadow-lg backdrop-blur hover:bg-accent/15 focus:outline-none focus:ring-2 focus:ring-accent"
+            className="group absolute right-2 top-1/2 z-10 -translate-y-1/2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
-            ›
+            <span className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card/90 text-text shadow-lg backdrop-blur transition group-hover:bg-accent/15">
+              ›
+            </span>
           </button>
         )}
         <div
