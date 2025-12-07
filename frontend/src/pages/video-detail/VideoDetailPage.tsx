@@ -97,9 +97,11 @@ export const VideoDetailPage = () => {
           <div className="pointer-events-auto flex w-full items-center justify-between gap-3 p-4">
             <Link
               to="/"
-              className="rounded-full bg-card/80 px-3 py-2 text-sm font-medium text-text shadow-md backdrop-blur transition hover:bg-card"
+              className="inline-flex focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             >
-              ← Back
+              <span className="rounded-full bg-card/80 px-3 py-2 text-sm font-medium text-text shadow-md backdrop-blur transition hover:bg-card">
+                ← Back
+              </span>
             </Link>
             <div className="inline-flex max-w-full items-center gap-3 rounded-full bg-card/80 px-4 py-2 backdrop-blur">
               <span className="text-xs font-semibold uppercase tracking-wide text-accent">
