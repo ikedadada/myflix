@@ -35,22 +35,24 @@ export const SettingsPage = () => {
       {isLoading && <p className="text-muted">Loading settings…</p>}
       <div className="space-y-4">
         <div className="space-y-2 rounded-lg border border-border bg-card/80 p-4">
-          <label className="flex flex-col gap-2 text-sm text-text">
-            Theme (saved on this device)
-            <select
-              className="rounded border border-border bg-card px-3 py-2 text-text shadow-sm"
-              value={themeMode}
-              onChange={(event) => {
-                const next = event.target.value as typeof themeMode;
-                setThemeMode(next);
-                setMode(next);
-              }}
-            >
-              <option value="auto">Follow system</option>
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
-            </select>
-          </label>
+          <div className="flex flex-col gap-2 text-sm text-text">
+            <span>Theme (saved on this device)</span>
+            <div className="rounded border border-border bg-card px-3 py-2 shadow-sm">
+              <select
+                className="w-full bg-transparent text-text outline-none"
+                value={themeMode}
+                onChange={(event) => {
+                  const next = event.target.value as typeof themeMode;
+                  setThemeMode(next);
+                  setMode(next);
+                }}
+              >
+                <option value="auto">Follow system</option>
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
+            </div>
+          </div>
           <p className="text-xs text-muted">
             UI theme stays on this browser only. Server-side preferences below remain unaffected.
           </p>
