@@ -237,37 +237,41 @@ export const UploadPage = () => {
           <input
             type="file"
             accept="video/*"
-            className="rounded border border-dashed border-border bg-transparent p-6 text-text"
+            className="rounded border border-dashed border-border bg-transparent px-3 py-2 text-text"
             onChange={(event) => setFile(event.target.files?.[0] ?? null)}
           />
         </label>
-        <p className="text-sm text-text/60">
+        <div className="rounded border border-border bg-surface/60 px-3 py-2 text-sm text-text/70">
           {selectedName
             ? `Detected duration: ${durationSeconds ? `${durationSeconds} sec` : 'Detecting…'}`
             : 'No file selected'}
-        </p>
+        </div>
 
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-4">
             <label className="flex flex-col gap-2 text-sm">
               Title
-              <input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="rounded border border-border bg-card px-3 py-2 text-text"
-                placeholder="My video"
-              />
+              <div className="rounded border border-border bg-card px-3 py-2">
+                <input
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full bg-transparent text-text outline-none"
+                  placeholder="My video"
+                />
+              </div>
             </label>
 
             <label className="flex flex-col gap-2 text-sm">
               Description
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="rounded border border-border bg-card px-3 py-2 text-text"
-                placeholder="Optional description"
-                rows={5}
-              />
+              <div className="rounded border border-border bg-card px-3 py-2">
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="w-full bg-transparent text-text outline-none"
+                  placeholder="Optional description"
+                  rows={5}
+                />
+              </div>
             </label>
 
           </div>
@@ -299,21 +303,23 @@ export const UploadPage = () => {
                       aria-pressed={tone === option.value}
                       className="min-w-[120px] justify-start"
                     >
-                      <div className="flex flex-col items-start leading-tight">
+                      <span className="flex flex-col items-start leading-tight">
                         <span>{option.label}</span>
                         <span className="text-[11px] text-text/70">{option.note}</span>
-                      </div>
+                      </span>
                     </Button>
                   ))}
                 </div>
                 <label className="flex flex-col gap-2 text-sm">
                   用途/ターゲット（任意）
-                  <input
-                    value={userContext}
-                    onChange={(e) => setUserContext(e.target.value)}
-                    className="rounded border border-border bg-card px-3 py-2 text-text"
-                    placeholder="例: YouTubeショート向け / 学習者向け"
-                  />
+                  <div className="rounded border border-border bg-card px-3 py-2">
+                    <input
+                      value={userContext}
+                      onChange={(e) => setUserContext(e.target.value)}
+                      className="w-full bg-transparent text-text outline-none"
+                      placeholder="例: YouTubeショート向け / 学習者向け"
+                    />
+                  </div>
                 </label>
               </div>
             )}
@@ -355,7 +361,11 @@ export const UploadPage = () => {
               }}
             />
           </label>
-          {selectedThumbName && <p className="text-text/60">Selected thumbnail: {selectedThumbName}</p>}
+          {selectedThumbName && (
+            <div className="rounded border border-border bg-surface/60 px-3 py-2 text-sm text-text/70">
+              Selected thumbnail: {selectedThumbName}
+            </div>
+          )}
           {thumbnailPreviewUrl && (
             <div className="overflow-hidden rounded border border-border bg-card">
               <img
