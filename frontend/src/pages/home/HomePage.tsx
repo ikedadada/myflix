@@ -70,7 +70,7 @@ const Section = ({ title, videos }: { title: string; videos: ReturnType<typeof u
         <h2 className="text-lg font-semibold text-text">{title}</h2>
         <div className="ml-4 h-px flex-1 bg-border" />
       </div>
-      <div className="relative">
+      <div className="relative overflow-hidden">
         {showNav && canScrollLeft && (
           <button
             type="button"
