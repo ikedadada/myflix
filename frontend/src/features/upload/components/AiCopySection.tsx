@@ -53,14 +53,14 @@ export const AiCopySection = ({
 
   return (
     <div className="space-y-3 rounded border border-border bg-card p-3">
-      <div className="flex flex-wrap items-center justify-between gap-2 text-sm font-semibold">
-        <span>タイトル/説明をAIで自動生成</span>
-        {generatedCopy?.model && (
-          <span className="text-xs font-normal text-muted-foreground">model: {generatedCopy.model}</span>
-        )}
-      </div>
+          <div className="flex flex-wrap items-center justify-between gap-2 text-sm font-semibold">
+            <span>タイトル/説明をAIで自動生成</span>
+            {generatedCopy?.model && (
+              <span className="text-xs font-normal text-muted-foreground">モデル: {generatedCopy.model}</span>
+            )}
+          </div>
       <div className="space-y-3">
-        <div className="grid gap-2 sm:grid-cols-2" role="group" aria-label="tone options">
+        <div className="grid gap-2 sm:grid-cols-2" role="group" aria-label="トーンの選択">
           {toneOptions.map((option) => {
             const isActive = tone === option.value;
             return (

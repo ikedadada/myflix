@@ -28,7 +28,7 @@ export const ThumbnailSection = ({
 
   const statusText = (() => {
     if (error) return error;
-    if (uploading) return 'Uploading thumbnail…';
+    if (uploading) return 'サムネイルをアップロード中…';
     if (generating) return '動画から自動生成中…';
     if (fileName) return `選択済み: ${fileName}`;
     if (previewUrl) return '自動生成されたサムネイルをプレビューしています';
@@ -39,7 +39,7 @@ export const ThumbnailSection = ({
     <Card className="border-border/80">
       <CardHeader className="pb-3">
         <div className="flex flex-col gap-1">
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Step 2</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">ステップ 2</p>
           <CardTitle className="text-base">サムネイルを確認</CardTitle>
         </div>
       </CardHeader>

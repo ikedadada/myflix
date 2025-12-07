@@ -16,13 +16,13 @@ export const RecentUploadsAccordion = () => {
     <Card className="border-border/80">
       <CardHeader className="pb-3">
         <div className="flex flex-col gap-1">
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Recent</p>
-          <CardTitle className="text-lg">Recent uploads (latest 20)</CardTitle>
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">最近</p>
+          <CardTitle className="text-lg">最近のアップロード（最新20件）</CardTitle>
         </div>
       </CardHeader>
       <CardContent className="space-y-2 pt-0 text-sm text-muted-foreground">
-        {isLoading && <p className="text-muted-foreground">Loading…</p>}
-        {!isLoading && items.length === 0 && <p className="text-muted-foreground">No sessions yet.</p>}
+        {isLoading && <p className="text-muted-foreground">読み込み中…</p>}
+        {!isLoading && items.length === 0 && <p className="text-muted-foreground">まだセッションがありません</p>}
         <ul className="space-y-2">
           {items.map((session) => (
             <li

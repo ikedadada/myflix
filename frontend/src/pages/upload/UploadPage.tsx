@@ -170,7 +170,7 @@ export const UploadPage = () => {
         const preview = URL.createObjectURL(blob);
         previewRef.current = preview;
         setThumbnailPreviewUrl(preview);
-        setThumbnailFileName('Auto-generated thumbnail');
+        setThumbnailFileName('自動生成サムネイル');
         setThumbnailBlob(blob);
         setThumbnailSource('auto');
         setThumbnailError(null);
@@ -301,15 +301,15 @@ export const UploadPage = () => {
   return (
     <section className="space-y-6">
       <PageHeader
-        title="Upload"
-        description="流れ: 1) 動画選択 → 2) サムネ確認 → 3) タイトル/説明 → 4) Upload/登録"
+        title="アップロード"
+        description="流れ: 1) 動画選択 → 2) サムネ確認 → 3) タイトル/説明 → 4) アップロード/登録"
       />
       <div className="grid gap-5 lg:grid-cols-[2fr_1fr]">
         <div className="space-y-5">
           <Card className="border-border/80">
             <CardHeader className="pb-3">
               <div className="flex flex-col gap-1">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Step 1</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">ステップ 1</p>
                 <CardTitle className="text-xl">動画ファイルを選択</CardTitle>
               </div>
             </CardHeader>
@@ -317,9 +317,9 @@ export const UploadPage = () => {
               <FilePicker file={file} onChange={handleFileChange} />
               {selectedName && (
                 <div className="flex justify-end text-xs text-muted-foreground">
-                  <p>動画時間: {durationSeconds ? `${durationSeconds} sec` : '検出中…'}</p>
-                </div>
-              )}
+                <p>動画時間: {durationSeconds ? `${durationSeconds} 秒` : '検出中…'}</p>
+              </div>
+            )}
             </CardContent>
           </Card>
 
@@ -338,7 +338,7 @@ export const UploadPage = () => {
           <Card className="border-border/80">
             <CardHeader className="pb-3">
               <div className="flex flex-col gap-1">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Step 3</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">ステップ 3</p>
                 <CardTitle className="text-xl">タイトル・説明を整える</CardTitle>
               </div>
             </CardHeader>
@@ -367,13 +367,13 @@ export const UploadPage = () => {
           <Card className="border-border/80">
             <CardHeader className="pb-3">
               <div className="flex flex-col gap-1">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Step 4</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">ステップ 4</p>
                 <CardTitle className="text-xl">アップロードして登録</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="flex flex-wrap items-start gap-3 pt-0">
               <Button disabled={disabled} onClick={handleSubmit(() => uploadAndCreate.mutate())}>
-                {uploadAndCreate.isPending ? 'Uploading…' : 'Upload & Register'}
+                {uploadAndCreate.isPending ? 'アップロード中…' : 'アップロードして登録'}
               </Button>
               <div className="space-y-1 text-sm text-muted-foreground">
                 <p>内容を確認してから実行してください。</p>

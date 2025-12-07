@@ -38,14 +38,14 @@ export const SettingsPage = () => {
   return (
     <section className="space-y-6">
       <PageHeader
-        title="Settings"
-        description="Preferences map to the backend settings entity."
+        title="設定"
+        description="再生やテーマの設定を変更できます。"
       />
-      {isLoading && <p className="text-muted-foreground">Loading settings…</p>}
+      {isLoading && <p className="text-muted-foreground">設定を読み込み中…</p>}
       <div className="space-y-4">
         <div className="space-y-2 rounded-lg border border-border bg-card/80 p-4">
           <div className="flex flex-col gap-2 text-sm text-foreground">
-            <span>Theme (saved on this device)</span>
+            <span>テーマ（この端末に保存）</span>
             <Select
               value={themeMode}
               onValueChange={(value) => {
@@ -55,31 +55,31 @@ export const SettingsPage = () => {
               }}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select theme" />
+                <SelectValue placeholder="テーマを選択" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="auto">Follow system</SelectItem>
-                <SelectItem value="light">Light</SelectItem>
-                <SelectItem value="dark">Dark</SelectItem>
+                <SelectItem value="auto">システムに合わせる</SelectItem>
+                <SelectItem value="light">ライト</SelectItem>
+                <SelectItem value="dark">ダーク</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <p className="text-xs text-muted-foreground">
-            UI theme stays on this browser only. Server-side preferences below remain unaffected.
+            テーマ設定はこのブラウザのみに保存されます。サーバー側の設定には影響しません。
           </p>
         </div>
         <div className="space-y-3 rounded-lg border border-border bg-card/80 p-4">
           <div className="flex items-center justify-between gap-3 text-sm text-foreground">
             <div className="space-y-1">
-              <p className="font-medium">Autoplay next episode</p>
-              <p className="text-xs text-muted-foreground">Applies to continuous playback behavior.</p>
+              <p className="font-medium">次のエピソードを自動再生</p>
+              <p className="text-xs text-muted-foreground">連続再生の挙動に適用されます。</p>
             </div>
             <Switch checked={autoplay} onCheckedChange={setAutoplay} />
           </div>
         </div>
       </div>
       <Button className="w-fit" variant="solid" disabled={isUpdating} onClick={handleSave}>
-        {isUpdating ? 'Saving…' : 'Save preference'}
+        {isUpdating ? '保存中…' : '設定を保存'}
       </Button>
     </section>
   );
