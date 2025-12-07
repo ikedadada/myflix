@@ -19,6 +19,7 @@ import {
   Textarea
 } from '@/shared/ui';
 import { PageHeader } from '@/shared/components/layout/PageHeader';
+import { useUploadForm } from '@/features/upload/useUploadForm';
 
 export const UploadPage = () => {
   const client = useQueryClient();
@@ -37,12 +38,19 @@ export const UploadPage = () => {
   const [thumbnailPreviewUrl, setThumbnailPreviewUrl] = useState<string | null>(null);
   const [thumbnailUploading, setThumbnailUploading] = useState(false);
   const [thumbnailError, setThumbnailError] = useState<string | null>(null);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
   const [durationSeconds, setDurationSeconds] = useState<number | null>(null);
-  const [tone, setTone] = useState<VideoTone>('friendly');
-  const [userContext, setUserContext] = useState('');
   const [showAiSettings, setShowAiSettings] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors }
+  } = useUploadForm();
+  const title = watch('title');
+  const description = watch('description');
+  const tone = watch('tone');
+  const userContext = watch('userContext');
 
   useEffect(() => {
     if (!file) {
@@ -56,14 +64,16 @@ export const UploadPage = () => {
       URL.revokeObjectURL(objectUrl);
       const computed = Math.max(1, Math.round(videoEl.duration || 0));
       setDurationSeconds(computed);
-      setTitle((prev) => prev || file.name.replace(/\.[^.]+$/, ''));
+      setValue('title', (prev) => prev || file.name.replace(/\.[^.]+$/, ''), {
+        shouldValidate: false
+      });
     };
     videoEl.onerror = () => {
       URL.revokeObjectURL(objectUrl);
       setDurationSeconds(60);
     };
     videoEl.src = objectUrl;
-  }, [file]);
+  }, [file, setValue]);
 
   useEffect(() => {
     if (!file || thumbnailFile) return;
@@ -207,6 +217,10 @@ export const UploadPage = () => {
       }
       setThumbnailObjectKey(null);
       setThumbnailFile(null);
+      setValue('title', '', { shouldValidate: false });
+      setValue('description', '', { shouldValidate: false });
+      setValue('userContext', '', { shouldValidate: false });
+      setValue('tone', 'friendly', { shouldValidate: false });
     }
   });
 
@@ -228,10 +242,10 @@ export const UploadPage = () => {
         file,
         tone,
         language: 'ja',
-        userContext: userContext.trim()
+        userContext: userContext?.trim()
       });
-      setTitle(result.title);
-      setDescription(result.description);
+      setValue('title', result.title, { shouldValidate: true });
+      setValue('description', result.description, { shouldValidate: true });
     } catch {
       // エラーメッセージは generationError に表示
     }
@@ -256,6 +270,9 @@ export const UploadPage = () => {
               className="border-dashed"
               onChange={(event) => setFile(event.target.files?.[0] ?? null)}
             />
+            {errors.title && (
+              <p className="text-xs text-danger">{errors.title.message}</p>
+            )}
           </div>
           <div className="rounded-md border border-border bg-muted/10 px-3 py-2 text-sm text-muted-foreground">
             {selectedName
@@ -271,10 +288,10 @@ export const UploadPage = () => {
                 </label>
                 <Input
                   id="upload-title"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  {...register('title')}
                   placeholder="My video"
                 />
+                {errors.title && <p className="text-xs text-danger">{errors.title.message}</p>}
               </div>
 
               <div className="space-y-2">
@@ -283,11 +300,13 @@ export const UploadPage = () => {
                 </label>
                 <Textarea
                   id="upload-description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  {...register('description')}
                   placeholder="Optional description"
                   rows={5}
                 />
+                {errors.description && (
+                  <p className="text-xs text-danger">{errors.description.message}</p>
+                )}
               </div>
             </div>
 
@@ -340,10 +359,12 @@ export const UploadPage = () => {
                       </label>
                       <Input
                         id="upload-context"
-                        value={userContext}
-                        onChange={(e) => setUserContext(e.target.value)}
+                        {...register('userContext')}
                         placeholder="例: YouTubeショート向け / 学習者向け"
                       />
+                      {errors.userContext && (
+                        <p className="text-xs text-danger">{errors.userContext.message}</p>
+                      )}
                     </div>
                   </div>
                 )}
@@ -430,19 +451,19 @@ export const UploadPage = () => {
             </CardContent>
           </Card>
 
-          <div className="space-y-2">
-            <Button disabled={disabled} onClick={() => uploadAndCreate.mutate()}>
-              {uploadAndCreate.isPending ? 'Uploading…' : 'Upload & Register'}
-            </Button>
-            {uploadAndCreate.isError && (
-              <p className="text-sm text-danger">Failed to upload. Please retry.</p>
-            )}
-            {uploadAndCreate.isSuccess && (
-              <p className="text-sm text-success">
-                Uploaded and registered! Video ID: {uploadAndCreate.data.video.id}
-              </p>
-            )}
-          </div>
+        <div className="space-y-2">
+          <Button disabled={disabled} onClick={handleSubmit(() => uploadAndCreate.mutate())}>
+            {uploadAndCreate.isPending ? 'Uploading…' : 'Upload & Register'}
+          </Button>
+          {uploadAndCreate.isError && (
+            <p className="text-sm text-danger">Failed to upload. Please retry.</p>
+          )}
+          {uploadAndCreate.isSuccess && (
+            <p className="text-sm text-success">
+              Uploaded and registered! Video ID: {uploadAndCreate.data.video.id}
+            </p>
+          )}
+        </div>
         </CardContent>
       </Card>
 
