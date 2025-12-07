@@ -39,7 +39,7 @@ export const SettingsPage = () => {
             <span>Theme (saved on this device)</span>
             <div className="rounded border border-border bg-card px-3 py-2 shadow-sm">
               <select
-                className="w-full bg-transparent text-text outline-none"
+                className="w-full bg-transparent text-text outline-none [color-scheme:light] dark:[color-scheme:dark]"
                 value={themeMode}
                 onChange={(event) => {
                   const next = event.target.value as typeof themeMode;
