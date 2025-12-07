@@ -59,7 +59,10 @@ const Section = ({ title, videos }: { title: string; videos: ReturnType<typeof u
   const scrollBy = (direction: 'left' | 'right') => {
     const node = sliderRef.current;
     if (!node) return;
-    const amount = node.clientWidth * 0.8;
+    const firstItem = node.firstElementChild as HTMLElement | null;
+    const gap = Number.parseFloat(getComputedStyle(node).columnGap || '0') || 0;
+    const itemWidth = firstItem?.offsetWidth ?? node.clientWidth * 0.8;
+    const amount = itemWidth + gap;
     node.scrollBy({ left: direction === 'left' ? -amount : amount, behavior: 'smooth' });
   };
   const showNav = (videos?.length ?? 0) > 0;
@@ -97,7 +100,7 @@ const Section = ({ title, videos }: { title: string; videos: ReturnType<typeof u
         )}
         <div
           ref={sliderRef}
-          className="no-scrollbar flex gap-4 overflow-x-auto overflow-y-visible py-4 pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-transparent"
+          className="no-scrollbar flex gap-4 overflow-x-auto overflow-y-visible py-5 pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-transparent"
           style={{ scrollSnapType: 'x mandatory' }}
         >
           {videos?.map((video, idx) => {
