@@ -13,8 +13,8 @@ export const AppLayout = ({ children }: Props) => {
 
   return (
     <div className="min-h-screen">
-      <header className="relative z-30 flex items-center justify-between border-b border-border bg-card/90 px-8 py-4 backdrop-blur">
-        <Link to="/" className="text-xl font-semibold tracking-wide text-text">
+      <header className="relative z-30 flex items-center justify-between border-b border-border bg-card/90 px-6 py-3 backdrop-blur">
+        <Link to="/" className="text-lg font-semibold tracking-wide text-foreground">
           {APP_NAME}
         </Link>
         <UserMenu user={user} />

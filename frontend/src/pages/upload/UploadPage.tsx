@@ -5,6 +5,9 @@ import { formatDate } from '@/shared/lib/format-date';
 import { apiClient } from '@/app/config/apiClient';
 import { useGenerateVideoCopy } from '@/shared/hooks/useGenerateVideoCopy';
 import { Button } from '@/shared/ui/Button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/Card';
+import { Input } from '@/shared/ui/Input';
+import { Textarea } from '@/shared/ui/Textarea';
 import type { GeneratedVideoCopy, VideoSummary, VideoTone } from '@/shared/types/video';
 
 export const UploadPage = () => {
@@ -226,203 +229,221 @@ export const UploadPage = () => {
 
   return (
     <section className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">Upload</h1>
-        <p className="text-text/70">Upload a video to R2 and register it as a playable item.</p>
-      </div>
+      <Card className="border-border/80">
+        <CardHeader>
+          <CardTitle>Upload</CardTitle>
+          <CardDescription>
+            Upload a video to R2 and register it as a playable item.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-foreground">Choose a file</label>
+            <Input
+              type="file"
+              accept="video/*"
+              className="border-dashed"
+              onChange={(event) => setFile(event.target.files?.[0] ?? null)}
+            />
+          </div>
+          <div className="rounded-md border border-border bg-muted/10 px-3 py-2 text-sm text-muted-foreground">
+            {selectedName
+              ? `Detected duration: ${durationSeconds ? `${durationSeconds} sec` : 'Detecting…'}`
+              : 'No file selected'}
+          </div>
 
-      <div className="space-y-4 rounded-lg border border-border bg-card p-4">
-        <label className="flex flex-col gap-2 text-sm">
-          Choose a file
-          <input
-            type="file"
-            accept="video/*"
-            className="rounded border border-dashed border-border bg-transparent px-3 py-2 text-text"
-            onChange={(event) => setFile(event.target.files?.[0] ?? null)}
-          />
-        </label>
-        <div className="rounded border border-border bg-surface/60 px-3 py-2 text-sm text-text/70">
-          {selectedName
-            ? `Detected duration: ${durationSeconds ? `${durationSeconds} sec` : 'Detecting…'}`
-            : 'No file selected'}
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-4">
-            <label className="flex flex-col gap-2 text-sm">
-              Title
-              <div className="rounded border border-border bg-card px-3 py-2">
-                <input
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Title</label>
+                <Input
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full bg-transparent text-text outline-none"
                   placeholder="My video"
                 />
               </div>
-            </label>
 
-            <label className="flex flex-col gap-2 text-sm">
-              Description
-              <div className="rounded border border-border bg-card px-3 py-2">
-                <textarea
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Description</label>
+                <Textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full bg-transparent text-text outline-none"
                   placeholder="Optional description"
                   rows={5}
                 />
               </div>
-            </label>
-
-          </div>
-
-          <div className="space-y-3 rounded border border-border bg-card p-3">
-            <div className="flex flex-wrap items-center justify-between gap-2 text-sm font-semibold">
-              <span>タイトル/説明をAIで自動生成</span>
-              {generatedCopy?.model && (
-                <span className="text-xs font-normal text-text/60">model: {generatedCopy.model}</span>
-              )}
             </div>
-            <button
-              type="button"
-              className="text-xs text-text/70 underline"
-              onClick={() => setShowAiSettings((v) => !v)}
-            >
-              {showAiSettings ? 'AI設定を隠す' : 'AI設定を表示'}
-            </button>
-            {showAiSettings && (
-              <div className="space-y-3">
-                <div className="flex flex-wrap gap-2">
-                  {toneOptions.map((option) => (
-                    <Button
-                      key={option.value}
-                      type="button"
-                      size="sm"
-                      variant={tone === option.value ? 'solid' : 'outline'}
-                      onClick={() => setTone(option.value)}
-                      aria-pressed={tone === option.value}
-                      className="min-w-[120px] justify-start"
-                    >
-                      <span className="flex flex-col items-start leading-tight">
-                        <span>{option.label}</span>
-                        <span className="text-[11px] text-text/70">{option.note}</span>
-                      </span>
-                    </Button>
-                  ))}
+
+            <Card className="border-border/80">
+              <CardHeader className="pb-3">
+                <div className="flex flex-wrap items-center justify-between gap-2 text-sm font-semibold">
+                  <span>タイトル/説明をAIで自動生成</span>
+                  {generatedCopy?.model && (
+                    <span className="text-xs font-normal text-muted-foreground">
+                      model: {generatedCopy.model}
+                    </span>
+                  )}
                 </div>
-                <label className="flex flex-col gap-2 text-sm">
-                  用途/ターゲット（任意）
-                  <div className="rounded border border-border bg-card px-3 py-2">
-                    <input
-                      value={userContext}
-                      onChange={(e) => setUserContext(e.target.value)}
-                      className="w-full bg-transparent text-text outline-none"
-                      placeholder="例: YouTubeショート向け / 学習者向け"
-                    />
+              </CardHeader>
+              <CardContent className="space-y-3 pt-0">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="px-0 text-xs text-muted-foreground underline"
+                  onClick={() => setShowAiSettings((v) => !v)}
+                >
+                  {showAiSettings ? 'AI設定を隠す' : 'AI設定を表示'}
+                </Button>
+                {showAiSettings && (
+                  <div className="space-y-3">
+                    <div className="flex flex-wrap gap-2">
+                      {toneOptions.map((option) => (
+                        <Button
+                          key={option.value}
+                          type="button"
+                          size="sm"
+                          variant={tone === option.value ? 'solid' : 'outline'}
+                          onClick={() => setTone(option.value)}
+                          aria-pressed={tone === option.value}
+                          className="min-w-[120px] justify-start"
+                        >
+                          <span className="flex flex-col items-start leading-tight">
+                            <span>{option.label}</span>
+                            <span className="text-[11px] text-muted-foreground">
+                              {option.note}
+                            </span>
+                          </span>
+                        </Button>
+                      ))}
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      <label className="text-sm font-medium text-foreground">用途/ターゲット（任意）</label>
+                      <Input
+                        value={userContext}
+                        onChange={(e) => setUserContext(e.target.value)}
+                        placeholder="例: YouTubeショート向け / 学習者向け"
+                      />
+                    </div>
                   </div>
-                </label>
+                )}
+                <div className="flex flex-wrap items-center gap-3">
+                  <Button
+                    type="button"
+                    onClick={handleGenerate}
+                    disabled={!file || isGenerating}
+                    variant="outline"
+                  >
+                    {isGenerating ? '生成中…' : 'タイトルと説明を自動生成'}
+                  </Button>
+                  {!file && <p className="text-xs text-muted-foreground">先に動画ファイルを選択してください</p>}
+                </div>
+                {generationError && <p className="text-sm text-danger">{generationError}</p>}
+                {generatedCopy && (
+                  <p className="text-xs text-muted-foreground">
+                    生成済み: {toneOptions.find((t) => t.value === generatedCopy.tone)?.label ?? generatedCopy.tone}{' '}
+                    / {generatedCopy.durationMs ? `${generatedCopy.durationMs}ms` : '—'}
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card className="border-border/80">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Thumbnail (optional)</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 pt-0">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Select image</label>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  className="border-dashed"
+                  onChange={(event) => {
+                    setThumbnailFile(event.target.files?.[0] ?? null);
+                    setThumbnailObjectKey(null);
+                    const blob = event.target.files?.[0] ?? null;
+                    setThumbnailBlob(blob);
+                    if (thumbnailPreviewUrl) {
+                      URL.revokeObjectURL(thumbnailPreviewUrl);
+                      setThumbnailPreviewUrl(null);
+                    }
+                    if (blob) {
+                      setThumbnailPreviewUrl(URL.createObjectURL(blob));
+                    }
+                  }}
+                />
               </div>
+              {selectedThumbName && (
+                <div className="rounded border border-border bg-muted/10 px-3 py-2 text-sm text-muted-foreground">
+                  Selected thumbnail: {selectedThumbName}
+                </div>
+              )}
+              {thumbnailPreviewUrl && (
+                <div className="overflow-hidden rounded border border-border bg-card">
+                  <img
+                    src={thumbnailPreviewUrl}
+                    alt="Thumbnail preview"
+                    className="w-full max-h-64 object-contain bg-card"
+                  />
+                  <p className="px-2 py-1 text-center text-xs text-muted-foreground">
+                    Preview (resized to 16:9, showing full frame)
+                  </p>
+                </div>
+              )}
+              {thumbnailObjectKey && (
+                <p className="text-xs text-success">Thumbnail uploaded: {thumbnailObjectKey}</p>
+              )}
+              {!thumbnailObjectKey && thumbnailFile && (
+                <p className="text-xs text-muted-foreground">
+                  Upload the selected image to attach as thumbnail.
+                </p>
+              )}
+              {thumbnailUploading && (
+                <p className="text-xs text-muted-foreground">Generating thumbnail from video…</p>
+              )}
+              {thumbnailError && <p className="text-xs text-danger">{thumbnailError}</p>}
+            </CardContent>
+          </Card>
+
+          <div className="space-y-2">
+            <Button disabled={disabled} onClick={() => uploadAndCreate.mutate()}>
+              {uploadAndCreate.isPending ? 'Uploading…' : 'Upload & Register'}
+            </Button>
+            {uploadAndCreate.isError && (
+              <p className="text-sm text-danger">Failed to upload. Please retry.</p>
             )}
-            <div className="flex flex-wrap items-center gap-3">
-              <Button type="button" onClick={handleGenerate} disabled={!file || isGenerating} variant="outline">
-                {isGenerating ? '生成中…' : 'タイトルと説明を自動生成'}
-              </Button>
-              {!file && <p className="text-xs text-text/60">先に動画ファイルを選択してください</p>}
-            </div>
-            {generationError && <p className="text-sm text-danger">{generationError}</p>}
-            {generatedCopy && (
-              <p className="text-xs text-text/60">
-                生成済み: {toneOptions.find((t) => t.value === generatedCopy.tone)?.label ?? generatedCopy.tone}{' '}
-                / {generatedCopy.durationMs ? `${generatedCopy.durationMs}ms` : '—'}
+            {uploadAndCreate.isSuccess && (
+              <p className="text-sm text-success">
+                Uploaded and registered! Video ID: {uploadAndCreate.data.video.id}
               </p>
             )}
           </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        <div className="space-y-3 rounded border border-border bg-card p-3">
-          <label className="flex flex-col gap-2 text-sm">
-            Thumbnail (optional)
-            <input
-              type="file"
-              accept="image/*"
-              className="rounded border border-dashed border-border bg-transparent px-3 py-2 text-text"
-              onChange={(event) => {
-                setThumbnailFile(event.target.files?.[0] ?? null);
-                setThumbnailObjectKey(null);
-                const blob = event.target.files?.[0] ?? null;
-                setThumbnailBlob(blob);
-                if (thumbnailPreviewUrl) {
-                  URL.revokeObjectURL(thumbnailPreviewUrl);
-                  setThumbnailPreviewUrl(null);
-                }
-                if (blob) {
-                  setThumbnailPreviewUrl(URL.createObjectURL(blob));
-                }
-              }}
-            />
-          </label>
-          {selectedThumbName && (
-            <div className="rounded border border-border bg-surface/60 px-3 py-2 text-sm text-text/70">
-              Selected thumbnail: {selectedThumbName}
-            </div>
-          )}
-          {thumbnailPreviewUrl && (
-            <div className="overflow-hidden rounded border border-border bg-card">
-              <img
-                src={thumbnailPreviewUrl}
-                alt="Thumbnail preview"
-                className="w-full max-h-64 object-contain bg-card"
-              />
-              <p className="px-2 py-1 text-center text-xs text-text/60">
-                Preview (resized to 16:9, showing full frame)
-              </p>
-            </div>
-          )}
-          {thumbnailObjectKey && (
-            <p className="text-xs text-success">Thumbnail uploaded: {thumbnailObjectKey}</p>
-          )}
-          {!thumbnailObjectKey && thumbnailFile && (
-            <p className="text-xs text-text/60">Upload the selected image to attach as thumbnail.</p>
-          )}
-          {thumbnailUploading && (
-            <p className="text-xs text-text/60">Generating thumbnail from video…</p>
-          )}
-          {thumbnailError && <p className="text-xs text-danger">{thumbnailError}</p>}
-        </div>
-
-        <Button disabled={disabled} onClick={() => uploadAndCreate.mutate()}>
-          {uploadAndCreate.isPending ? 'Uploading…' : 'Upload & Register'}
-        </Button>
-        {uploadAndCreate.isError && (
-          <p className="text-sm text-danger">Failed to upload. Please retry.</p>
-        )}
-        {uploadAndCreate.isSuccess && (
-          <p className="text-sm text-success">
-            Uploaded and registered! Video ID: {uploadAndCreate.data.video.id}
-          </p>
-        )}
-      </div>
-
-      <details className="rounded-lg border border-border bg-card p-3">
-        <summary className="cursor-pointer text-lg font-semibold text-text">
-          Recent uploads
-        </summary>
-        <div className="mt-2 space-y-2">
-          {sessions && sessions.length === 0 && <p className="text-text/60">No sessions yet.</p>}
-          <ul className="space-y-2 text-sm text-text/70">
+      <Card className="border-border/80">
+        <CardHeader>
+          <CardTitle className="text-lg">Recent uploads</CardTitle>
+          <CardDescription>Latest upload sessions with status.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {sessions && sessions.length === 0 && <p className="text-muted-foreground">No sessions yet.</p>}
+          <ul className="space-y-2 text-sm text-muted-foreground">
             {sessions?.map((session) => (
               <li
                 key={session.id}
                 className="flex items-center justify-between rounded border border-border px-3 py-2"
               >
                 <span className="font-mono text-xs">{session.id.slice(0, 8)}</span>
-                <span className="text-text/60">{session.status}</span>
+                <span>{session.status}</span>
                 <span>{formatDate(session.createdAt)}</span>
               </li>
             ))}
           </ul>
-        </div>
-      </details>
+        </CardContent>
+      </Card>
     </section>
   );
 };

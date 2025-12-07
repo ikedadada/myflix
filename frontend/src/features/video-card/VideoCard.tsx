@@ -26,10 +26,10 @@ export const VideoCard = ({ video }: Props) => {
           <div className="absolute inset-x-0 bottom-0 flex items-start gap-2 p-3">
             <span className="mt-1 h-6 w-1 rounded-full bg-accent" aria-hidden />
             <div className="min-w-0 flex-1">
-              <p className="line-clamp-2 text-base font-semibold text-text drop-shadow">
+              <p className="line-clamp-2 text-base font-semibold text-foreground drop-shadow">
                 {video.title}
               </p>
-              <div className="mt-1 flex items-center justify-end gap-2 text-xs text-muted">
+              <div className="mt-1 flex items-center justify-end gap-2 text-xs text-muted-foreground">
                 <span className="rounded-full border border-border bg-card/80 px-2 py-1">#{video.id.slice(0, 6)}</span>
                 <span className="inline-flex items-center gap-1 rounded-full border border-border bg-card/80 px-2 py-1 backdrop-blur-sm">
                   <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden />
