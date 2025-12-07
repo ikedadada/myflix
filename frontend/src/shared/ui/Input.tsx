@@ -1,6 +1,10 @@
-import type { ComponentProps } from 'react';
+import { forwardRef } from 'react';
+import type { ComponentPropsWithoutRef, ElementRef } from 'react';
 import { Input as ShadInput } from '@/components/ui/input';
 
-export type InputProps = ComponentProps<typeof ShadInput>;
+export type InputProps = ComponentPropsWithoutRef<typeof ShadInput>;
 
-export const Input = (props: InputProps) => <ShadInput {...props} />;
+export const Input = forwardRef<ElementRef<typeof ShadInput>, InputProps>((props, ref) => (
+  <ShadInput ref={ref} {...props} />
+));
+Input.displayName = 'Input';

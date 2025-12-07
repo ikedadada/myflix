@@ -1,6 +1,10 @@
-import type { ComponentProps } from 'react';
+import { forwardRef } from 'react';
+import type { ComponentPropsWithoutRef, ElementRef } from 'react';
 import { Textarea as ShadTextarea } from '@/components/ui/textarea';
 
-export type TextareaProps = ComponentProps<typeof ShadTextarea>;
+export type TextareaProps = ComponentPropsWithoutRef<typeof ShadTextarea>;
 
-export const Textarea = (props: TextareaProps) => <ShadTextarea {...props} />;
+export const Textarea = forwardRef<ElementRef<typeof ShadTextarea>, TextareaProps>(
+  (props, ref) => <ShadTextarea ref={ref} {...props} />
+);
+Textarea.displayName = 'Textarea';
