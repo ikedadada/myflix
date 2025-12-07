@@ -44,6 +44,7 @@ export const UploadPage = () => {
     register,
     handleSubmit,
     setValue,
+    getValues,
     watch,
     formState: { errors }
   } = useUploadForm();
@@ -64,7 +65,8 @@ export const UploadPage = () => {
       URL.revokeObjectURL(objectUrl);
       const computed = Math.max(1, Math.round(videoEl.duration || 0));
       setDurationSeconds(computed);
-      setValue('title', (prev) => prev || file.name.replace(/\.[^.]+$/, ''), {
+      const currentTitle = getValues('title');
+      setValue('title', currentTitle || file.name.replace(/\.[^.]+$/, ''), {
         shouldValidate: false
       });
     };
@@ -73,7 +75,7 @@ export const UploadPage = () => {
       setDurationSeconds(60);
     };
     videoEl.src = objectUrl;
-  }, [file, setValue]);
+  }, [file, setValue, getValues]);
 
   useEffect(() => {
     if (!file || thumbnailFile) return;
