@@ -5,16 +5,18 @@
 - [x] shadcn/ui のインストール・設定（Tailwindプラグイン・プリセット含む）を実施し、導入手順をドキュメント化する
 
 ## 置き換え作業
-- [ ] 共有UIコンポーネントを shadcn/ui ベースに差し替え（必要に応じてラップコンポーネントを用意し、API互換を確保）
+- [x] 共有UIコンポーネントを shadcn/ui ベースに差し替え（必要に応じてラップコンポーネントを用意し、API互換を確保）
 - [ ] ページ固有のUI（Home/Upload/VideoDetail/Settings など）で shadcn/ui を活用し、独自スタイル依存を削減する
 - [x] アイコン/アバター/メニューなどヘッダー周辺を shadcn/ui のコンポーネントで統一する
 
 ## リファクタリング候補（frontend）
-- [ ] UploadPage を機能単位に分割（フォーム管理を react-hook-form + zod、AI生成/サムネ生成/アップロードロジックをカスタムフック化し、UIセクションも小コンポーネント化）
+- [x] UploadPage を機能単位に分割（フォーム管理を react-hook-form + zod、AI生成/サムネ生成/アップロードロジックをカスタムフック化し、UIセクションも小コンポーネント化）
 - [x] shared/ui/Button を shadcn の variant/size をそのまま受けられる薄いラッパに整理（マッピングの重複と新variant未対応リスクを解消）
 - [ ] テーマトークンを一元化（`--color-*` と shadcn 変数の二重管理を整理し、背景/文字色参照をどちらかに統一）
 - [x] ヘッダー/ページ見出しの余白とタイポを共通コンポーネント（PageHeader 等）で統一
 - [x] VideoCard を shadcn Card/Badge などに寄せて共通カードスタイル・アクセシビリティを揃える
+- [x] UploadPage の分割コンポーネントで機能を完結させる（FilePickerでduration/タイトル候補とサムネ自動生成の初期処理、AiCopySectionで生成結果をフォームに反映、ThumbnailSectionでプレビュー管理）
+- [ ] UploadPage の Title/Description 入力領域を広げ、視認性を確保する（フォームレイアウト再調整）
 
 ## スタイル整理
 - [ ] 置き換え後に未使用となるCSS・トークン・ユーティリティクラスを洗い出し、削除または統合する
