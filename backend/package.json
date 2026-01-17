@@ -9,22 +9,24 @@
     "migrate:local": "wrangler d1 migrations apply myflix-local-db --local --env local --persist-to .wrangler/state",
     "migrate:dev": "wrangler d1 migrations apply myflix-dev-db --env dev",
     "reset:local": "rm -rf .wrangler/state && npm run migrate:local",
+    "openapi:preview": "node docs/openapi/swagger-preview.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "biome lint",
     "format": "biome format --write"
   },
   "dependencies": {
-    "hono": "^4.10.6",
-    "jose": "^6.1.2",
-    "zod": "^3.23.8"
+    "hono": "^4.11.4",
+    "jose": "^6.1.3",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20251121.0",
-    "@vitest/coverage-v8": "^4.0.13",
-    "@biomejs/biome": "^2.3.7",
+    "@biomejs/biome": "^2.3.11",
+    "@cloudflare/workers-types": "^4.20260117.0",
+    "swagger-ui-dist": "^5.27.0",
+    "@vitest/coverage-v8": "^4.0.17",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.13",
-    "wrangler": "^4.50.0"
+    "vitest": "^4.0.17",
+    "wrangler": "^4.59.2"
   }
 }
