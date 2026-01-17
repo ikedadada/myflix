@@ -1,8 +1,8 @@
 import type { MiddlewareHandler } from "hono";
 import type { HonoEnv } from "@/env";
-import type { Logger } from "@/infrastructure/logging/logger";
+import type { Logger } from "@/utils/logger";
 
-export const createLoggingMiddleware =
+export const createAccessLoggingMiddleware =
 	(logger: Logger): MiddlewareHandler<HonoEnv> =>
 	async (c, next) => {
 		const start = Date.now();

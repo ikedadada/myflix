@@ -1,4 +1,9 @@
-export class Logger {
+export interface Logger {
+  info(message: string, extra?: Record<string, unknown>): void;
+  error(message: string, extra?: Record<string, unknown>): void;
+}
+
+export class LoggerImpl implements Logger {
   constructor(private readonly prefix = 'backend') {}
 
   info(message: string, extra: Record<string, unknown> = {}): void {

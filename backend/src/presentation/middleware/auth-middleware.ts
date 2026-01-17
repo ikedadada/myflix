@@ -1,9 +1,11 @@
 import type { MiddlewareHandler } from "hono";
 import type { HonoEnv } from "@/env";
 import type { AccessAuthProvider } from "@/infrastructure/external/auth-provider-impl";
+import type { Logger } from "@/utils/logger";
 
 export const createAuthMiddleware = (
 	factory: (env: HonoEnv["Bindings"]) => AccessAuthProvider,
+	logger: Logger,
 ): MiddlewareHandler<HonoEnv> => {
 	let provider: AccessAuthProvider | null = null;
 	return async (c, next) => {
@@ -29,7 +31,7 @@ export const createAuthMiddleware = (
 			c.set("authContext", await provider.verify(token));
 			await next();
 		} catch (error) {
-			console.error("Auth middleware error", error);
+			logger.error("Auth middleware error", { error });
 			return c.json({ message: "Unauthorized" }, 401);
 		}
 	};

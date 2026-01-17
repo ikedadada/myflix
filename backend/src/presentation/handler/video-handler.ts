@@ -9,12 +9,14 @@ import type { VideoService } from "@/application_service/video-service";
 import { UploadSessionId } from "@/domain/model/value_object/upload-session-id";
 import { VideoId } from "@/domain/model/value_object/video-id";
 import type { HonoEnv } from "@/env";
+import type { Logger } from "@/utils/logger";
 
 export class VideoHandler {
 	constructor(
 		private readonly videoService: VideoService,
 		private readonly metadataService: MetadataService,
 		private readonly videoAnalyzeService: VideoAnalyzeService,
+		private readonly logger: Logger,
 	) {}
 
 	list = async (c: Context<HonoEnv>) => {
@@ -71,7 +73,7 @@ export class VideoHandler {
 				201,
 			);
 		} catch (error) {
-			console.error("Create video failed", error);
+			this.logger.error("Create video failed", { error });
 			return c.json({ message: "Failed to create video" }, 400);
 		}
 	};
@@ -157,7 +159,7 @@ export class VideoHandler {
 			if (error instanceof AnalyzeAiResponseError) {
 				return c.json({ message: error.message }, 502);
 			}
-			console.error("Analyze video failed", error);
+			this.logger.error("Analyze video failed", { error });
 			return c.json({ message: "Failed to analyze video" }, 500);
 		}
 	};

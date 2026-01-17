@@ -13,12 +13,12 @@ import { D1UploadSessionRepository } from "@/infrastructure/database/upload-sess
 import { D1UserRepository } from "@/infrastructure/database/user-repository-impl";
 import { D1VideoRepository } from "@/infrastructure/database/video-repository-impl";
 import { GeminiClient } from "@/infrastructure/external/gemini-client";
-import { Logger } from "@/infrastructure/logging/logger";
 import { AuthHandler } from "@/presentation/handler/auth-handler";
 import { PlaybackHandler } from "@/presentation/handler/playback-handler";
 import { SettingsHandler } from "@/presentation/handler/settings-handler";
 import { UploadHandler } from "@/presentation/handler/upload-handler";
 import { VideoHandler } from "@/presentation/handler/video-handler";
+import { type Logger, LoggerImpl } from "@/utils/logger";
 
 export interface AppContainer {
 	authHandler: AuthHandler;
@@ -30,7 +30,7 @@ export interface AppContainer {
 }
 
 export const createContainer = (bindings: ServiceBindings): AppContainer => {
-	const logger = new Logger("api");
+	const logger = new LoggerImpl("api");
 
 	const userRepository = new D1UserRepository(bindings.DB);
 	const videoRepository = new D1VideoRepository(bindings.DB);
@@ -67,6 +67,7 @@ export const createContainer = (bindings: ServiceBindings): AppContainer => {
 			videoService,
 			metadataService,
 			videoAnalyzeService,
+      logger,
 		),
 		uploadHandler: new UploadHandler(uploadService),
 		playbackHandler: new PlaybackHandler(playbackService),
