@@ -91,14 +91,19 @@ export class VideoHandler {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
 		const videoId = new VideoId(c.req.param("id"));
-		const content = await this.videoService.getContent(
+		const content = await this.videoService.getVideoFileObject(
 			authContext.userId,
 			videoId,
 		);
 		if (!content) {
 			return c.json({ message: "Video not found" }, 404);
 		}
-		return content;
+		const contentType = content.httpMetadata?.contentType ?? "application/octet-stream";
+		return new Response(content.body, {
+			headers: {
+				"Content-Type": contentType,
+			},
+		});
 	};
 
 	thumbnail = async (c: Context<HonoEnv>) => {
@@ -107,14 +112,18 @@ export class VideoHandler {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
 		const videoId = new VideoId(c.req.param("id"));
-		const content = await this.videoService.getThumbnail(
+		const content = await this.videoService.getThumbnailFileObject(
 			authContext.userId,
 			videoId,
 		);
 		if (!content) {
 			return c.json({ message: "Thumbnail not found" }, 404);
 		}
-		return content;
+		return new Response(content.body, {
+			headers: {
+				"Content-Type": content.httpMetadata?.contentType ?? "image/jpeg",
+			},
+		});
 	};
 
 	analyze = async (c: Context<HonoEnv>) => {

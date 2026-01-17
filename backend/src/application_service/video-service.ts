@@ -18,8 +18,8 @@ export interface VideoService {
   listForUser(userId: UserId): Promise<Video[]>;
   findById(id: VideoId): Promise<Video | null>;
   createFromUpload(params: CreateFromUploadVideoParams): Promise<Video>;
-  getContent(ownerId: UserId, videoId: VideoId): Promise<Response | null>;
-  getThumbnail(ownerId: UserId, videoId: VideoId): Promise<Response | null>;
+  getVideoFileObject(ownerId: UserId, videoId: VideoId): Promise<R2ObjectBody | null>;
+  getThumbnailFileObject(ownerId: UserId, videoId: VideoId): Promise<R2ObjectBody | null>;
 }
 
 export class VideoServiceImpl implements VideoService {
@@ -68,10 +68,10 @@ export class VideoServiceImpl implements VideoService {
 		return video;
 	}
 
-	async getContent(
+	async getVideoFileObject(
 		ownerId: UserId,
 		videoId: VideoId,
-	): Promise<Response | null> {
+	): Promise<R2ObjectBody | null> {
 		const video = await this.videoRepository.findById(videoId);
 		if (!video || video.ownerId().toString() !== ownerId.toString()) {
 			return null;
@@ -80,17 +80,14 @@ export class VideoServiceImpl implements VideoService {
 		if (!object || !object.body) {
 			return null;
 		}
-		const contentType =
-			object.httpMetadata?.contentType ?? "application/octet-stream";
-		return new Response(object.body, {
-			headers: { "Content-Type": contentType },
-		});
+
+		return object;
 	}
 
-	async getThumbnail(
+	async getThumbnailFileObject(
 		ownerId: UserId,
 		videoId: VideoId,
-	): Promise<Response | null> {
+	): Promise<R2ObjectBody | null> {
 		const video = await this.videoRepository.findById(videoId);
 		if (
 			!video ||
@@ -103,10 +100,8 @@ export class VideoServiceImpl implements VideoService {
 		if (!object || !object.body) {
 			return null;
 		}
-		const contentType = object.httpMetadata?.contentType ?? "image/jpeg";
-		return new Response(object.body, {
-			headers: { "Content-Type": contentType },
-		});
+	
+		return object;
 	}
 
 	async updateThumbnailKey(params: {
