@@ -1,53 +1,53 @@
-import { VideoId } from '../value_object/video-id';
-import { UserId } from '../value_object/user-id';
+import type { UserId } from "../value_object/user-id";
+import type { VideoId } from "../value_object/video-id";
 
 export interface VideoProps {
-  id: VideoId;
-  ownerId: UserId;
-  title: string;
-  description: string;
-  durationSeconds: number;
-  createdAt: Date;
-  objectKey: string;
-  thumbnailKey?: string | null;
+	id: VideoId;
+	ownerId: UserId;
+	title: string;
+	description: string;
+	durationSeconds: number;
+	createdAt: Date;
+	objectKey: string;
+	thumbnailKey?: string | null;
 }
 
 export class Video {
-  constructor(private readonly props: VideoProps) {
-    if (props.durationSeconds <= 0) {
-      throw new Error('Video duration must be positive');
-    }
-  }
+	constructor(private readonly props: VideoProps) {
+		if (props.durationSeconds <= 0) {
+			throw new Error("Video duration must be positive");
+		}
+	}
 
-  id(): VideoId {
-    return this.props.id;
-  }
+	id(): VideoId {
+		return this.props.id;
+	}
 
-  ownerId(): UserId {
-    return this.props.ownerId;
-  }
+	ownerId(): UserId {
+		return this.props.ownerId;
+	}
 
-  title(): string {
-    return this.props.title;
-  }
+	title(): string {
+		return this.props.title;
+	}
 
-  description(): string {
-    return this.props.description;
-  }
+	description(): string {
+		return this.props.description;
+	}
 
-  durationSeconds(): number {
-    return this.props.durationSeconds;
-  }
+	durationSeconds(): number {
+		return this.props.durationSeconds;
+	}
 
-  createdAt(): Date {
-    return this.props.createdAt;
-  }
+	createdAt(): Date {
+		return this.props.createdAt;
+	}
 
-  objectKey(): string {
-    return this.props.objectKey;
-  }
+	objectKey(): string {
+		return this.props.objectKey;
+	}
 
-  thumbnailKey(): string | null {
-    return this.props.thumbnailKey ?? null;
-  }
+	thumbnailKey(): string | null {
+		return this.props.thumbnailKey ?? null;
+	}
 }

@@ -1,6 +1,6 @@
 import type { Hono } from 'hono';
-import type { HonoEnv } from '../hono-env';
-import type { AppContainer } from '../container';
+import type { AppContainer } from "@/container";
+import type { HonoEnv } from "@/env";
 
 export const registerAuthRoutes = (
   app: Hono<HonoEnv>,

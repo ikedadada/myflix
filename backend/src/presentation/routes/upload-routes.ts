@@ -1,11 +1,11 @@
-import type { Hono } from 'hono';
-import type { HonoEnv } from '../hono-env';
-import type { AppContainer } from '../container';
+import type { Hono } from "hono";
+import type { AppContainer } from "@/container";
+import type { HonoEnv } from "@/env";
 
 export const registerUploadRoutes = (
-  app: Hono<HonoEnv>,
-  resolve: (env: HonoEnv['Bindings']) => AppContainer
+	app: Hono<HonoEnv>,
+	resolve: (env: HonoEnv["Bindings"]) => AppContainer,
 ): void => {
-  app.get('/uploads', (c) => resolve(c.env).uploadHandler.list(c));
-  app.post('/uploads', (c) => resolve(c.env).uploadHandler.create(c));
+	app.get("/uploads", (c) => resolve(c.env).uploadHandler.list(c));
+	app.post("/uploads", (c) => resolve(c.env).uploadHandler.create(c));
 };

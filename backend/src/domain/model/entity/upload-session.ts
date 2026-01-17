@@ -1,38 +1,44 @@
-import { UploadSessionId } from '../value_object/upload-session-id';
-import { UserId } from '../value_object/user-id';
+import type { UploadSessionId } from "../value_object/upload-session-id";
+import type { UserId } from "../value_object/user-id";
+
+export type UploadSessionStatus =
+	| "pending"
+	| "processing"
+	| "completed"
+	| "failed";
 
 export interface UploadSessionProps {
-  id: UploadSessionId;
-  ownerId: UserId;
-  status: 'pending' | 'processing' | 'completed' | 'failed';
-  createdAt: Date;
-  objectKey: string;
+	id: UploadSessionId;
+	ownerId: UserId;
+	status: UploadSessionStatus;
+	createdAt: Date;
+	objectKey: string;
 }
 
 export class UploadSession {
-  constructor(private readonly props: UploadSessionProps) {}
+	constructor(private readonly props: UploadSessionProps) {}
 
-  id(): UploadSessionId {
-    return this.props.id;
-  }
+	id(): UploadSessionId {
+		return this.props.id;
+	}
 
-  ownerId(): UserId {
-    return this.props.ownerId;
-  }
+	ownerId(): UserId {
+		return this.props.ownerId;
+	}
 
-  status(): UploadSessionProps['status'] {
-    return this.props.status;
-  }
+	status(): UploadSessionStatus {
+		return this.props.status;
+	}
 
-  createdAt(): Date {
-    return this.props.createdAt;
-  }
+	createdAt(): Date {
+		return this.props.createdAt;
+	}
 
-  objectKey(): string {
-    return this.props.objectKey;
-  }
+	objectKey(): string {
+		return this.props.objectKey;
+	}
 
-  mark(status: UploadSessionProps['status']): UploadSession {
-    return new UploadSession({ ...this.props, status });
-  }
+	mark(status: UploadSessionProps["status"]): UploadSession {
+		return new UploadSession({ ...this.props, status });
+	}
 }
