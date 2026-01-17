@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { type AppContainer, createContainer } from "@/container";
 import type { HonoEnv, ServiceBindings } from "@/env";
 import { AccessAuthProvider } from "@/infrastructure/external/auth-provider-impl";
@@ -23,12 +24,19 @@ const resolveContainer = (bindings: ServiceBindings): AppContainer => {
 	return cachedContainer;
 };
 
+// ローカル環境でCORSを許可する設定
+const localCors = cors({
+	origin: "http://localhost:5173",
+	credentials: true,
+});
+app.use("*",(c, next) => c.env.ENV_NAME === "local" ? localCors(c, next) : next());
+
 app.use("*", createAccessLoggingMiddleware(logger));
 app.use(
 	"*",
 	createAuthMiddleware(
 		(env) => new AccessAuthProvider(env.ACCESS_JWKS_URL, env.ACCESS_JWT_AUD),
-    logger,
+		logger,
 	),
 );
 
