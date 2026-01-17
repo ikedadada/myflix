@@ -1,5 +1,5 @@
 import type { MiddlewareHandler } from 'hono';
-import type { HonoEnv } from '../hono-env';
+import type { HonoEnv } from '@/env';
 
 const normalizeAllowed = (raw: string): string => {
   const trimmed = raw.trim().replace(/\/+$/, '');

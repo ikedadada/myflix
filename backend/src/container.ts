@@ -11,14 +11,14 @@ import { D1UploadSessionRepository } from '@/infrastructure/database/upload-sess
 import { D1UserRepository } from '@/infrastructure/database/user-repository-impl';
 import { D1VideoRepository } from '@/infrastructure/database/video-repository-impl';
 import { seedDemoData } from '@/infrastructure/database/seed';
-import type { ServiceBindings } from '@/infrastructure/config/env';
+import type { ServiceBindings } from '@/env';
 import { GeminiClient } from '@/infrastructure/external/gemini-client';
 import { Logger } from '@/infrastructure/logging/logger';
-import { AuthHandler } from './handler/auth-handler';
-import { PlaybackHandler } from './handler/playback-handler';
-import { SettingsHandler } from './handler/settings-handler';
-import { UploadHandler } from './handler/upload-handler';
-import { VideoHandler } from './handler/video-handler';
+import { AuthHandler } from '@/presentation/handler/auth-handler';
+import { PlaybackHandler } from '@/presentation/handler/playback-handler';
+import { SettingsHandler } from '@/presentation/handler/settings-handler';
+import { UploadHandler } from '@/presentation/handler/upload-handler';
+import { VideoHandler } from '@/presentation/handler/video-handler';
 
 export interface AppContainer {
   authHandler: AuthHandler;

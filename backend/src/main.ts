@@ -1,18 +1,20 @@
 import { Hono } from 'hono';
-import { registerAuthRoutes } from './routes/auth-routes';
-import { registerVideoRoutes } from './routes/video-routes';
-import { registerUploadRoutes } from './routes/upload-routes';
-import { registerPlaybackRoutes } from './routes/playback-routes';
-import { registerSettingsRoutes } from './routes/settings-routes';
-import { registerErrorHandler } from './middleware/error-handler';
-import { createLoggingMiddleware } from './middleware/logging-middleware';
-import { createAuthMiddleware } from './middleware/auth-middleware';
-import { createCorsMiddleware } from './middleware/cors-middleware';
-import type { HonoEnv } from './hono-env';
-import { createContainer, type AppContainer } from './container';
-import type { ServiceBindings } from '@/infrastructure/config/env';
+import { registerAuthRoutes } from '@/presentation/routes/auth-routes';
+import { registerVideoRoutes } from '@/presentation/routes/video-routes';
+import { registerUploadRoutes } from '@/presentation/routes/upload-routes';
+import { registerPlaybackRoutes } from '@/presentation/routes/playback-routes';
+import { registerSettingsRoutes } from '@/presentation/routes/settings-routes';
+import { registerErrorHandler } from '@/presentation/middleware/error-handler';
+import { createLoggingMiddleware } from '@/presentation/middleware/logging-middleware';
+import { createAuthMiddleware } from '@/presentation/middleware/auth-middleware';
+import { createCorsMiddleware } from '@/presentation/middleware/cors-middleware';
+import { createContainer, type AppContainer } from '@/container';
+import type { HonoEnv,ServiceBindings } from '@/env';
 import { Logger } from '@/infrastructure/logging/logger';
 import { AccessAuthProvider } from '@/infrastructure/external/auth-provider-impl';
+
+
+
 
 const app = new Hono<HonoEnv>().basePath('/api');
 const logger = new Logger('api');

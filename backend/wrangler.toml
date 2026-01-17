@@ -1,5 +1,5 @@
 name = "myflix-backend"
-main = "src/presentation/http/server.ts"
+main = "src/main.ts"
 compatibility_date = "2024-06-15"
 
 [env.dev]

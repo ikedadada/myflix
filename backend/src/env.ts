@@ -16,7 +16,7 @@ export interface ServiceVariables {
   authContext?: AuthenticatedUserContext;
 }
 
-export type AppEnv = {
+export type HonoEnv = {
   Bindings: ServiceBindings;
   Variables: ServiceVariables;
 };
