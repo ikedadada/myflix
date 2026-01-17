@@ -4,7 +4,6 @@ import type { HonoEnv, ServiceBindings } from "@/env";
 import { AccessAuthProvider } from "@/infrastructure/external/auth-provider-impl";
 import { createAccessLoggingMiddleware } from "@/presentation/middleware/access-logging-middleware";
 import { createAuthMiddleware } from "@/presentation/middleware/auth-middleware";
-import { createCorsMiddleware } from "@/presentation/middleware/cors-middleware";
 import { registerErrorHandler } from "@/presentation/middleware/error-handler";
 import { registerAuthRoutes } from "@/presentation/routes/auth-routes";
 import { registerPlaybackRoutes } from "@/presentation/routes/playback-routes";
@@ -25,7 +24,6 @@ const resolveContainer = (bindings: ServiceBindings): AppContainer => {
 };
 
 app.use("*", createAccessLoggingMiddleware(logger));
-app.use("*", createCorsMiddleware());
 app.use(
 	"*",
 	createAuthMiddleware(
