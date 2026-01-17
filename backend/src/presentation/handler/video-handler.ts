@@ -1,5 +1,4 @@
 import type { Context } from "hono";
-import type { MetadataService } from "@/application_service/metadata-service";
 import {
 	AnalyzeAiResponseError,
 	AnalyzeValidationError,
@@ -14,7 +13,6 @@ import type { Logger } from "@/utils/logger";
 export class VideoHandler {
 	constructor(
 		private readonly videoService: VideoService,
-		private readonly metadataService: MetadataService,
 		private readonly videoAnalyzeService: VideoAnalyzeService,
 		private readonly logger: Logger,
 	) {}
@@ -85,22 +83,6 @@ export class VideoHandler {
 			this.logger.error("Create video failed", { error });
 			return c.json({ message: "Failed to create video" }, 400);
 		}
-	};
-
-	metadata = async (c: Context<HonoEnv>) => {
-		const authContext = c.var.authContext;
-		if (!authContext) {
-			return c.json({ message: "Unauthorized" }, 401);
-		}
-		const videoId = new VideoId(c.req.param("id"));
-		const summary = await this.metadataService.summarize(
-			authContext.userId,
-			videoId,
-		);
-		if (!summary) {
-			return c.json({ message: "Video not found" }, 404);
-		}
-		return c.json(summary);
 	};
 
 	stream = async (c: Context<HonoEnv>) => {

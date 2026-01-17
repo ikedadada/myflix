@@ -106,32 +106,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /videos/{id}/metadata:
-    get:
-      tags: [videos]
-      summary: Get metadata summary for a video
-      parameters:
-        - $ref: '#/components/parameters/VideoId'
-      responses:
-        '200':
-          description: Metadata summary
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/VideoMetadata'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
-          description: Video not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
   /videos/{id}/stream:
     get:
       tags: [videos]
