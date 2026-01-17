@@ -1,5 +1,5 @@
 
-import type { VideoTextAiClient } from "@/application_service/ports/video-text-ai-client";
+import type { VideoTextAiClient } from "@/application_service/video-analyze-service";
 
 export interface GeminiGenerateParams {
 	prompt: string;

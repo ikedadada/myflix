@@ -1,24 +1,50 @@
-import type { Settings } from "@/domain/model/entity/settings";
-import type { SettingsId } from "@/domain/model/value_object/settings-id";
+import { Settings } from "@/domain/model/entity/settings";
+import { SettingsId } from "@/domain/model/value_object/settings-id";
 import type { UserId } from "@/domain/model/value_object/user-id";
 import type { SettingsRepository } from "@/domain/repository/settings-repository";
-import { type SettingsDto, toSettingsDto } from "./dto/settings-dto";
 
-export class SettingsService {
+export interface UpdateSettingsParams {
+  autoplay: boolean;
+}
+
+export interface SettingsService {
+  findOrInit(ownerId: UserId): Promise<Settings>;
+  update(ownerId: UserId,settings: UpdateSettingsParams): Promise<Settings>;
+}
+
+export class SettingsNotFoundError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "SettingsNotFoundError";
+  }
+}
+
+export class SettingsServiceImpl implements SettingsService {
 	constructor(private readonly repository: SettingsRepository) {}
 
-	async findByOwner(ownerId: UserId): Promise<SettingsDto | null> {
+	async findOrInit(ownerId: UserId): Promise<Settings> {
 		const settings = await this.repository.findByOwner(ownerId);
-		return settings ? toSettingsDto(settings) : null;
-	}
+    if (settings) return settings;
 
-	async update(settings: Settings): Promise<SettingsDto> {
-		await this.repository.save(settings);
-		return toSettingsDto(settings);
-	}
+    const initialSettings = new Settings({
+      id: new SettingsId(`settings-${ownerId.toString()}`),
+      ownerId,
+      autoplay: true,
+    });
+    await this.repository.save(initialSettings);
+    return initialSettings;
+  }
 
-	async findById(id: SettingsId): Promise<SettingsDto | null> {
-		const settings = await this.repository.findById(id);
-		return settings ? toSettingsDto(settings) : null;
+	async update(ownerId: UserId, settings: UpdateSettingsParams): Promise<Settings> {
+    const existing = await this.repository.findByOwner(ownerId);
+    if (!existing) {
+      throw new SettingsNotFoundError("Settings not found for the given ownerId");
+    }
+    existing.update({
+      autoplay: settings.autoplay,
+    });
+    const updatedSettings = existing; 
+    await this.repository.save(updatedSettings);
+    return updatedSettings;
 	}
 }

@@ -1,6 +1,6 @@
 import { createRemoteJWKSet, type JWTVerifyResult, jwtVerify } from "jose";
-import type { AuthenticatedUserContext } from "@/application_service/dto/user-dto";
 import { UserId } from "@/domain/model/value_object/user-id";
+import type { AuthenticatedUserContext } from "@/env";
 
 export class AccessAuthProvider {
 	private readonly jwks: ReturnType<typeof createRemoteJWKSet>;

@@ -1,4 +1,4 @@
-import type { AuthenticatedUserContext } from '@/application_service/dto/user-dto';
+import type { UserId } from "@/domain/model/value_object/user-id";
 
 export interface ServiceBindings {
   DB: D1Database;
@@ -10,6 +10,11 @@ export interface ServiceBindings {
   GEMINI_API_KEY?: string;
   GEMINI_MODEL?: string;
   ENV_NAME?: string;
+}
+
+export interface AuthenticatedUserContext {
+  userId: UserId;
+  email: string;
 }
 
 export interface ServiceVariables {

@@ -1,10 +1,10 @@
-import { AuthService } from "@/application_service/auth-service";
+import { AuthServiceImpl } from "@/application_service/auth-service";
 import { MetadataService } from "@/application_service/metadata-service";
 import { PlaybackService } from "@/application_service/playback-service";
-import { SettingsService } from "@/application_service/settings-service";
+import { SettingsServiceImpl } from "@/application_service/settings-service";
 import { UploadService } from "@/application_service/upload-service";
 import { VideoAnalyzeService } from "@/application_service/video-analyze-service";
-import { VideoService } from "@/application_service/video-service";
+import { VideoServiceImpl } from "@/application_service/video-service";
 import type { ServiceBindings } from "@/env";
 import { D1PlaybackRepository } from "@/infrastructure/database/playback-repository-impl";
 import { seedDemoData } from "@/infrastructure/database/seed";
@@ -38,8 +38,8 @@ export const createContainer = (bindings: ServiceBindings): AppContainer => {
 	const playbackRepository = new D1PlaybackRepository(bindings.DB);
 	const settingsRepository = new D1SettingsRepository(bindings.DB);
 
-	const authService = new AuthService(userRepository);
-	const videoService = new VideoService(
+	const authService = new AuthServiceImpl(userRepository);
+	const videoService = new VideoServiceImpl(
 		videoRepository,
 		uploadRepository,
 		bindings.MEDIA_BUCKET,
@@ -50,7 +50,7 @@ export const createContainer = (bindings: ServiceBindings): AppContainer => {
 	);
 	const playbackService = new PlaybackService(playbackRepository);
 	const metadataService = new MetadataService(videoService, playbackService);
-	const settingsService = new SettingsService(settingsRepository);
+	const settingsService = new SettingsServiceImpl(settingsRepository);
 	const geminiClient = new GeminiClient(
 		bindings.GEMINI_API_KEY,
 		bindings.GEMINI_MODEL,

@@ -1,7 +1,5 @@
 import type { Context } from "hono";
-import type { SettingsService } from "@/application_service/settings-service";
-import { Settings } from "@/domain/model/entity/settings";
-import { SettingsId } from "@/domain/model/value_object/settings-id";
+import { SettingsNotFoundError, type SettingsService } from "@/application_service/settings-service";
 import type { HonoEnv } from "@/env";
 
 export class SettingsHandler {
@@ -12,12 +10,11 @@ export class SettingsHandler {
 		if (!authContext) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
-		const settings = await this.settingsService.findByOwner(authContext.userId);
-		return c.json(
-			settings ?? {
-				id: `settings-${authContext.userId.toString()}`,
+		const settings = await this.settingsService.findOrInit(authContext.userId);
+		return c.json({
+				id: settings.id().toString(),
 				ownerId: authContext.userId.toString(),
-				autoplay: true,
+				autoplay: settings.autoplay(),
 			},
 		);
 	};
@@ -28,12 +25,20 @@ export class SettingsHandler {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
 		const body = await c.req.json<{ autoplay: boolean }>();
-		const settings = new Settings({
-			id: new SettingsId(`settings-${authContext.userId.toString()}`),
-			ownerId: authContext.userId,
-			autoplay: body.autoplay,
-		});
-		const updated = await this.settingsService.update(settings);
-		return c.json(updated);
+    try {
+      const updated = await this.settingsService.update(authContext.userId, {
+        autoplay: body.autoplay,
+      });
+      return c.json({
+        id: updated.id().toString(),
+        ownerId: authContext.userId.toString(),
+        autoplay: updated.autoplay(),
+      });
+    } catch (error) {
+      if (error instanceof SettingsNotFoundError) {
+        return c.json({ message: "Settings not found" }, 404);
+      }
+      throw error;
+    }
 	};
 }

@@ -11,7 +11,12 @@ export class AuthHandler {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
 		const profile = await this.authService.resolveUser(authContext);
-		return c.json(profile);
+		return c.json({
+      id: profile.id().toString(),
+      email: profile.email(),
+      displayName: profile.displayName(),
+      createdAt: profile.createdAt().toISOString(),
+    });
 	};
 
 	callback = async (c: Context<HonoEnv>) => {

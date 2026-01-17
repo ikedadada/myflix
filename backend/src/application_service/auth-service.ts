@@ -1,21 +1,20 @@
 import { User } from "@/domain/model/entity/user";
-import { UserId } from "@/domain/model/value_object/user-id";
 import type { UserRepository } from "@/domain/repository/user-repository";
-import {
-	type AuthenticatedUserContext,
-	toUserProfileDto,
-	type UserProfileDto,
-} from "./dto/user-dto";
+import type { AuthenticatedUserContext } from "@/env";
 
-export class AuthService {
+export type AuthService = {
+  resolveUser(context: AuthenticatedUserContext): Promise<User>;
+};
+
+export class AuthServiceImpl implements AuthService {
 	constructor(private readonly userRepository: UserRepository) {}
 
 	async resolveUser(
 		context: AuthenticatedUserContext,
-	): Promise<UserProfileDto> {
+	): Promise<User> {
 		const existing = await this.userRepository.findById(context.userId);
 		if (existing) {
-			return toUserProfileDto(existing);
+			return existing;
 		}
 
 		const created = new User({
@@ -25,16 +24,6 @@ export class AuthService {
 			createdAt: new Date(),
 		});
 		await this.userRepository.save(created);
-		return toUserProfileDto(created);
-	}
-
-	async findByEmail(email: string): Promise<UserProfileDto | null> {
-		const user = await this.userRepository.findByEmail(email);
-		return user ? toUserProfileDto(user) : null;
-	}
-
-	async getUserProfile(id: string): Promise<UserProfileDto | null> {
-		const user = await this.userRepository.findById(new UserId(id));
-		return user ? toUserProfileDto(user) : null;
+		return created;
 	}
 }

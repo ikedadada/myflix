@@ -7,7 +7,17 @@ import {
 	isVideoTone,
 	type VideoTone,
 } from "@/domain/model/value_object/video-tone";
-import type { VideoTextAiClient } from "./ports/video-text-ai-client";
+
+
+// TODO: If there is a common place for application service ports, move this interface there.
+export interface VideoTextAiClient {
+  generate(params: {
+    prompt: string;
+    file: File;
+    mimeType?: string;
+    generationConfig?: Record<string, unknown>;
+  }): Promise<{ text: string; model?: string; durationMs?: number }>;
+}
 
 export class AnalyzeValidationError extends Error {}
 export class AnalyzeAiResponseError extends Error {}

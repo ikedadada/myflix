@@ -4,32 +4,41 @@ import type { UserId } from "@/domain/model/value_object/user-id";
 import { VideoId } from "@/domain/model/value_object/video-id";
 import type { UploadSessionRepository } from "@/domain/repository/upload-session-repository";
 import type { VideoRepository } from "@/domain/repository/video-repository";
-import { toVideoSummaryDto, type VideoSummaryDto } from "./dto/video-dto";
 
-export class VideoService {
+export interface CreateFromUploadVideoParams {
+  ownerId: UserId;
+  uploadId: UploadSessionId;
+  title: string;
+  description: string;
+  durationSeconds: number;
+  thumbnailKey?: string | null;
+}
+
+export interface VideoService {
+  listForUser(userId: UserId): Promise<Video[]>;
+  findById(id: VideoId): Promise<Video | null>;
+  createFromUpload(params: CreateFromUploadVideoParams): Promise<Video>;
+  getContent(ownerId: UserId, videoId: VideoId): Promise<Response | null>;
+  getThumbnail(ownerId: UserId, videoId: VideoId): Promise<Response | null>;
+}
+
+export class VideoServiceImpl implements VideoService {
 	constructor(
 		private readonly videoRepository: VideoRepository,
 		private readonly uploadSessionRepository: UploadSessionRepository,
 		private readonly bucket: R2Bucket,
 	) {}
 
-	async listForUser(userId: UserId): Promise<VideoSummaryDto[]> {
+	async listForUser(userId: UserId): Promise<Video[]> {
 		const videos = await this.videoRepository.listByOwner(userId);
-		return videos.map(toVideoSummaryDto);
+		return videos;
 	}
 
 	async findById(id: VideoId): Promise<Video | null> {
 		return this.videoRepository.findById(id);
 	}
 
-	async createFromUpload(params: {
-		ownerId: UserId;
-		uploadId: UploadSessionId;
-		title: string;
-		description: string;
-		durationSeconds: number;
-		thumbnailKey?: string | null;
-	}): Promise<Video> {
+	async createFromUpload(params: CreateFromUploadVideoParams): Promise<Video> {
 		const session = await this.uploadSessionRepository.findById(
 			params.uploadId,
 		);

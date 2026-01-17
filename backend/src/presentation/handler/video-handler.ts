@@ -25,7 +25,16 @@ export class VideoHandler {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
 		const videos = await this.videoService.listForUser(authContext.userId);
-		return c.json(videos);
+		return c.json(videos.map((video) => ({
+      id: video.id().toString(),
+      title: video.title(),
+      description: video.description(),
+      durationSeconds: video.durationSeconds(),
+      objectKey: video.objectKey(),
+      thumbnailUrl: video.thumbnailKey()
+        ? `/api/videos/${video.id().toString()}/thumbnail`
+        : null,
+    })));
 	};
 
 	create = async (c: Context<HonoEnv>) => {
