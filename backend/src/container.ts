@@ -1,8 +1,8 @@
 import { AuthServiceImpl } from "@/application_service/auth-service";
-import { PlaybackService } from "@/application_service/playback-service";
+import { FileUploadServiceImpl } from "@/application_service/file-upload-service";
+import { PlaybackServiceImpl } from "@/application_service/playback-service";
 import { SettingsServiceImpl } from "@/application_service/settings-service";
-import { UploadService } from "@/application_service/upload-service";
-import { VideoAnalyzeService } from "@/application_service/video-analyze-service";
+import { VideoAnalyzeServiceImpl } from "@/application_service/video-analyze-service";
 import { VideoServiceImpl } from "@/application_service/video-service";
 import type { ServiceBindings } from "@/env";
 import { D1PlaybackRepository } from "@/infrastructure/database/playback-repository-impl";
@@ -13,16 +13,16 @@ import { D1UserRepository } from "@/infrastructure/database/user-repository-impl
 import { D1VideoRepository } from "@/infrastructure/database/video-repository-impl";
 import { GeminiClient } from "@/infrastructure/external/gemini-client";
 import { AuthHandler } from "@/presentation/handler/auth-handler";
+import { FileUploadHandler } from "@/presentation/handler/file-upload-handler";
 import { PlaybackHandler } from "@/presentation/handler/playback-handler";
 import { SettingsHandler } from "@/presentation/handler/settings-handler";
-import { UploadHandler } from "@/presentation/handler/upload-handler";
 import { VideoHandler } from "@/presentation/handler/video-handler";
 import { type Logger, LoggerImpl } from "@/utils/logger";
 
 export interface AppContainer {
 	authHandler: AuthHandler;
 	videoHandler: VideoHandler;
-	uploadHandler: UploadHandler;
+	fileUploadHandler: FileUploadHandler;
 	playbackHandler: PlaybackHandler;
 	settingsHandler: SettingsHandler;
 	logger: Logger;
@@ -43,17 +43,17 @@ export const createContainer = (bindings: ServiceBindings): AppContainer => {
 		uploadRepository,
 		bindings.MEDIA_BUCKET,
 	);
-	const uploadService = new UploadService(
+	const fileUploadService = new FileUploadServiceImpl(
 		uploadRepository,
 		bindings.MEDIA_BUCKET,
 	);
-	const playbackService = new PlaybackService(playbackRepository);
+	const playbackService = new PlaybackServiceImpl(playbackRepository);
 	const settingsService = new SettingsServiceImpl(settingsRepository);
 	const geminiClient = new GeminiClient(
 		bindings.GEMINI_API_KEY,
 		bindings.GEMINI_MODEL,
 	);
-	const videoAnalyzeService = new VideoAnalyzeService(geminiClient);
+	const videoAnalyzeService = new VideoAnalyzeServiceImpl(geminiClient);
 
 	seedDemoData(bindings.DB).catch((error) =>
 		logger.error("Seed demo data failed", { error }),
@@ -61,12 +61,8 @@ export const createContainer = (bindings: ServiceBindings): AppContainer => {
 
 	return {
 		authHandler: new AuthHandler(authService),
-		videoHandler: new VideoHandler(
-			videoService,
-			videoAnalyzeService,
-      logger,
-		),
-		uploadHandler: new UploadHandler(uploadService),
+		videoHandler: new VideoHandler(videoService, videoAnalyzeService, logger),
+		fileUploadHandler: new FileUploadHandler(fileUploadService),
 		playbackHandler: new PlaybackHandler(playbackService),
 		settingsHandler: new SettingsHandler(settingsService),
 		logger,

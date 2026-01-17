@@ -3,25 +3,29 @@ import { UploadSessionId } from "@/domain/model/value_object/upload-session-id";
 import type { UserId } from "@/domain/model/value_object/user-id";
 import type { UploadSessionRepository } from "@/domain/repository/upload-session-repository";
 
-export class UploadService {
+export interface UploadFileParams {
+  ownerId: UserId;
+  data: ArrayBuffer;
+  contentType?: string;
+  kind?: "video" | "thumbnail";
+}
+
+export interface FileUploadService {
+  listUploadSessions(ownerId: UserId): Promise<UploadSession[]>;
+  uploadFile(params: UploadFileParams): Promise<{ session: UploadSession; objectKey: string }>;
+}
+
+export class FileUploadServiceImpl implements FileUploadService {
 	constructor(
 		private readonly repository: UploadSessionRepository,
 		private readonly bucket: R2Bucket,
 	) {}
 
-	async list(ownerId: UserId): Promise<UploadSession[]> {
+	async listUploadSessions(ownerId: UserId): Promise<UploadSession[]> {
 		return this.repository.listByOwner(ownerId);
 	}
-
-	async start(session: UploadSession): Promise<void> {
-		await this.repository.save(session);
-	}
-
-	async findById(id: UploadSessionId): Promise<UploadSession | null> {
-		return this.repository.findById(id);
-	}
-
-	async uploadObject(params: {
+	
+	async uploadFile(params: {
 		ownerId: UserId;
 		data: ArrayBuffer;
 		contentType?: string;

@@ -5,7 +5,7 @@ import type {
 } from "@/infrastructure/external/gemini-client";
 import {
 	AnalyzeValidationError,
-	VideoAnalyzeService,
+  VideoAnalyzeServiceImpl,
 } from "./video-analyze-service";
 
 class StubGeminiClient {
@@ -22,7 +22,7 @@ const createFile = (size = 10): File =>
 
 describe("VideoAnalyzeService", () => {
 	it("returns parsed copy", async () => {
-		const service = new VideoAnalyzeService(new StubGeminiClient() as never);
+		const service = new VideoAnalyzeServiceImpl(new StubGeminiClient() as never);
 		const result = await service.analyze({
 			file: createFile(),
 			tone: "friendly",
@@ -34,14 +34,14 @@ describe("VideoAnalyzeService", () => {
 	});
 
 	it("rejects invalid tone", async () => {
-		const service = new VideoAnalyzeService(new StubGeminiClient() as never);
+		const service = new VideoAnalyzeServiceImpl(new StubGeminiClient() as never);
 		await expect(
 			service.analyze({ file: createFile(), tone: "invalid" }),
 		).rejects.toBeInstanceOf(AnalyzeValidationError);
 	});
 
 	it("rejects oversized file", async () => {
-		const service = new VideoAnalyzeService(new StubGeminiClient() as never);
+		const service = new VideoAnalyzeServiceImpl(new StubGeminiClient() as never);
 		const bigFile = createFile(101 * 1024 * 1024);
 		await expect(
 			service.analyze({ file: bigFile, tone: "friendly" }),

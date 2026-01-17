@@ -1,16 +1,16 @@
 import type { Context } from "hono";
-import type { UploadService } from "@/application_service/upload-service";
+import type { FileUploadService } from "@/application_service/file-upload-service";
 import type { HonoEnv } from "@/env";
 
-export class UploadHandler {
-	constructor(private readonly uploadService: UploadService) {}
+export class FileUploadHandler {
+	constructor(private readonly fileUploadService: FileUploadService) {}
 
 	list = async (c: Context<HonoEnv>) => {
 		const authContext = c.var.authContext;
 		if (!authContext) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
-		const sessions = await this.uploadService.list(authContext.userId);
+		const sessions = await this.fileUploadService.listUploadSessions(authContext.userId);
 		return c.json(
 			sessions.map((session) => ({
 				id: session.id().toString(),
@@ -34,7 +34,7 @@ export class UploadHandler {
 			return c.json({ message: "Empty upload payload" }, 400);
 		}
 
-		const { session, objectKey } = await this.uploadService.uploadObject({
+		const { session, objectKey } = await this.fileUploadService.uploadFile({
 			ownerId: authContext.userId,
 			data: body,
 			contentType,

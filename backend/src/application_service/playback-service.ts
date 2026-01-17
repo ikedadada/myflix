@@ -4,7 +4,19 @@ import type { UserId } from "@/domain/model/value_object/user-id";
 import type { VideoId } from "@/domain/model/value_object/video-id";
 import type { PlaybackRepository } from "@/domain/repository/playback-repository";
 
-export class PlaybackService {
+export interface PlaybackService {
+  persistProgress(
+    userId: UserId,
+    videoId: VideoId,
+    position: PlaybackPosition,
+  ): Promise<void>;
+  getProgress(
+    userId: UserId,
+    videoId: VideoId,
+  ): Promise<PlaybackSession | null>;
+}
+
+export class PlaybackServiceImpl implements PlaybackService {
 	constructor(private readonly repository: PlaybackRepository) {}
 
 	async persistProgress(

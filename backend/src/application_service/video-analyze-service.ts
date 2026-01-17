@@ -32,13 +32,17 @@ export interface AnalyzeVideoCommand {
 	userContext?: string;
 }
 
-export class VideoAnalyzeService {
+export interface VideoAnalyzeService {
+  analyze(command: AnalyzeVideoCommand): Promise<VideoText>;
+}
+
+export class VideoAnalyzeServiceImpl implements VideoAnalyzeService {
 	constructor(private readonly aiClient: VideoTextAiClient) {}
 
 	async analyze(command: AnalyzeVideoCommand): Promise<VideoText> {
-		const tone = this.parseTone(command.tone);
-		this.validateFile(command.file);
-		const userContext = this.parseUserContext(command.userContext);
+		const tone = parseTone(command.tone);
+		validateFile(command.file);
+		const userContext = parseUserContext(command.userContext);
 
 		const prompt = buildVideoTextPrompt({ tone, userContext });
 		const response = await this.aiClient.generate({
@@ -74,36 +78,36 @@ export class VideoAnalyzeService {
 			durationMs: parsed.durationMs ?? response.durationMs,
 		};
 	}
+}
 
-	private parseTone(value: string): VideoTone {
-		if (!isVideoTone(value)) {
-			throw new AnalyzeValidationError("Invalid tone");
-		}
-		return value;
-	}
+const parseTone = (value: string): VideoTone => {
+  if (!isVideoTone(value)) {
+    throw new AnalyzeValidationError("Invalid tone");
+  }
+  return value;
+}
 
-	private validateFile(file: File) {
-		if (!(file instanceof File)) {
-			throw new AnalyzeValidationError("Video file is required");
-		}
-		if (!Number.isFinite(file.size) || file.size <= 0) {
-			throw new AnalyzeValidationError("Video file is empty");
-		}
-		if (file.size > MAX_BYTES) {
-			throw new AnalyzeValidationError("Video file too large");
-		}
-		if (file.type && !ALLOWED_MIME.includes(file.type)) {
-			throw new AnalyzeValidationError("Unsupported video mime type");
-		}
-	}
+const validateFile = (file: File) => {
+  if (!(file instanceof File)) {
+    throw new AnalyzeValidationError("Video file is required");
+  }
+  if (!Number.isFinite(file.size) || file.size <= 0) {
+    throw new AnalyzeValidationError("Video file is empty");
+  }
+  if (file.size > MAX_BYTES) {
+    throw new AnalyzeValidationError("Video file too large");
+  }
+  if (file.type && !ALLOWED_MIME.includes(file.type)) {
+    throw new AnalyzeValidationError("Unsupported video mime type");
+  }
+}
 
-	private parseUserContext(value?: string): string | undefined {
-		if (!value) return undefined;
-		const trimmed = value.trim();
-		if (!trimmed) return undefined;
-		if (trimmed.length > USER_CONTEXT_MAX) {
-			throw new AnalyzeValidationError("User context too long");
-		}
-		return trimmed;
-	}
+const parseUserContext = (value?: string): string | undefined => {
+  if (!value) return undefined;
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+  if (trimmed.length > USER_CONTEXT_MAX) {
+    throw new AnalyzeValidationError("User context too long");
+  }
+  return trimmed;
 }
