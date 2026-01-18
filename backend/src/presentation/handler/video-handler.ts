@@ -22,7 +22,7 @@ export class VideoHandler {
 		if (!authContext) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
-		const videos = await this.videoService.listForUser(authContext.userId);
+		const videos = await this.videoService.listVideosByUserId(authContext.userId);
 		return c.json(videos.map((video) => ({
       id: video.id().toString(),
       title: video.title(),
@@ -58,7 +58,7 @@ export class VideoHandler {
 				: null;
 
 		try {
-			const video = await this.videoService.createFromUpload({
+			const video = await this.videoService.createVideoFromUploadSession({
 				ownerId: authContext.userId,
 				uploadId: new UploadSessionId(body.uploadId),
 				title: body.title,
@@ -91,7 +91,7 @@ export class VideoHandler {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
 		const videoId = new VideoId(c.req.param("id"));
-		const content = await this.videoService.getVideoFileObject(
+		const content = await this.videoService.findVideoFileObject(
 			authContext.userId,
 			videoId,
 		);
@@ -112,7 +112,7 @@ export class VideoHandler {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
 		const videoId = new VideoId(c.req.param("id"));
-		const content = await this.videoService.getThumbnailFileObject(
+		const content = await this.videoService.findThumbnailFileObject(
 			authContext.userId,
 			videoId,
 		);
@@ -133,10 +133,10 @@ export class VideoHandler {
 		}
 
 		const body = await c.req.parseBody();
-		const video = body["video"];
-		const toneRaw = body["tone"];
+		const video = body.video;
+		const toneRaw = body.tone;
 		const userContext =
-			typeof body["userContext"] === "string" ? body["userContext"] : undefined;
+			typeof body.userContext === "string" ? body.userContext : undefined;
 
 		if (!(video instanceof File)) {
 			return c.json({ message: "Invalid payload: video is required" }, 400);
@@ -146,7 +146,7 @@ export class VideoHandler {
 		}
 
 		try {
-			const result = await this.videoAnalyzeService.analyze({
+			const result = await this.videoAnalyzeService.analyzeVideo({
 				file: video,
 				tone: toneRaw,
 				userContext,

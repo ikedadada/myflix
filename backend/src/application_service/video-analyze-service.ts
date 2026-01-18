@@ -33,13 +33,13 @@ export interface AnalyzeVideoCommand {
 }
 
 export interface VideoAnalyzeService {
-  analyze(command: AnalyzeVideoCommand): Promise<VideoText>;
+  analyzeVideo(command: AnalyzeVideoCommand): Promise<VideoText>;
 }
 
 export class VideoAnalyzeServiceImpl implements VideoAnalyzeService {
 	constructor(private readonly aiClient: VideoTextAiClient) {}
 
-	async analyze(command: AnalyzeVideoCommand): Promise<VideoText> {
+	async analyzeVideo(command: AnalyzeVideoCommand): Promise<VideoText> {
 		const tone = parseTone(command.tone);
 		validateFile(command.file);
 		const userContext = parseUserContext(command.userContext);

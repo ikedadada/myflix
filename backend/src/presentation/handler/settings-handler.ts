@@ -10,7 +10,7 @@ export class SettingsHandler {
 		if (!authContext) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
-		const settings = await this.settingsService.findOrInit(authContext.userId);
+		const settings = await this.settingsService.findOrProvisionSettings(authContext.userId);
 		return c.json({
 				id: settings.id().toString(),
 				ownerId: authContext.userId.toString(),
@@ -26,7 +26,7 @@ export class SettingsHandler {
 		}
 		const body = await c.req.json<{ autoplay: boolean }>();
     try {
-      const updated = await this.settingsService.update(authContext.userId, {
+      const updated = await this.settingsService.updateSettings(authContext.userId, {
         autoplay: body.autoplay,
       });
       return c.json({

@@ -3,13 +3,13 @@ import type { UserRepository } from "@/domain/repository/user-repository";
 import type { AuthenticatedUserContext } from "@/env";
 
 export type AuthService = {
-  resolveUser(context: AuthenticatedUserContext): Promise<User>;
+  findOrProvisionUser(context: AuthenticatedUserContext): Promise<User>;
 };
 
 export class AuthServiceImpl implements AuthService {
 	constructor(private readonly userRepository: UserRepository) {}
 
-	async resolveUser(
+	async findOrProvisionUser(
 		context: AuthenticatedUserContext,
 	): Promise<User> {
 		const existing = await this.userRepository.findById(context.userId);
@@ -17,13 +17,13 @@ export class AuthServiceImpl implements AuthService {
 			return existing;
 		}
 
-		const created = new User({
+		const initialUser = new User({
 			id: context.userId,
 			email: context.email,
 			displayName: context.email.split("@")[0],
 			createdAt: new Date(),
 		});
-		await this.userRepository.save(created);
-		return created;
+		await this.userRepository.save(initialUser);
+		return initialUser;
 	}
 }

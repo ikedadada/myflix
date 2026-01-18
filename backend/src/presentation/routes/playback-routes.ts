@@ -6,6 +6,6 @@ export const registerPlaybackRoutes = (
   app: Hono<HonoEnv>,
   resolve: (env: HonoEnv['Bindings']) => AppContainer
 ): void => {
-  app.get('/videos/:id/progress', (c) => resolve(c.env).playbackHandler.getProgress(c));
-  app.post('/videos/:id/progress', (c) => resolve(c.env).playbackHandler.updateProgress(c));
+  app.get('/videos/:id/progress', (c) => resolve(c.env).playbackHandler.get(c));
+  app.post('/videos/:id/progress', (c) => resolve(c.env).playbackHandler.upsert(c));
 };

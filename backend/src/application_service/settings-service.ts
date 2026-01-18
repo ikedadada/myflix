@@ -8,21 +8,16 @@ export interface UpdateSettingsParams {
 }
 
 export interface SettingsService {
-  findOrInit(ownerId: UserId): Promise<Settings>;
-  update(ownerId: UserId,settings: UpdateSettingsParams): Promise<Settings>;
+  findOrProvisionSettings(ownerId: UserId): Promise<Settings>;
+  updateSettings(ownerId: UserId,settings: UpdateSettingsParams): Promise<Settings>;
 }
 
-export class SettingsNotFoundError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "SettingsNotFoundError";
-  }
-}
+export class SettingsNotFoundError extends Error {}
 
 export class SettingsServiceImpl implements SettingsService {
 	constructor(private readonly repository: SettingsRepository) {}
 
-	async findOrInit(ownerId: UserId): Promise<Settings> {
+	async findOrProvisionSettings(ownerId: UserId): Promise<Settings> {
 		const settings = await this.repository.findByOwner(ownerId);
     if (settings) return settings;
 
@@ -35,7 +30,7 @@ export class SettingsServiceImpl implements SettingsService {
     return initialSettings;
   }
 
-	async update(ownerId: UserId, settings: UpdateSettingsParams): Promise<Settings> {
+	async updateSettings(ownerId: UserId, settings: UpdateSettingsParams): Promise<Settings> {
     const existing = await this.repository.findByOwner(ownerId);
     if (!existing) {
       throw new SettingsNotFoundError("Settings not found for the given ownerId");

@@ -10,7 +10,7 @@ export class AuthHandler {
 		if (!authContext) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
-		const profile = await this.authService.resolveUser(authContext);
+		const profile = await this.authService.findOrProvisionUser(authContext);
 		return c.json({
       id: profile.id().toString(),
       email: profile.email(),

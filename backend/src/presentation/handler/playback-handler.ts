@@ -7,13 +7,13 @@ import type { HonoEnv } from "@/env";
 export class PlaybackHandler {
 	constructor(private readonly playbackService: PlaybackService) {}
 
-	getProgress = async (c: Context<HonoEnv>) => {
+	get = async (c: Context<HonoEnv>) => {
 		const authContext = c.var.authContext;
 		if (!authContext) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
 		const videoId = new VideoId(c.req.param("id"));
-		const session = await this.playbackService.getProgress(
+		const session = await this.playbackService.findProgress(
 			authContext.userId,
 			videoId,
 		);
@@ -23,14 +23,14 @@ export class PlaybackHandler {
 		return c.json({ position: session.lastPosition().value() });
 	};
 
-	updateProgress = async (c: Context<HonoEnv>) => {
+	upsert = async (c: Context<HonoEnv>) => {
 		const authContext = c.var.authContext;
 		if (!authContext) {
 			return c.json({ message: "Unauthorized" }, 401);
 		}
 		const body = await c.req.json<{ position: number }>();
 		const videoId = new VideoId(c.req.param("id"));
-		await this.playbackService.persistProgress(
+		await this.playbackService.upsertProgress(
 			authContext.userId,
 			videoId,
 			new PlaybackPosition(body.position),

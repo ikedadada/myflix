@@ -5,7 +5,7 @@ import { VideoId } from "@/domain/model/value_object/video-id";
 import type { UploadSessionRepository } from "@/domain/repository/upload-session-repository";
 import type { VideoRepository } from "@/domain/repository/video-repository";
 
-export interface CreateFromUploadVideoParams {
+export interface createVideoFromUploadSessionParams {
   ownerId: UserId;
   uploadId: UploadSessionId;
   title: string;
@@ -15,11 +15,11 @@ export interface CreateFromUploadVideoParams {
 }
 
 export interface VideoService {
-  listForUser(userId: UserId): Promise<Video[]>;
-  findById(id: VideoId): Promise<Video | null>;
-  createFromUpload(params: CreateFromUploadVideoParams): Promise<Video>;
-  getVideoFileObject(ownerId: UserId, videoId: VideoId): Promise<R2ObjectBody | null>;
-  getThumbnailFileObject(ownerId: UserId, videoId: VideoId): Promise<R2ObjectBody | null>;
+  listVideosByUserId(userId: UserId): Promise<Video[]>;
+  findVideo(id: VideoId): Promise<Video | null>;
+  createVideoFromUploadSession(params: createVideoFromUploadSessionParams): Promise<Video>;
+  findVideoFileObject(ownerId: UserId, videoId: VideoId): Promise<R2ObjectBody | null>;
+  findThumbnailFileObject(ownerId: UserId, videoId: VideoId): Promise<R2ObjectBody | null>;
 }
 
 export class VideoServiceImpl implements VideoService {
@@ -29,16 +29,16 @@ export class VideoServiceImpl implements VideoService {
 		private readonly bucket: R2Bucket,
 	) {}
 
-	async listForUser(userId: UserId): Promise<Video[]> {
+	async listVideosByUserId(userId: UserId): Promise<Video[]> {
 		const videos = await this.videoRepository.listByOwner(userId);
 		return videos;
 	}
 
-	async findById(id: VideoId): Promise<Video | null> {
+	async findVideo(id: VideoId): Promise<Video | null> {
 		return this.videoRepository.findById(id);
 	}
 
-	async createFromUpload(params: CreateFromUploadVideoParams): Promise<Video> {
+	async createVideoFromUploadSession(params: createVideoFromUploadSessionParams): Promise<Video> {
 		const session = await this.uploadSessionRepository.findById(
 			params.uploadId,
 		);
@@ -68,7 +68,7 @@ export class VideoServiceImpl implements VideoService {
 		return video;
 	}
 
-	async getVideoFileObject(
+	async findVideoFileObject(
 		ownerId: UserId,
 		videoId: VideoId,
 	): Promise<R2ObjectBody | null> {
@@ -84,7 +84,7 @@ export class VideoServiceImpl implements VideoService {
 		return object;
 	}
 
-	async getThumbnailFileObject(
+	async findThumbnailFileObject(
 		ownerId: UserId,
 		videoId: VideoId,
 	): Promise<R2ObjectBody | null> {
@@ -102,22 +102,5 @@ export class VideoServiceImpl implements VideoService {
 		}
 	
 		return object;
-	}
-
-	async updateThumbnailKey(params: {
-		ownerId: UserId;
-		videoId: VideoId;
-		thumbnailKey: string | null;
-	}): Promise<void> {
-		const video = await this.videoRepository.findById(params.videoId);
-		if (!video || video.ownerId().toString() !== params.ownerId.toString()) {
-			throw new Error("Video not found or unauthorized");
-		}
-
-		await this.videoRepository.updateThumbnailKey({
-			videoId: params.videoId,
-			ownerId: params.ownerId,
-			thumbnailKey: params.thumbnailKey,
-		});
 	}
 }

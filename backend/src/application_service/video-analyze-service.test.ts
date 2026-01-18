@@ -23,7 +23,7 @@ const createFile = (size = 10): File =>
 describe("VideoAnalyzeService", () => {
 	it("returns parsed copy", async () => {
 		const service = new VideoAnalyzeServiceImpl(new StubGeminiClient() as never);
-		const result = await service.analyze({
+		const result = await service.analyzeVideo({
 			file: createFile(),
 			tone: "friendly",
 		});
@@ -36,7 +36,7 @@ describe("VideoAnalyzeService", () => {
 	it("rejects invalid tone", async () => {
 		const service = new VideoAnalyzeServiceImpl(new StubGeminiClient() as never);
 		await expect(
-			service.analyze({ file: createFile(), tone: "invalid" }),
+			service.analyzeVideo({ file: createFile(), tone: "invalid" }),
 		).rejects.toBeInstanceOf(AnalyzeValidationError);
 	});
 
@@ -44,7 +44,7 @@ describe("VideoAnalyzeService", () => {
 		const service = new VideoAnalyzeServiceImpl(new StubGeminiClient() as never);
 		const bigFile = createFile(101 * 1024 * 1024);
 		await expect(
-			service.analyze({ file: bigFile, tone: "friendly" }),
+			service.analyzeVideo({ file: bigFile, tone: "friendly" }),
 		).rejects.toBeInstanceOf(AnalyzeValidationError);
 	});
 });

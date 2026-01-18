@@ -5,12 +5,12 @@ import type { VideoId } from "@/domain/model/value_object/video-id";
 import type { PlaybackRepository } from "@/domain/repository/playback-repository";
 
 export interface PlaybackService {
-  persistProgress(
+  upsertProgress(
     userId: UserId,
     videoId: VideoId,
     position: PlaybackPosition,
   ): Promise<void>;
-  getProgress(
+  findProgress(
     userId: UserId,
     videoId: VideoId,
   ): Promise<PlaybackSession | null>;
@@ -19,7 +19,7 @@ export interface PlaybackService {
 export class PlaybackServiceImpl implements PlaybackService {
 	constructor(private readonly repository: PlaybackRepository) {}
 
-	async persistProgress(
+	async upsertProgress(
 		userId: UserId,
 		videoId: VideoId,
 		position: PlaybackPosition,
@@ -36,7 +36,7 @@ export class PlaybackServiceImpl implements PlaybackService {
 		await this.repository.save(session);
 	}
 
-	async getProgress(
+	async findProgress(
 		userId: UserId,
 		videoId: VideoId,
 	): Promise<PlaybackSession | null> {
