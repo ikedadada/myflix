@@ -3,4 +3,4 @@ export {
   AccordionContent,
   AccordionItem,
   AccordionTrigger
-} from '@/components/ui/accordion';
+} from '@/shadcn/ui/accordion';

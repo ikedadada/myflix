@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { Button as ShadButton, type ButtonProps as ShadButtonProps } from '@/components/ui/button';
+import { Button as ShadButton, type ButtonProps as ShadButtonProps } from '@/shadcn/ui/button';
 
 type LegacyVariant = 'solid' | 'outline' | 'ghost';
 type ButtonVariant = ShadButtonProps['variant'] | LegacyVariant;

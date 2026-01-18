@@ -5,4 +5,4 @@ export {
   CardTitle,
   CardDescription,
   CardContent
-} from '@/components/ui/card';
+} from '@/shadcn/ui/card';

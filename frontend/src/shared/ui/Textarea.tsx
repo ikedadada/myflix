@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import type { ComponentPropsWithoutRef, ElementRef } from 'react';
-import { Textarea as ShadTextarea } from '@/components/ui/textarea';
+import { Textarea as ShadTextarea } from '@/shadcn/ui/textarea';
 
 export type TextareaProps = ComponentPropsWithoutRef<typeof ShadTextarea>;
 

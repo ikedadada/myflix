@@ -1,5 +1,5 @@
 import type { ComponentProps } from 'react';
-import { Badge as ShadBadge } from '@/components/ui/badge';
+import { Badge as ShadBadge } from '@/shadcn/ui/badge';
 
 export type BadgeProps = ComponentProps<typeof ShadBadge>;
 

@@ -1,5 +1,5 @@
 import type { ComponentProps } from 'react';
-import { Switch as ShadSwitch } from '@/components/ui/switch';
+import { Switch as ShadSwitch } from '@/shadcn/ui/switch';
 
 export type SwitchProps = ComponentProps<typeof ShadSwitch>;
 
