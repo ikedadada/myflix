@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import { Link, Outlet } from '@tanstack/react-router';
-import { APP_NAME } from '../config/constants';
-import { useAuthUser } from '@/shared/hooks/useAuthUser';
-import { UserMenu } from '@/shared/components/UserMenu';
+import { APP_NAME } from '@/config';
+import { useAuthUser } from '@/components/features/auth/hooks/useAuthUser';
+import { UserMenu } from '@/components/ui/UserMenu';
 
 interface Props {
   children?: ReactNode;

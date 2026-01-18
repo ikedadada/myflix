@@ -1,12 +1,12 @@
 import { Outlet, createRootRoute, createRoute, createRouter } from '@tanstack/react-router';
 import { AppLayout } from '../layout/AppLayout';
-import { HomePage } from '@/pages/home/HomePage';
-import { LibraryPage } from '@/pages/library/LibraryPage';
-import { UploadPage } from '@/pages/upload/UploadPage';
-import { SettingsPage } from '@/pages/settings/SettingsPage';
-import { VideoDetailPage } from '@/pages/video-detail/VideoDetailPage';
-import { ErrorPage } from '@/pages/error/ErrorPage';
-import { NotFoundPage } from '@/pages/error/NotFoundPage';
+import { HomePage } from '@/app/pages/home/HomePage';
+import { LibraryPage } from '@/app/pages/library/LibraryPage';
+import { UploadPage } from '@/app/pages/upload/UploadPage';
+import { SettingsPage } from '@/app/pages/settings/SettingsPage';
+import { VideoDetailPage } from '@/app/pages/video-detail/VideoDetailPage';
+import { ErrorPage } from '@/app/pages/error/ErrorPage';
+import { NotFoundPage } from '@/app/pages/error/NotFoundPage';
 
 const rootRoute = createRootRoute({
   component: () => (

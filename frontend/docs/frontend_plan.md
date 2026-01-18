@@ -32,88 +32,78 @@ frontend/
         routes.tsx
         route-tree.tsx
       providers/
-        QueryClientProvider.tsx
-        ZustandProvider.tsx
+        AppProviders.tsx
         ThemeProvider.tsx
       layout/
         AppLayout.tsx
-        MainLayout.tsx
-        AuthenticatedLayout.tsx
-      config/
-        env.ts
-        apiClient.ts
-        constants.ts
+      pages/
+        home/
+          HomePage.tsx
+          HomePage.stories.tsx
+        library/
+          LibraryPage.tsx
+          LibraryPage.stories.tsx
+        video-detail/
+          VideoDetailPage.tsx
+          VideoDetailPage.stories.tsx
+        playback/
+          PlaybackPage.tsx
+          PlaybackPage.stories.tsx
+        upload/
+          UploadPage.tsx
+          UploadPage.stories.tsx
+        settings/
+          SettingsPage.tsx
+          SettingsPage.stories.tsx
+        error/
+          NotFoundPage.tsx
+          ErrorPage.tsx
+          AccessDeniedPage.tsx
 
-    pages/
-      home/
-        HomePage.tsx
-        HomePage.stories.tsx
-      library/
-        LibraryPage.tsx
-        LibraryPage.stories.tsx
-      video-detail/
-        VideoDetailPage.tsx
-        VideoDetailPage.stories.tsx
-      playback/
-        PlaybackPage.tsx
-        PlaybackPage.stories.tsx
-      upload/
-        UploadPage.tsx
-        UploadPage.stories.tsx
-      settings/
-        SettingsPage.tsx
-        SettingsPage.stories.tsx
-      error/
-        NotFoundPage.tsx
-        ErrorPage.tsx
-        AccessDeniedPage.tsx
-
-    features/
-      video-card/
-        VideoCard.tsx
-        VideoCard.stories.tsx
-      video-list/
-        VideoList.tsx
-        VideoList.stories.tsx
-      video-filter/
-        VideoFilterBar.tsx
-        VideoFilterBar.stories.tsx
-      video-player/
-        VideoPlayer.tsx
-        VideoPlayer.stories.tsx
-      upload-form/
-        UploadForm.tsx
-        UploadForm.stories.tsx
-      settings-form/
-        SettingsForm.tsx
-        SettingsForm.stories.tsx
-
-    shared/
+    components/
+      features/
+        upload/
+          components/
+          hooks/
+          useUploadForm.ts
+        library/
+          VideoCard.tsx
+        auth/
+          hooks/
+        playback/
+          hooks/
+        settings/
+          hooks/
+        videos/
+          hooks/
       ui/
         Button.tsx
         Input.tsx
         Select.tsx
-        Dialog.tsx
-        Skeleton.tsx
-        Spinner.tsx
+        Switch.tsx
         Card.tsx
         Badge.tsx
-        Tooltip.tsx
-      hooks/
-        useAuthUser.ts
-        usePlaybackProgress.ts
-        useToast.ts
-        useConfirmDialog.ts
-      lib/
-        format-duration.ts
-        format-date.ts
-        create-query-client.ts
-        create-api-client.ts
-      types/
-        api.ts
-        video.ts
-        user.ts
-        settings.ts
+        Accordion.tsx
+        Textarea.tsx
+        UserMenu.tsx
+        index.ts
+      layout/
+        PageHeader.tsx
+      shadcn/
+        ui/
+        hooks/
+
+    lib/
+      api-client.ts
+      format-duration.ts
+      format-date.ts
+      utils.ts
+    types/
+      api.ts
+      video.ts
+      user.ts
+      settings.ts
+    config.ts
 
     assets/
       icons/
@@ -130,7 +120,7 @@ frontend/
   .prettierrc
 ```
 
-features 配下には機能単位で再利用可能なコンポーネントを配置する。pages 配下には URL と一対一に対応するページコンポーネントを配置する。 shared/ui と shared/hooks はアプリ全体で再利用可能な UI コンポーネントと React hooks を収容する。
+components/features 配下には機能単位で再利用可能なコンポーネントと hooks を配置する。components/ui にはアプリ全体で再利用する UI を配置し、shadcn 生成物は components/shadcn に隔離する。pages は app/pages にまとめ、URL と一対一に対応するページコンポーネントを配置する。共通ユーティリティは lib、型は types に集約する。
 
 ## 4. ページとルーティング
 
@@ -178,9 +168,9 @@ SPA 内からは、自分が認証済みであるかどうかを直接判断せ�
 
 UI コンポーネントは次のような方針で設計する。
 
-shared/ui には Button や Input、Card など汎用的なコンポーネントを配置する。これらは shadcn/ui のコンポーネントをラップするか、Tailwind ベースで独自に実装する。features 配下には特定のドメイン機能に密接に関係するコンポーネントを配置する。例えば video-card や video-filter などが該当する。
+components/ui には Button や Input、Card など汎用的なコンポーネントを配置する。これらは shadcn 生成物をラップするか、Tailwind ベースで独自に実装する。components/features 配下には特定のドメイン機能に密接に関係するコンポーネントを配置する。shadcn の生成物は components/shadcn に隔離し、直接編集しない。
 
-pages 配下のコンポーネントは、画面全体のレイアウトと features および shared/ui の組み立てに専念させる。ビジネスロジックは極力 application hooks や features コンポーネント側に寄せる。
+app/pages 配下のコンポーネントは、画面全体のレイアウトと components/features および components/ui の組み立てに専念させる。ビジネスロジックは極力 feature hooks 側に寄せる。
 
 Netflix の UI を参考にしつつ、MYFLIX としての一貫したデザイン言語を Tailwind のユーティリティクラスと shadcn/ui のトークン設定で表現する。
 
