@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import { apiClient, ApiError } from '@/lib/api-client'
+import { ApiError, apiClient } from '@/lib/api-client'
 import type { GeneratedVideoCopy, VideoTone } from '@/types/video'
 
 interface GenerateVideoCopyParams {

@@ -1,5 +1,5 @@
-import { forwardRef } from 'react'
 import type { ComponentPropsWithoutRef, ElementRef } from 'react'
+import { forwardRef } from 'react'
 import { Input as ShadInput } from '@/components/shadcn/ui/input'
 
 export type InputProps = ComponentPropsWithoutRef<typeof ShadInput>

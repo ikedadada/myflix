@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useEventListener, useResizeObserver } from 'usehooks-ts'
 import { VideoCard } from '@/components/features/library/VideoCard'
 import type { VideoSummary } from '@/types/video'

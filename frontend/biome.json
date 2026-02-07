@@ -30,5 +30,21 @@
     "parser": {
       "tailwindDirectives": true
     }
+  },
+  "files": {
+    "includes": [
+      "**/*",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/build",
+      "!**/coverage",
+      "!**/.wrangler",
+      "!**/.turbo",
+      "!**/.cache",
+      "!**/.parcel-cache",
+      "!**/.vite",
+      "!**/.next",
+      "!**/.output"
+    ]
   }
 }

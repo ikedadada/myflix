@@ -22,5 +22,19 @@
       "semicolons": "asNeeded",
       "trailingCommas": "all"
     }
+  },
+  "files": {
+    "includes": [
+      "**/*",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/build",
+      "!**/coverage",
+      "!**/.wrangler",
+      "!**/.turbo",
+      "!**/.cache",
+      "!**/.parcel-cache",
+      "!**/.vite"
+    ]
   }
 }

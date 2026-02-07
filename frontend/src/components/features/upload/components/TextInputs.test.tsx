@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react'
-import { describe, it, vi } from 'vitest'
 import type { UseFormRegister } from 'react-hook-form'
+import { describe, it, vi } from 'vitest'
 import type { UploadFormValues } from '../useUploadForm'
 import { TextInputs } from './TextInputs'
 
