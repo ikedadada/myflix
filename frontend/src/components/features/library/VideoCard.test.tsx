@@ -11,7 +11,14 @@ describe('VideoCard', () => {
   it('renders without crashing', () => {
     render(
       <VideoCard
-        video={{ id: '1', title: 'Sample', description: 'Desc', durationSeconds: 120 }}
+        video={{
+          id: '1',
+          title: 'Sample',
+          description: 'Desc',
+          durationSeconds: 120,
+          objectKey: 'obj-1',
+          thumbnailUrl: null,
+        }}
       />,
     )
   })

@@ -1,24 +1,7 @@
 import { render } from '@testing-library/react'
 import type { ComponentProps } from 'react'
 import { beforeAll, describe, it, vi } from 'vitest'
-import { LibraryPage } from './LibraryPage'
-
-vi.mock('@/components/features/videos/hooks/useVideos', () => ({
-  useVideos: () => ({
-    data: [
-      {
-        id: '1',
-        title: 'Sample',
-        description: 'Desc',
-        durationSeconds: 120,
-        objectKey: 'obj-1',
-        thumbnailUrl: null,
-      },
-    ],
-    isLoading: false,
-    isError: false,
-  }),
-}))
+import { VideoGridGallery } from './VideoGridGallery'
 
 vi.mock('@tanstack/react-router', () => ({
   Link: ({ children, ...props }: ComponentProps<'a'>) => <a {...props}>{children}</a>,
@@ -35,8 +18,21 @@ beforeAll(() => {
   )
 })
 
-describe('LibraryPage', () => {
+describe('VideoGridGallery', () => {
   it('renders without crashing', () => {
-    render(<LibraryPage />)
+    render(
+      <VideoGridGallery
+        videos={[
+          {
+            id: '1',
+            title: 'Sample',
+            description: 'Desc',
+            durationSeconds: 120,
+            objectKey: 'obj-1',
+            thumbnailUrl: null,
+          },
+        ]}
+      />,
+    )
   })
 })

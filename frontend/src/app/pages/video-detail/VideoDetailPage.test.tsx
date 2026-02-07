@@ -5,7 +5,16 @@ import { VideoDetailPage } from './VideoDetailPage'
 
 vi.mock('@/components/features/videos/hooks/useVideos', () => ({
   useVideos: () => ({
-    data: [{ id: '1', title: 'Sample', description: 'Desc', durationSeconds: 120 }],
+    data: [
+      {
+        id: '1',
+        title: 'Sample',
+        description: 'Desc',
+        durationSeconds: 120,
+        objectKey: 'obj-1',
+        thumbnailUrl: null,
+      },
+    ],
     isLoading: false,
     isError: false,
   }),

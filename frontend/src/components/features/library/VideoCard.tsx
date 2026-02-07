@@ -5,9 +5,42 @@ import { buildApiUrl } from '@/lib/api-client'
 import { formatDuration } from '@/lib/format-duration'
 import type { VideoSummary } from '@/types/video'
 
+export type VideoCardHoverPreset = 'none' | 'subtle' | 'expand'
+export type VideoCardHoverDirection = 'left' | 'right' | 'center'
+
 interface Props {
   video: VideoSummary
-  expandDirection?: 'left' | 'right' | 'center'
+  hoverPreset?: VideoCardHoverPreset
+  hoverDirection?: VideoCardHoverDirection
+}
+
+const getVideoCardHoverClasses = ({
+  preset,
+  direction,
+}: {
+  preset: VideoCardHoverPreset
+  direction?: VideoCardHoverDirection
+}) => {
+  if (preset === 'none') return ''
+
+  const scale =
+    preset === 'expand' ? 'hover:scale-[1.2]' : preset === 'subtle' ? 'hover:scale-[1.03]' : ''
+  const emphasis =
+    preset === 'expand'
+      ? 'hover:border-accent/60 hover:shadow-2xl'
+      : preset === 'subtle'
+        ? 'hover:border-accent/40 hover:shadow-xl'
+        : ''
+  const translate =
+    preset === 'expand'
+      ? direction === 'right'
+        ? 'hover:translate-x-8'
+        : direction === 'left'
+          ? 'hover:-translate-x-8'
+          : ''
+      : ''
+
+  return [scale, emphasis, translate].filter(Boolean).join(' ')
 }
 
 const resolveThumbUrl = (url: string | null): string => {
@@ -17,18 +50,13 @@ const resolveThumbUrl = (url: string | null): string => {
   return buildApiUrl(url)
 }
 
-export const VideoCard = ({ video, expandDirection }: Props) => {
+export const VideoCard = ({ video, hoverPreset, hoverDirection }: Props) => {
   const thumb = resolveThumbUrl(video.thumbnailUrl ?? null)
-  const hoverTranslate =
-    expandDirection === 'right'
-      ? 'hover:translate-x-8'
-      : expandDirection === 'left'
-        ? 'hover:-translate-x-8'
-        : ''
-  const hoverScale = expandDirection ? 'hover:scale-[1.2]' : ''
+  const preset = hoverPreset ?? (hoverDirection ? 'expand' : 'none')
+  const hoverClasses = getVideoCardHoverClasses({ preset, direction: hoverDirection })
   return (
     <Card
-      className={`group relative z-0 overflow-hidden border-border/80 p-0 transform transition duration-300 ease-out hover:z-20 ${hoverScale} hover:border-accent/60 hover:shadow-2xl ${hoverTranslate}`}
+      className={`group relative z-0 overflow-hidden border-border/80 p-0 transform transition duration-300 ease-out hover:z-20 ${hoverClasses}`}
     >
       <Link to='/videos/$videoId' params={{ videoId: video.id }} className='block h-full'>
         <div className='relative aspect-video w-full overflow-hidden'>
