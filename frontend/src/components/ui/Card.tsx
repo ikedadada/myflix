@@ -4,5 +4,5 @@ export {
   CardFooter,
   CardTitle,
   CardDescription,
-  CardContent
-} from '@/components/shadcn/ui/card';
+  CardContent,
+} from '@/components/shadcn/ui/card'

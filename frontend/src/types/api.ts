@@ -1,5 +1,5 @@
 export interface ApiUser {
-  id: string;
-  email: string;
-  displayName: string;
+  id: string
+  email: string
+  displayName: string
 }

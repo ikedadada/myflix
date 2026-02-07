@@ -8,5 +8,5 @@ export {
   SelectItem,
   SelectSeparator,
   SelectScrollUpButton,
-  SelectScrollDownButton
-} from '@/components/shadcn/ui/select';
+  SelectScrollDownButton,
+} from '@/components/shadcn/ui/select'

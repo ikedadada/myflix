@@ -1,51 +1,51 @@
-import { Hono } from "hono";
-import { cors } from "hono/cors";
-import { type AppContainer, createContainer } from "@/container";
-import type { HonoEnv, ServiceBindings } from "@/env";
-import { AccessAuthProvider } from "@/infrastructure/external/auth-provider-impl";
-import { createAccessLoggingMiddleware } from "@/presentation/middleware/access-logging-middleware";
-import { createAuthMiddleware } from "@/presentation/middleware/auth-middleware";
-import { registerErrorHandler } from "@/presentation/middleware/error-handler";
-import { registerAuthRoutes } from "@/presentation/routes/auth-routes";
-import { registerPlaybackRoutes } from "@/presentation/routes/playback-routes";
-import { registerSettingsRoutes } from "@/presentation/routes/settings-routes";
-import { registerUploadRoutes } from "@/presentation/routes/upload-routes";
-import { registerVideoRoutes } from "@/presentation/routes/video-routes";
-import { LoggerImpl } from "@/utils/logger";
+import { Hono } from 'hono'
+import { cors } from 'hono/cors'
+import { type AppContainer, createContainer } from '@/container'
+import type { HonoEnv, ServiceBindings } from '@/env'
+import { AccessAuthProvider } from '@/infrastructure/external/auth-provider-impl'
+import { createAccessLoggingMiddleware } from '@/presentation/middleware/access-logging-middleware'
+import { createAuthMiddleware } from '@/presentation/middleware/auth-middleware'
+import { registerErrorHandler } from '@/presentation/middleware/error-handler'
+import { registerAuthRoutes } from '@/presentation/routes/auth-routes'
+import { registerPlaybackRoutes } from '@/presentation/routes/playback-routes'
+import { registerSettingsRoutes } from '@/presentation/routes/settings-routes'
+import { registerUploadRoutes } from '@/presentation/routes/upload-routes'
+import { registerVideoRoutes } from '@/presentation/routes/video-routes'
+import { LoggerImpl } from '@/utils/logger'
 
-const app = new Hono<HonoEnv>().basePath("/api");
-const logger = new LoggerImpl("api");
+const app = new Hono<HonoEnv>().basePath('/api')
+const logger = new LoggerImpl('api')
 
-let cachedContainer: AppContainer | null = null;
+let cachedContainer: AppContainer | null = null
 const resolveContainer = (bindings: ServiceBindings): AppContainer => {
-	if (!cachedContainer) {
-		cachedContainer = createContainer(bindings);
-	}
-	return cachedContainer;
-};
+  if (!cachedContainer) {
+    cachedContainer = createContainer(bindings)
+  }
+  return cachedContainer
+}
 
 // ローカル環境でCORSを許可する設定
 const localCors = cors({
-	origin: "http://localhost:5173",
-	credentials: true,
-});
-app.use("*",(c, next) => c.env.ENV_NAME === "local" ? localCors(c, next) : next());
+  origin: 'http://localhost:5173',
+  credentials: true,
+})
+app.use('*', (c, next) => (c.env.ENV_NAME === 'local' ? localCors(c, next) : next()))
 
-app.use("*", createAccessLoggingMiddleware(logger));
+app.use('*', createAccessLoggingMiddleware(logger))
 app.use(
-	"*",
-	createAuthMiddleware(
-		(env) => new AccessAuthProvider(env.ACCESS_JWKS_URL, env.ACCESS_JWT_AUD),
-		logger,
-	),
-);
+  '*',
+  createAuthMiddleware(
+    (env) => new AccessAuthProvider(env.ACCESS_JWKS_URL, env.ACCESS_JWT_AUD),
+    logger,
+  ),
+)
 
-registerAuthRoutes(app, resolveContainer);
-registerVideoRoutes(app, resolveContainer);
-registerUploadRoutes(app, resolveContainer);
-registerPlaybackRoutes(app, resolveContainer);
-registerSettingsRoutes(app, resolveContainer);
+registerAuthRoutes(app, resolveContainer)
+registerVideoRoutes(app, resolveContainer)
+registerUploadRoutes(app, resolveContainer)
+registerPlaybackRoutes(app, resolveContainer)
+registerSettingsRoutes(app, resolveContainer)
 
-registerErrorHandler(app, logger);
+registerErrorHandler(app, logger)
 
-export default app;
+export default app

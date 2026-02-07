@@ -1,14 +1,14 @@
 export class UserId {
-  private readonly value: string;
+  private readonly value: string
 
   constructor(value: string) {
     if (!value || !value.trim()) {
-      throw new Error('UserId must not be empty');
+      throw new Error('UserId must not be empty')
     }
-    this.value = value;
+    this.value = value
   }
 
   toString(): string {
-    return this.value;
+    return this.value
   }
 }
