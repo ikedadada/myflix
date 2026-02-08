@@ -5,34 +5,38 @@ import { buildApiUrl } from '@/lib/api-client'
 import { formatDuration } from '@/lib/format-duration'
 import type { VideoSummary } from '@/types/video'
 
-export type VideoCardHoverPreset = 'none' | 'subtle' | 'expand'
-export type VideoCardHoverDirection = 'left' | 'right' | 'center'
+export type VideoCardHoverPreset =
+  | 'none'
+  | 'subtle-left'
+  | 'subtle-center'
+  | 'subtle-right'
+  | 'expand-left'
+  | 'expand-center'
+  | 'expand-right'
 
 interface Props {
   video: VideoSummary
   hoverPreset?: VideoCardHoverPreset
-  hoverDirection?: VideoCardHoverDirection
 }
 
 const getVideoCardHoverClasses = ({
   preset,
-  direction,
 }: {
   preset: VideoCardHoverPreset
-  direction?: VideoCardHoverDirection
 }) => {
   if (preset === 'none') return ''
 
-  const scale =
-    preset === 'expand' ? 'hover:scale-[1.2]' : preset === 'subtle' ? 'hover:scale-[1.03]' : ''
+  const [intensity, direction] = preset.split('-') as [
+    'subtle' | 'expand',
+    'left' | 'center' | 'right',
+  ]
+  const scale = intensity === 'expand' ? 'hover:scale-[1.2]' : 'hover:scale-[1.03]'
   const emphasis =
-    preset === 'expand'
+    intensity === 'expand'
       ? 'hover:border-accent/60 hover:shadow-2xl'
-      : preset === 'subtle'
-        ? 'hover:border-accent/40 hover:shadow-xl'
-        : ''
+      : 'hover:border-accent/40 hover:shadow-xl'
   const translate =
-    preset === 'expand'
+    intensity === 'expand'
       ? direction === 'right'
         ? 'hover:translate-x-8'
         : direction === 'left'
@@ -50,10 +54,10 @@ const resolveThumbUrl = (url: string | null): string => {
   return buildApiUrl(url)
 }
 
-export const VideoCard = ({ video, hoverPreset, hoverDirection }: Props) => {
+export const VideoCard = ({ video, hoverPreset }: Props) => {
   const thumb = resolveThumbUrl(video.thumbnailUrl ?? null)
-  const preset = hoverPreset ?? (hoverDirection ? 'expand' : 'none')
-  const hoverClasses = getVideoCardHoverClasses({ preset, direction: hoverDirection })
+  const preset = hoverPreset ?? 'none'
+  const hoverClasses = getVideoCardHoverClasses({ preset })
   return (
     <Card
       className={`group relative z-0 overflow-hidden border-border/80 p-0 transform transition duration-300 ease-out hover:z-20 ${hoverClasses}`}

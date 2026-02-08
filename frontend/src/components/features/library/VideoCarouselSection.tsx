@@ -92,13 +92,19 @@ export const VideoCarouselSection = ({ title, videos }: VideoCarouselSectionProp
           style={{ scrollSnapType: 'x mandatory' }}
         >
           {videos.map((video, idx) => {
-            const direction = idx === 0 ? 'right' : idx === videos.length - 1 ? 'left' : 'center'
+            const isLeftEnd = idx === 0
+            const isRightEnd = idx === videos.length - 1
+            const hoverPreset = isLeftEnd
+              ? 'expand-right'
+              : isRightEnd
+                ? 'expand-left'
+                : 'expand-center'
             return (
               <div
                 key={video.id}
                 className='min-w-[280px] max-w-[320px] flex-shrink-0 scroll-snap-align-start'
               >
-                <VideoCard video={video} hoverPreset='expand' hoverDirection={direction} />
+                <VideoCard video={video} hoverPreset={hoverPreset} />
               </div>
             )
           })}

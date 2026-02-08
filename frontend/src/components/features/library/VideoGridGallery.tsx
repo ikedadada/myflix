@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
-import { VideoCard } from '@/components/features/library/VideoCard'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useResizeObserver } from 'usehooks-ts'
+import { VideoCard, VideoCardHoverPreset } from '@/components/features/library/VideoCard'
 import type { VideoSummary } from '@/types/video'
 
 interface VideoGridGalleryProps {
@@ -8,38 +9,46 @@ interface VideoGridGalleryProps {
 
 export const VideoGridGallery = ({ videos }: VideoGridGalleryProps) => {
   const gridRef = useRef<HTMLDivElement | null>(null)
-  const [columns, setColumns] = useState(1)
+  const [gridColumnCount, setGridColumnCount] = useState(1)
 
-  useEffect(() => {
-    const grid = gridRef.current
-    if (!grid) return
-
-    const measure = () => {
-      const firstCard = grid.querySelector<HTMLElement>('[data-video-card]')
-      const cardWidth = firstCard?.offsetWidth || 300
-      const containerWidth = grid.clientWidth || cardWidth
-      const next = Math.max(1, Math.floor(containerWidth / Math.max(cardWidth, 1)))
-      setColumns(next)
+  const update = useCallback(() => {
+    if (videos.length === 0) {
+      setGridColumnCount(1)
+      return
     }
+    const node = gridRef.current
+    if (!node) return
+    const sampleCard = node.querySelector<HTMLElement>('[data-video-card]')
+    const cardWidth = sampleCard?.offsetWidth || 300
+    const gridWidth = node.clientWidth || cardWidth
+    const nextColumns = Math.max(1, Math.floor(gridWidth / Math.max(cardWidth, 1)))
+    setGridColumnCount(nextColumns)
+  }, [videos.length])
 
-    measure()
-    const observer = new ResizeObserver(measure)
-    observer.observe(grid)
-    return () => observer.disconnect()
-  }, [])
+  useResizeObserver({ ref: gridRef, onResize: update })
+  useEffect(() => {
+    update()
+  }, [update])
 
   return (
     <div ref={gridRef} className='grid gap-4 md:grid-cols-3'>
       {videos.map((video, idx) => {
-        const colIndex = columns > 0 ? idx % columns : 0
-        const direction = colIndex === 0 ? 'right' : colIndex === columns - 1 ? 'left' : 'center'
+        const colIndex = idx % gridColumnCount
+        const isLeftCol = colIndex === 0
+        const isRightCol = colIndex === gridColumnCount - 1
+        let hoverPreset: VideoCardHoverPreset = 'expand-center'
+        if (gridColumnCount > 1) {
+          if (isLeftCol && !isRightCol) {
+            hoverPreset = 'expand-right'
+          } else if (isRightCol && !isLeftCol) {
+            hoverPreset = 'expand-left'
+          }
+        } else {
+          hoverPreset = 'none'
+        }
         return (
           <div key={video.id} data-video-card>
-            <VideoCard
-              video={video}
-              hoverPreset={columns > 1 ? 'expand' : 'none'}
-              hoverDirection={columns > 1 ? direction : undefined}
-            />
+            <VideoCard video={video} hoverPreset={hoverPreset} />
           </div>
         )
       })}
