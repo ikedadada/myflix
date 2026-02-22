@@ -19,11 +19,7 @@ interface Props {
   hoverPreset?: VideoCardHoverPreset
 }
 
-const getVideoCardHoverClasses = ({
-  preset,
-}: {
-  preset: VideoCardHoverPreset
-}) => {
+const getVideoCardHoverClasses = ({ preset }: { preset: VideoCardHoverPreset }) => {
   if (preset === 'none') return ''
 
   const [intensity, direction] = preset.split('-') as [

@@ -1,5 +1,3 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 export const uploadFormSchema = z.object({
@@ -11,14 +9,9 @@ export const uploadFormSchema = z.object({
 
 export type UploadFormValues = z.infer<typeof uploadFormSchema>
 
-export const useUploadForm = (defaults?: Partial<UploadFormValues>) =>
-  useForm<UploadFormValues>({
-    resolver: zodResolver(uploadFormSchema),
-    defaultValues: {
-      title: '',
-      description: '',
-      tone: 'friendly',
-      userContext: '',
-      ...defaults,
-    },
-  })
+export const uploadFormDefaultValues: UploadFormValues = {
+  title: '',
+  description: '',
+  tone: 'friendly',
+  userContext: '',
+}

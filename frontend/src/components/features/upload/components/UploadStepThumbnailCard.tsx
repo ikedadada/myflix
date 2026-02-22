@@ -1,37 +1,41 @@
-import { useId } from 'react'
+import { useEffect, useId } from 'react'
+import { useAutoThumbnail } from '@/components/features/upload/hooks/useAutoThumbnail'
+import { useManualThumbnail } from '@/components/features/upload/hooks/useManualThumbnail'
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '@/components/ui'
 
-interface ThumbnailSectionProps {
-  previewUrl: string | null
-  fileName: string | null
-  error: string | null
-  generating: boolean
-  uploading?: boolean
-  objectKey?: string | null
-  source?: 'auto' | 'manual' | null
-  onResetToAuto?: () => void
-  onSelect: (file: File | null) => void
+interface UploadStepThumbnailCardProps {
+  file: File | null
+  uploading: boolean
+  objectKey: string | null
+  onThumbnailBlobChange: (blob: Blob | null) => void
 }
 
-export const ThumbnailSection = ({
-  previewUrl,
-  fileName,
-  error,
-  generating,
+export const UploadStepThumbnailCard = ({
+  file,
   uploading,
   objectKey,
-  source,
-  onResetToAuto,
-  onSelect,
-}: ThumbnailSectionProps) => {
+  onThumbnailBlobChange,
+}: UploadStepThumbnailCardProps) => {
   const inputId = useId()
+  const selectedVideoKey = file ? `${file.name}-${file.size}-${file.lastModified}` : null
+
+  const manual = useManualThumbnail({ resetKey: selectedVideoKey })
+  const auto = useAutoThumbnail({
+    file,
+    enabled: !manual.current,
+  })
+  const selectedThumbnail = manual.current ?? auto.current
+
+  useEffect(() => {
+    onThumbnailBlobChange(selectedThumbnail.blob)
+  }, [onThumbnailBlobChange, selectedThumbnail.blob])
 
   const statusText = (() => {
-    if (error) return error
+    if (selectedThumbnail.error) return selectedThumbnail.error
     if (uploading) return 'サムネイルをアップロード中…'
-    if (generating) return '動画から自動生成中…'
-    if (fileName) return `選択済み: ${fileName}`
-    if (previewUrl) return '自動生成されたサムネイルをプレビューしています'
+    if (selectedThumbnail.generating) return '動画から自動生成中…'
+    if (selectedThumbnail.fileName) return `選択済み: ${selectedThumbnail.fileName}`
+    if (selectedThumbnail.previewUrl) return '自動生成されたサムネイルをプレビューしています'
     return '動画を選択すると自動でサムネイルを生成します'
   })()
 
@@ -49,9 +53,9 @@ export const ThumbnailSection = ({
         <div className='grid gap-4 lg:grid-cols-[2fr_1.2fr]'>
           <div className='space-y-3'>
             <div className='overflow-hidden rounded border border-border bg-card'>
-              {previewUrl ? (
+              {selectedThumbnail.previewUrl ? (
                 <img
-                  src={previewUrl}
+                  src={selectedThumbnail.previewUrl}
                   alt='Thumbnail preview'
                   className='w-full max-h-72 object-contain bg-card'
                 />
@@ -73,10 +77,12 @@ export const ThumbnailSection = ({
             <div className='flex items-start justify-between gap-3'>
               <div className='space-y-1 text-sm'>
                 <p className='font-semibold text-foreground'>現在のステータス</p>
-                <p className={`text-xs ${error ? 'text-danger' : 'text-muted-foreground'}`}>
+                <p
+                  className={`text-xs ${selectedThumbnail.error ? 'text-danger' : 'text-muted-foreground'}`}
+                >
                   {statusText}
                 </p>
-                {source === 'manual' && !error && (
+                {selectedThumbnail.source === 'manual' && !selectedThumbnail.error && (
                   <p className='text-[11px] text-muted-foreground'>
                     手動で設定したサムネイルを使用中です
                   </p>
@@ -87,10 +93,8 @@ export const ThumbnailSection = ({
                   type='button'
                   size='sm'
                   variant='ghost'
-                  disabled={!previewUrl && !fileName}
-                  onClick={() => {
-                    onResetToAuto?.()
-                  }}
+                  disabled={!selectedThumbnail.previewUrl && !selectedThumbnail.fileName}
+                  onClick={manual.clear}
                 >
                   自動生成に戻す
                 </Button>
@@ -106,7 +110,7 @@ export const ThumbnailSection = ({
                 type='file'
                 accept='image/*'
                 className='border-dashed'
-                onChange={(event) => onSelect(event.target.files?.[0] ?? null)}
+                onChange={(event) => manual.select(event.target.files?.[0] ?? null)}
               />
               <p className='text-xs text-muted-foreground'>推奨: 1280x720 以上の16:9画像</p>
             </div>

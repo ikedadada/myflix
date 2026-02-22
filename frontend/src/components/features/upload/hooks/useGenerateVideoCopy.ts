@@ -39,8 +39,16 @@ export const useGenerateVideoCopy = (options: GenerateVideoCopyOptions = {}) => 
     return '生成に失敗しました。'
   }
 
+  const generate = async (params: GenerateVideoCopyParams) => {
+    try {
+      return await mutation.mutateAsync(params)
+    } catch {
+      return null
+    }
+  }
+
   return {
-    generate: mutation.mutateAsync,
+    generate,
     isGenerating: mutation.isPending,
     errorMessage: mutation.error ? getErrorMessage(mutation.error) : null,
     lastResult: mutation.data ?? null,

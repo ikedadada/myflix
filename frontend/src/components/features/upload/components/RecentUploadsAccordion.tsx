@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
-import { useUploadSessions } from '@/components/features/upload/hooks/useUploadSessions'
+import { useUploadSessionsQuery } from '@/components/features/upload/hooks/useUploadSessionsQuery'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui'
 import { formatDate } from '@/lib/format-date'
 
 export const RecentUploadsAccordion = () => {
-  const { data: sessions, isLoading } = useUploadSessions()
+  const { data: sessions, isLoading } = useUploadSessionsQuery()
   const items = useMemo(() => {
     const sorted = [...(sessions ?? [])].sort(
       (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),

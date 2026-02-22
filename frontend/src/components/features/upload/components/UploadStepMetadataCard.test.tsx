@@ -1,8 +1,8 @@
 import { render } from '@testing-library/react'
 import type { UseFormRegister } from 'react-hook-form'
 import { describe, it, vi } from 'vitest'
-import type { UploadFormValues } from '../useUploadForm'
-import { AiCopySection } from './AiCopySection'
+import type { UploadFormValues } from '../schema/upload-form-schema'
+import { UploadStepMetadataCard } from './UploadStepMetadataCard'
 
 vi.mock('@/components/features/upload/hooks/useGenerateVideoCopy', () => ({
   useGenerateVideoCopy: () => ({
@@ -13,20 +13,23 @@ vi.mock('@/components/features/upload/hooks/useGenerateVideoCopy', () => ({
   }),
 }))
 
-describe('AiCopySection', () => {
+describe('UploadStepMetadataCard', () => {
   it('renders without crashing', () => {
-    const register = vi.fn(() => ({
-      onChange: vi.fn(),
-      onBlur: vi.fn(),
-      ref: vi.fn(),
-      name: 'userContext',
-    })) as unknown as UseFormRegister<UploadFormValues>
+    const register = vi.fn(
+      () =>
+        ({
+          name: 'title',
+          onChange: vi.fn(),
+          onBlur: vi.fn(),
+          ref: vi.fn(),
+        }) as ReturnType<UseFormRegister<UploadFormValues>>,
+    ) as unknown as UseFormRegister<UploadFormValues>
     render(
-      <AiCopySection
+      <UploadStepMetadataCard
         file={null}
-        onApply={vi.fn()}
         register={register}
         errors={{}}
+        setValue={vi.fn()}
         userContextValue=''
       />,
     )

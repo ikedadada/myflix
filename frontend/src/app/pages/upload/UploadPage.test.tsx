@@ -13,43 +13,28 @@ vi.mock('@tanstack/react-query', async () => {
   }
 })
 
-vi.mock('@/components/features/upload/hooks/useUploadSessions', () => ({
-  useUploadSessions: () => ({ create: vi.fn(), creating: false, data: [], isLoading: false }),
-}))
-
-vi.mock('@/components/features/upload/useUploadForm', () => ({
-  useUploadForm: () => ({
-    register: () => ({}),
-    handleSubmit: (fn: () => void) => fn,
-    setValue: vi.fn(),
-    reset: vi.fn(),
-    watch: () => '',
-    formState: { errors: {} },
-  }),
-}))
-
 vi.mock('@/components/shadcn/hooks/useToast', () => ({
   useToast: () => ({ success: vi.fn(), error: vi.fn() }),
 }))
 
-vi.mock('@/components/features/upload/components/AiCopySection', () => ({
-  AiCopySection: () => <div>AiCopySection</div>,
+vi.mock('@/components/features/upload/components/UploadStepFileCard', () => ({
+  UploadStepFileCard: () => <div>UploadStepFileCard</div>,
 }))
 
-vi.mock('@/components/features/upload/components/FilePicker', () => ({
-  FilePicker: () => <div>FilePicker</div>,
+vi.mock('@/components/features/upload/components/UploadStepThumbnailCard', () => ({
+  UploadStepThumbnailCard: () => <div>UploadStepThumbnailCard</div>,
 }))
 
 vi.mock('@/components/features/upload/components/RecentUploadsAccordion', () => ({
   RecentUploadsAccordion: () => <div>RecentUploadsAccordion</div>,
 }))
 
-vi.mock('@/components/features/upload/components/TextInputs', () => ({
-  TextInputs: () => <div>TextInputs</div>,
+vi.mock('@/components/features/upload/components/UploadStepMetadataCard', () => ({
+  UploadStepMetadataCard: () => <div>UploadStepMetadataCard</div>,
 }))
 
-vi.mock('@/components/features/upload/components/ThumbnailSection', () => ({
-  ThumbnailSection: () => <div>ThumbnailSection</div>,
+vi.mock('@/components/features/upload/components/UploadStepSubmitCard', () => ({
+  UploadStepSubmitCard: () => <div>UploadStepSubmitCard</div>,
 }))
 
 vi.mock('@tanstack/react-router', () => ({
