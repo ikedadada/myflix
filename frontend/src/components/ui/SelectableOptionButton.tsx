@@ -23,7 +23,7 @@ export const SelectableOptionButton = ({
     variant='ghost'
     size='md'
     className={cn(
-      'flex w-full items-start justify-between rounded-md border px-3 py-2 text-left text-sm transition-colors',
+      'h-auto min-h-9 w-full items-start justify-between whitespace-normal rounded-md border px-3 py-2 text-left text-sm transition-colors',
       selected
         ? 'border-primary bg-primary/10 text-primary'
         : 'border-border/80 bg-card text-foreground hover:border-border',
@@ -36,6 +36,6 @@ export const SelectableOptionButton = ({
       <span className='font-semibold'>{title}</span>
       {description && <span className='text-[11px] text-muted-foreground'>{description}</span>}
     </span>
-    {selected && <span className='text-[11px] font-semibold'>{selectedLabel}</span>}
+    {selected && <span className='shrink-0 text-[11px] font-semibold'>{selectedLabel}</span>}
   </Button>
 )
