@@ -26,21 +26,15 @@ const getVideoCardHoverClasses = ({ preset }: { preset: VideoCardHoverPreset }) 
     'subtle' | 'expand',
     'left' | 'center' | 'right',
   ]
+  const origin =
+    direction === 'right' ? 'origin-left' : direction === 'left' ? 'origin-right' : 'origin-center'
   const scale = intensity === 'expand' ? 'hover:scale-[1.2]' : 'hover:scale-[1.03]'
   const emphasis =
     intensity === 'expand'
       ? 'hover:border-accent/60 hover:shadow-2xl'
       : 'hover:border-accent/40 hover:shadow-xl'
-  const translate =
-    intensity === 'expand'
-      ? direction === 'right'
-        ? 'hover:translate-x-8'
-        : direction === 'left'
-          ? 'hover:-translate-x-8'
-          : ''
-      : ''
 
-  return [scale, emphasis, translate].filter(Boolean).join(' ')
+  return [origin, scale, emphasis].filter(Boolean).join(' ')
 }
 
 const resolveThumbUrl = (url: string | null): string => {
